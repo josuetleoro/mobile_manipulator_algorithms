@@ -1,0 +1,16 @@
+mobile_platform:
+  base_length:      0.620
+  base_width:       0.510
+  base_height:      0.364
+  wheel_radius:     0.0762
+  wheels_distance:  0.411
+prismatic_joint:
+  mob_base_to_prism_vert_distance: 0.480
+  mob_base_to_prism_hor_distance: 0.079
+  prism_ur5_safety_distance: 0.110
+  base_length:  0.0735
+  base_width:   0.135
+  base_height:  0.6505
+  plate_length: 0.0642
+  plate_width:  0.170
+  plate_height: 0.150

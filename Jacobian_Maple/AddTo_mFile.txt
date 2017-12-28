@@ -1,0 +1,12 @@
+%Symbolic variables of the joint general coordinates
+syms phi zmp q1 q2 q3 q4 q5 q6 real
+
+--------
+JBar
+JJt
+dq1 ... dq10
+--------
+
+save('MARS_Jacobian','JBar');
+save('MARS_JJt','JJt');
+save('MARS_dJJtdq','dJJtdq1','dJJtdq2','dJJtdq3','dJJtdq4','dJJtdq5','dJJtdq6','dJJtdq7','dJJtdq8','dJJtdq9');
