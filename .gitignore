@@ -1,3 +1,4 @@
 # exclude build and devel directories of the ros workspace
 /ros_ws/build/*
 /ros_ws/devel/*
+/ros_ws/.catkin_workspace
