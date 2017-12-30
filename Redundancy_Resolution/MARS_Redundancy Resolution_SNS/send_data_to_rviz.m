@@ -12,7 +12,7 @@ n=size(q,2);
 joints_names = {'right_wheel','left_wheel','prismatic_joint','ur5_shoulder_pan_joint','ur5_shoulder_lift_joint'...
     'ur5_elbow_joint','ur5_wrist_1_joint','ur5_wrist_2_joint','ur5_wrist_3_joint'};
 
-rosinit
+%rosinit
 
 %Get the transformation tree
 tftree = rostf;
@@ -103,4 +103,4 @@ for i=1:n
     waitfor(rate);    
 end
 
-rosshutdown
+%rosshutdown

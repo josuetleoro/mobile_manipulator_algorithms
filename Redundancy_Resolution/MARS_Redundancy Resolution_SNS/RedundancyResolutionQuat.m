@@ -7,28 +7,6 @@ addpath MARS_UR5 sns
 MARS=MARS_UR5();
 
 %% Choose the initial joint values, final poistion and times
-%%%%%%%%Best final position and orientation%%%%%%%%%
-% %Initial joints values
-% tx=0;
-% ty=0;
-% phi_mp=0;
-% tz=0;
-% qa=[0.0;-pi;pi/2;-pi/2;-pi/2;pi];
-% %initial values of the generalized coordinates of the MM
-% q(:,1)=[tx;ty;phi_mp;tz;qa];
-% %Find the initial position of the end effector
-% T0=MARS.forwardKin(q(:,1));
-% 
-% %Final joints values
-% Pos=[2;3;1.0];
-% phi=90*pi/180;
-% theta=-90*pi/180;
-% psi=-90*pi/180;
-% tf=12;          %Desired final time
-% ts=0.01;       %time step
-% tb=2;          %Blending time
-% lambda = 5;    %error weight  
-
 %%%%%%%%%%%%%%%%%% Test 1 (working) %%%%%%%%%%%%%%%%%%%%%%%
 % %Initial joints values
 % tx=0;
@@ -150,31 +128,52 @@ MARS=MARS_UR5();
 % psi=180*pi/180;
 % theta=135*pi/180;
 % phi=90*pi/180;
-% tf=25;          %Desired final time
+% tf=35;          %Desired final time
 % ts=0.05;        %time step
 % tb=5;           %Blending time
 % lambda = 5;     %error weight
 
 %%%%%%%%%%%%%%%%%% Test 7 (Working) %%%%%%%%%%%%%%%%%%%%%%%
+% %Initial joints values
+% tx=0;
+% ty=0;
+% phi_mp=0;
+% tz=0;
+% qa=[0.0; -pi; pi/2; -pi/2; -pi/2; -pi/2]; %(The starting position is very important for the algorithm to work)
+% %initial values of the generalized coordinates of the MM
+% q(:,1)=[tx;ty;phi_mp;tz;qa];
+% %Find the initial position of the end effector
+% T0=MARS.forwardKin(q(:,1));
+% 
+% Pos=[2;2.0;0.6];
+% psi=0*pi/180;
+% theta=90*pi/180;
+% phi=0*pi/180;
+% tf=20;          %Desired final time
+% ts=0.05;        %time step
+% tb=5;           %Blending time
+% lambda = 5;     %error weight
+
+%%%%%%%%%%%%%%%%%% Test 8 (Not working) %%%%%%%%%%%%%%%%%%%%%%%
 %Initial joints values
 tx=0;
 ty=0;
 phi_mp=0;
 tz=0;
-qa=[0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
+qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0];
 %initial values of the generalized coordinates of the MM
 q(:,1)=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
 T0=MARS.forwardKin(q(:,1));
 
-Pos=[2;2.0;0.6];
-psi=180*pi/180;
-theta=180*pi/180;
-phi=0*pi/180;
-tf=15;          %Desired final time
-ts=0.05;        %time step
+Pos=[0.5;-3;0.5];
+phi=-180*pi/180;
+theta=-90*pi/180;
+psi=-90*pi/180;
+tf=20;          %Desired final time
+ts=0.05;         %time step
 tb=5;           %Blending time
-lambda = 2.5;     %error weight
+lambda = 5;    %error weight
 
 %%%%%%%% Get the desired transformation matrix %%%%%%
 RF=eulerToRotMat(phi,theta,psi,'ZYZ')
@@ -273,7 +272,7 @@ while(k<N)
     eO=errorFromQuats(qd,qe);  
     
     errorRate(1:3,1)=eP;
-     errorRate(4:6,1)=eO;
+    errorRate(4:6,1)=eO;
     %errorRate(1:6,1)=zeros(6,1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
