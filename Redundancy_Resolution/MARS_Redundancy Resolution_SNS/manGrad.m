@@ -13,12 +13,14 @@ JJt_ev=evaluateJJt(q(3),q(5),q(6),q(7),q(8),q(9));
 %inv_JJt=inv(JJt_ev);
 %w=-1/2*prod(svd(Jev));
 
-inv_JJt=inv(JJt_ev);
-S=svd(Jev);
-w=prod(S);
-w_2=-w/2;
+% S=svd(Jev);
+% w=prod(S);
+det_JJt=det(JJt_ev);
+w=sqrt(det_JJt);
+w_2=-w/2; %We use -w because the internal motion is substracted
 
 %Calculate each of the elements of the gradient 
+inv_JJt=inv(JJt_ev);
 dP(1,1)=0;
 dP(2,1)=0;
 dP(3,1)=w_2*trace(inv_JJt*dJJtdq3_ev);
@@ -32,13 +34,13 @@ dP(10,1)=0;
 
 % dP(1,1)=0;
 % dP(2,1)=0;
-% dP(3,1)=w*trace(JJt_ev\dJJtdq3_ev);
+% dP(3,1)=w_2*trace(JJt_ev\dJJtdq3_ev);
 % dP(4,1)=0;
-% dP(5,1)=w*trace(JJt_ev\dJJtdq5_ev);
-% dP(6,1)=w*trace(JJt_ev\dJJtdq6_ev);
-% dP(7,1)=w*trace(JJt_ev\dJJtdq7_ev);
-% dP(8,1)=w*trace(JJt_ev\dJJtdq8_ev);
-% dP(9,1)=w*trace(JJt_ev\dJJtdq9_ev);
+% dP(5,1)=w_2*trace(JJt_ev\dJJtdq5_ev);
+% dP(6,1)=w_2*trace(JJt_ev\dJJtdq6_ev);
+% dP(7,1)=w_2*trace(JJt_ev\dJJtdq7_ev);
+% dP(8,1)=w_2*trace(JJt_ev\dJJtdq8_ev);
+% dP(9,1)=w_2*trace(JJt_ev\dJJtdq9_ev);
 % dP(10,1)=0;
 
 end

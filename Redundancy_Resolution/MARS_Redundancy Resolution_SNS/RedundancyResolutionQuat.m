@@ -51,25 +51,25 @@ MARS=MARS_UR5();
 % lambda = 5;    %error weight
 
 %%%%%%%%%%%%%%%%%% Test 2 (Working) %%%%%%%%%%%%%%%%%%%%%%%
-% %Initial joints values
-% tx=0;
-% ty=0;
-% phi_mp=0;
-% tz=0;
-% qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
-% %initial values of the generalized coordinates of the MM
-% q(:,1)=[tx;ty;phi_mp;tz;qa];
-% %Find the initial position of the end effector
-% T0=MARS.forwardKin(q(:,1));
-% 
-% Pos=[3;0.1091;0.8];
-% psi=90*pi/180;
-% theta=0*pi/180;
-% phi=90*pi/180;
-% tf=15;          %Desired final time
-% ts=0.05;        %time step
-% tb=5;           %Blending time
-% lambda = 5;     %error weight
+%Initial joints values
+tx=0;
+ty=0;
+phi_mp=0;
+tz=0;
+qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
+%initial values of the generalized coordinates of the MM
+q(:,1)=[tx;ty;phi_mp;tz;qa];
+%Find the initial position of the end effector
+T0=MARS.forwardKin(q(:,1));
+
+Pos=[3;0.1091;0.8];
+psi=90*pi/180;
+theta=0*pi/180;
+phi=90*pi/180;
+tf=15;          %Desired final time
+ts=0.05;        %time step
+tb=5;           %Blending time
+lambda = 5;     %error weight
 
 %%%%%%%%%%%%%%%%%% Test 3 (Working) %%%%%%%%%%%%%%%%%%%%%%%
 % %Initial joints values
@@ -156,25 +156,25 @@ MARS=MARS_UR5();
 % lambda = 5;     %error weight
 
 %%%%%%%%%%%%%%%%%% Test 7 (Working) %%%%%%%%%%%%%%%%%%%%%%%
-%Initial joints values
-tx=0;
-ty=0;
-phi_mp=0;
-tz=0;
-qa=[0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
-%initial values of the generalized coordinates of the MM
-q(:,1)=[tx;ty;phi_mp;tz;qa];
-%Find the initial position of the end effector
-T0=MARS.forwardKin(q(:,1));
-
-Pos=[2;2.0;0.6];
-psi=180*pi/180;
-theta=180*pi/180;
-phi=0*pi/180;
-tf=15;          %Desired final time
-ts=0.05;        %time step
-tb=5;           %Blending time
-lambda = 2.5;     %error weight
+% %Initial joints values
+% tx=0;
+% ty=0;
+% phi_mp=0;
+% tz=0;
+% qa=[0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
+% %initial values of the generalized coordinates of the MM
+% q(:,1)=[tx;ty;phi_mp;tz;qa];
+% %Find the initial position of the end effector
+% T0=MARS.forwardKin(q(:,1));
+% 
+% Pos=[2;2.0;0.6];
+% psi=180*pi/180;
+% theta=180*pi/180;
+% phi=0*pi/180;
+% tf=15;          %Desired final time
+% ts=0.05;        %time step
+% tb=5;           %Blending time
+% lambda = 2.5;     %error weight
 
 %%%%%%%% Get the desired transformation matrix %%%%%%
 RF=eulerToRotMat(phi,theta,psi,'ZYZ')
@@ -190,17 +190,17 @@ T0
 Tf
 
 %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
-figure()
-%Mobile platform initial pos
-plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
-plotFrame(T0,2,'T0'); hold on;
-plotFrame(Tf,2,'Tf')
-xlabel('x')
-ylabel('y')
-zlabel('z')
-view(-133,31)
+% figure()
+% %Mobile platform initial pos
+% plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
+% plotFrame(T0,2,'T0'); hold on;
+% plotFrame(Tf,2,'Tf')
+% xlabel('x')
+% ylabel('y')
+% zlabel('z')
+% view(-133,31)
+% pause()
 
-pause()
 %% Trajectory planning
 tic
 disp('Calculating the trajectory...')
@@ -222,11 +222,11 @@ S(3:end,2:end)=eye(8);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-% Werror(1:3,1:3)=5*Werror(1:3,1:3);
-% Werror(4:6,4:6)=5*Werror(4:6,4:6);
+% Werror(1:3,1:3)=1/2*Werror(1:3,1:3);
+% Werror(4:6,4:6)=2*Werror(4:6,4:6);
 
 %Set the step size
-alpha=0.5;  % Best: k=0.05;
+alpha=0.8;  % Best: k=0.01;
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
@@ -247,8 +247,8 @@ dxi_des(4:6,:)=[MotPlan.w];
 k=1;
 %Copy the initial position and orientation
 xi(:,1)=xi_des(:,1);
-qe=xi(4:7,1);
-quat(:,1)=qe;
+quat_e=xi(4:7,1);
+quat(:,1)=quat_e;
 
 %Get the number of degrees of freedom and the task dimension
 JBar = zeros(6,9);
@@ -269,11 +269,11 @@ while(k<N)
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
     %Orientation error
-    qd=xi_des(4:7,k);    
-    eO=errorFromQuats(qd,qe);  
+    quat_d=xi_des(4:7,k);    
+    eO=errorFromQuats(quat_d,quat_e);  
     
     errorRate(1:3,1)=eP;
-     errorRate(4:6,1)=eO;
+    errorRate(4:6,1)=eO;
     %errorRate(1:6,1)=zeros(6,1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
@@ -286,8 +286,8 @@ while(k<N)
     error_cont=Werror*errorRate;
     cont_input=inv_JBar*(scale*dxi_des(:,k)+error_cont);
     projM=(Id-inv_JBar*JBar);
-    dq_N = alpha*S'*dP;
-    %dq_N = zeros(9,1);
+    %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
+    dq_N = alpha*S'*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
     
     %Mobility control vector
@@ -305,11 +305,10 @@ while(k<N)
     T=MARS.forwardKin(q(:,k+1));
     xi(1:3,k+1)=T(1:3,4);
     Re=T(1:3,1:3);
-    qe=cartToQuat(Re);
-    %qe=rotm2quat(Re);
-    %qe=qe/norm(qe);
-    xi(4:7,k+1)=qe;
-    quat(:,k+1)=qe;   
+    %qe=cartToQuat(Re);
+    quat_e=rotm2quat(Re)';
+    xi(4:7,k+1)=quat_e;
+    quat(:,k+1)=quat_e;   
     
     currentPos=xi(:,k+1);
     
@@ -341,6 +340,7 @@ xi(:,k)
 xi_error=xi_des(:,k)-xi(:,k);
 fprintf('Final Position Error\n');
 xi_error(:,end)
+fprintf('Norm error: %f\n',norm(xi_error(:,end)));
 
 fprintf('Desired Final Transformation Matrix\n');
 Tf
