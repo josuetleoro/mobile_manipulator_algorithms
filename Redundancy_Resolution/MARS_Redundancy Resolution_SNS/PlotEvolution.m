@@ -1,10 +1,10 @@
-clear all
-
-%Open a dialog box to look for the motion data
-uiopen();
-
-% Show the final position
-xi(:,end)
+% clear all
+% 
+% %Open a dialog box to look for the motion data
+% uiopen();
+% 
+% % Show the final position
+% xi(:,end)
 
 addpath MARS_UR5
 %Create a MMUR5 object

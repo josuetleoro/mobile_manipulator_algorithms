@@ -1,7 +1,8 @@
 function [dP,w]=manGrad(q,Jev)
 
 %Evaluate the matrices JJt and dJJt
-JJt_ev=evaluateJJt(q(3),q(5),q(6),q(7),q(8),q(9));
+%JJt_ev=evaluateJJt(q(3),q(5),q(6),q(7),q(8),q(9));
+JJt_ev=Jev*Jev';
 
 %The first element, second and fourth element are zero (x,y,z does not
 %exist in the jacobian matrix, therefore the derivative of JJt with respect

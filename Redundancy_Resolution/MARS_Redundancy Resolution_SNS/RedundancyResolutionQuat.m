@@ -3,51 +3,54 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5 sns
+%Add path for the UR5 manipulability
+addpath UR5_manip
+
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %% Choose the initial joint values, final poistion and times
 %%%%%%%%%%%%%%%%%% Test 1 (working) %%%%%%%%%%%%%%%%%%%%%%%
-% %Initial joints values
-% tx=0;
-% ty=0;
-% phi_mp=0;
-% tz=0;
-% qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
-% %initial values of the generalized coordinates of the MM
-% q(:,1)=[tx;ty;phi_mp;tz;qa];
-% %Find the initial position of the end effector
-% T0=MARS.forwardKin(q(:,1));
-% 
-% Pos=[2;3;0.5];
-% phi=120*pi/180;
-% theta=-90*pi/180;
-% psi=-45*pi/180;
-% tf=15;          %Desired final time
-% ts=0.05;         %time step
-% tb=5;           %Blending time
-% lambda = 5;    %error weight
-
-%%%%%%%%%%%%%%%%%% Test 2 (Working) %%%%%%%%%%%%%%%%%%%%%%%
 %Initial joints values
 tx=0;
 ty=0;
 phi_mp=0;
 tz=0;
-qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
+qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
 %initial values of the generalized coordinates of the MM
 q(:,1)=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
 T0=MARS.forwardKin(q(:,1));
 
-Pos=[3;0.1091;0.8];
-psi=90*pi/180;
-theta=0*pi/180;
-phi=90*pi/180;
+Pos=[2;3;0.5];
+phi=120*pi/180;
+theta=-90*pi/180;
+psi=-45*pi/180;
 tf=15;          %Desired final time
-ts=0.05;        %time step
+ts=0.05;         %time step
 tb=5;           %Blending time
-lambda = 5;     %error weight
+lambda = 5;    %error weight
+
+%%%%%%%%%%%%%%%%%% Test 2 (Working) %%%%%%%%%%%%%%%%%%%%%%%
+% %Initial joints values
+% tx=0;
+% ty=0;
+% phi_mp=0;
+% tz=0;
+% qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0]; %(The starting position is very important for the algorithm to work)
+% %initial values of the generalized coordinates of the MM
+% q(:,1)=[tx;ty;phi_mp;tz;qa];
+% %Find the initial position of the end effector
+% T0=MARS.forwardKin(q(:,1));
+% 
+% Pos=[3;0.1091;0.8];
+% psi=90*pi/180;
+% theta=0*pi/180;
+% phi=90*pi/180;
+% tf=15;          %Desired final time
+% ts=0.05;        %time step
+% tb=5;           %Blending time
+% lambda = 5;     %error weight
 
 %%%%%%%%%%%%%%%%%% Test 3 (Working) %%%%%%%%%%%%%%%%%%%%%%%
 % %Initial joints values
@@ -155,25 +158,25 @@ lambda = 5;     %error weight
 % lambda = 5;     %error weight
 
 %%%%%%%%%%%%%%%%%% Test 8 (Not working) %%%%%%%%%%%%%%%%%%%%%%%
-%Initial joints values
-tx=0;
-ty=0;
-phi_mp=0;
-tz=0;
-qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0];
-%initial values of the generalized coordinates of the MM
-q(:,1)=[tx;ty;phi_mp;tz;qa];
-%Find the initial position of the end effector
-T0=MARS.forwardKin(q(:,1));
-
-Pos=[0.5;-3;0.5];
-phi=-180*pi/180;
-theta=-90*pi/180;
-psi=-90*pi/180;
-tf=20;          %Desired final time
-ts=0.05;         %time step
-tb=5;           %Blending time
-lambda = 5;    %error weight
+% %Initial joints values
+% tx=0;
+% ty=0;
+% phi_mp=0;
+% tz=0;
+% qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0];
+% %initial values of the generalized coordinates of the MM
+% q(:,1)=[tx;ty;phi_mp;tz;qa];
+% %Find the initial position of the end effector
+% T0=MARS.forwardKin(q(:,1));
+% 
+% Pos=[0.5;-3;0.5];
+% phi=-180*pi/180;
+% theta=-90*pi/180;
+% psi=-90*pi/180;
+% tf=20;          %Desired final time
+% ts=0.05;         %time step
+% tb=5;           %Blending time
+% lambda = 5;    %error weight
 
 %%%%%%%% Get the desired transformation matrix %%%%%%
 RF=eulerToRotMat(phi,theta,psi,'ZYZ')
@@ -225,7 +228,7 @@ Werror=lambda*eye(6);
 % Werror(4:6,4:6)=2*Werror(4:6,4:6);
 
 %Set the step size
-alpha=0.8;  % Best: k=0.01;
+alpha=0.05;  % Best: k=0.01;
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
@@ -280,6 +283,7 @@ while(k<N)
     [dP,manip]=manGrad(q(:,k),JBar);   
     inv_JBar=pinv(JBar);
     man_measure(k)=manip;
+    ur5_man_measure(k)=UR5_manGrad(q(5:9,k));
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
@@ -349,10 +353,15 @@ TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
 TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
 TfObtained
 
+%Manipulability plot
 figure()
 man_measure(1)=man_measure(2);
 man_measure(k)=man_measure(end);
-plot(time,man_measure,'LineWidth',1.5); grid on
+ur5_man_measure(1)=ur5_man_measure(2);
+ur5_man_measure(k)=ur5_man_measure(end);
+plot(time,man_measure,'b','LineWidth',1.5); hold on;
+plot(time,ur5_man_measure,'r','LineWidth',1.5); hold off
+grid on
 %title('Manipulability');
 xlabel('time(s)')
 ylabel('Manipulability')
