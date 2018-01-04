@@ -1,9 +1,12 @@
 <launch>
-    <!--mars urdf file-->
+    <!--mars robot model-->
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mars_description)/urdf/mars_robot.urdf.xacro"/>
-    
+
+    <!--mars description semantic-->
+    <param name="robot_description_semantic" textfile="$(find mars_sim)/config/mars.srdf"/>    
+
     <!--run rviz with its configuration file-->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mars_sim)/rviz/rviz_config.rviz" required="true"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mars_sim)/rviz/rviz_config.rviz" required="true"/>    
 
     <!--joint state publisher-->
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"> 
@@ -20,8 +23,6 @@
 
     <!--transformation from base_footprint to base_link (z translation = wheel radius)-->
     <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link" args="0 0 0.0762 0 0 0 1 base_footprint base_link 1.0"/>
-
-    <param name="robot_description_semantic" textfile="$(find mars_sim)/config/ur5_with_prefix.srdf"/>    
     
     <!--node pkg="mars_sim" type="ur_pos" name="ur_pos_node"/-->
     <!--node pkg="mars_sim" type="reset_state" name="reset_state"/-->

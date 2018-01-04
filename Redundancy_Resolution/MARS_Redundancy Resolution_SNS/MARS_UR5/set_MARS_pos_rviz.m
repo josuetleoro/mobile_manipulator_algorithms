@@ -15,7 +15,7 @@ odom_trans.Header.FrameId = 'odom';
 
 %Joints values
 state_msg.Name = joints_names;
-state_msg.Position = [0.0; 0.0; 0.0; 0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0];
+state_msg.Position = [0.0; 0.0; 0.0; 0.1; -0.2; 0.3; -0.4; 0.5; -0.6];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
 
@@ -32,7 +32,7 @@ while (rate.TotalElapsedTime <= 3)
     odom_trans.Transform.Translation.Z = 0.0;
     
     %quatrot = axang2quat([0 0 1 deg2rad(x_pos)]);
-    quatrot = eul2quat([pi 0 0],'ZYX');
+    quatrot = eul2quat([0 0 0],'ZYX');
     odom_trans.Transform.Rotation.W = quatrot(1);
     odom_trans.Transform.Rotation.X = quatrot(2);
     odom_trans.Transform.Rotation.Y = quatrot(3);
