@@ -10,7 +10,7 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=10;
+testN=9;
 TestPoints
 lambda=1; %Overwrite lambda
 
@@ -128,10 +128,10 @@ while(k<N)
     dP=zeros(10,1);
     
     %Use MM manipulability
-    %dP=MM_dP;
+    dP=MM_dP;
     
     %Use the ur5 manipulability only
-    dP(5:10)=ur5_dP;
+    %dP(5:10)=ur5_dP;
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
