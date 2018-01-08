@@ -3,7 +3,7 @@
        name="ur5" >
 
   <!-- common stuff -->
-  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro"/>
+  <!-- xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro"/-->
 
   <!-- ur5 -->
   <xacro:include filename="$(find mars_description)/urdf/ur5.urdf.xacro" />
@@ -16,8 +16,7 @@
   <joint name="world_joint" type="fixed">
     <parent link="world"/>
     <child link = "ur5_base_link" />
-    <origin xyz="0.0 0.0 0.5" rpy="0.0 0.0 3.14159"/>
-    <!--origin xyz="0.0 0.0 0.5" rpy="0.0 -1.577 3.14159"/--> <!-- To rotate the robot in rviz -->
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159"/>
   </joint>
 
 </robot>

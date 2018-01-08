@@ -2,5 +2,5 @@
 Type=Application
 Terminal=true
 Name=mars_rviz_display
-Icon=/home/josue/Documents/mars_visualization_launcher/icon.svg
-Exec=/home/josue/Documents/mars_visualization_launcher/init_mars_rviz_display.sh
+Icon=/home/josue/mobile_manipulator_algorithms/mars_visualization_launcher/icon.svg
+Exec=/home/josue/mobile_manipulator_algorithms/mars_visualization_launcher/init_mars_rviz_display.sh
