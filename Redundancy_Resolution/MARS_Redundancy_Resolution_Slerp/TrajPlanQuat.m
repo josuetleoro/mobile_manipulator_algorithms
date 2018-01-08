@@ -11,13 +11,15 @@ posf=Tf(1:3,4);
 %% Motion planning for orientation
 %Initial Orientation
 %Transform the rotation matrix to a quaternion
-q0=cartToQuat(T0);
+%q0=cartToQuat(T0);
+q0=rotm2quat(T0(1:3,1:3))';
 q0=q0/norm(q0);
 %T0Rec=quatToRotMat(q0)
 
 %Final Orientation
 %Transform the rotation matrix to a quaternion
-qf=cartToQuat(Tf);
+%qf=cartToQuat(Tf);
+qf=rotm2quat(Tf(1:3,1:3))';
 qf=qf/norm(qf);
 %TfRec=quatToRotMat(qf)
 
@@ -39,14 +41,19 @@ end
 logq=Quat.log(Q0.conj()*Qf);
 for i=0:quat_step:1
     quat(:,n)=slerp(q0,qf,i,0.001);    
-    quat(:,n)=quat(:,n)/norm(quat(:,n));
-    tempQuat=Quat(quat(:,n)');
-    tempQuat=tempQuat*logq;
-    dquat(:,n)=tempQuat.vecRep();
-    w(:,n)=quatRatesToAxesRates(quat(:,n),dquat(:,n))/tf;    
+    quat(:,n)=quat(:,n)/norm(quat(:,n));    
+    q=Quat(quat(:,n)');
+    dq=q*logq;
+    w4=2*dq*q.inv()/tf;
+    w(:,n)=w4.getV();    
+    
+%     tempQuat=Quat(quat(:,n)');
+%     tempQuat=tempQuat*logq;
+%     dquat(:,n)=tempQuat.vecRep();
+%     w(:,n)=quatRatesToAxesRates(quat(:,n),dquat(:,n))/tf;        
+    n=n+1;    
     %w(:,n)=2*logq.v/norm(logq.v)*acos(logq.s);
     %w(:,n)=2*logq.v;
-    n=n+1;    
 end
 time=0:ts:tf;
 
@@ -82,53 +89,53 @@ time=0:ts:tf;
 % ylabel('z')
 % title('z')
 % 
-% %Plot the evolution of wx, wy and wz
-% figure()
-% subplot(1,3,1)
-% plot(time,w(1,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('wx')
-% title('wx')
-% 
-% subplot(1,3,2)
-% plot(time,w(2,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('wy')
-% title('wy')
-% 
-% subplot(1,3,3)
-% plot(time,w(3,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('wz')
-% title('wz')
-% 
-% %Plot the evolution of quat
-% time=0:ts:tf;
-% figure()
-% subplot(2,2,1)
-% plot(time,quat(1,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_w')
-% title('quat_w')
-% 
-% subplot(2,2,2)
-% plot(time,quat(2,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_x')
-% title('quat_x')
-% 
-% subplot(2,2,3)
-% plot(time,quat(3,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_y')
-% title('quat_y')
-% 
-% subplot(2,2,4)
-% plot(time,quat(4,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_z')
-% title('quat_z')
-% pause()
+%Plot the evolution of wx, wy and wz
+figure()
+subplot(1,3,1)
+plot(time,w(1,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('wx')
+title('wx')
+
+subplot(1,3,2)
+plot(time,w(2,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('wy')
+title('wy')
+
+subplot(1,3,3)
+plot(time,w(3,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('wz')
+title('wz')
+
+%Plot the evolution of quat
+time=0:ts:tf;
+figure()
+subplot(2,2,1)
+plot(time,quat(1,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('quat_w')
+title('quat_w')
+
+subplot(2,2,2)
+plot(time,quat(2,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('quat_x')
+title('quat_x')
+
+subplot(2,2,3)
+plot(time,quat(3,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('quat_y')
+title('quat_y')
+
+subplot(2,2,4)
+plot(time,quat(4,:),'r','LineWidth',2); grid on
+xlabel('time(s)')
+ylabel('quat_z')
+title('quat_z')
+pause()
 
 %Return the motion planning data
 MotPlan={};
