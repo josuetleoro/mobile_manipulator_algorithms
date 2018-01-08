@@ -1,7 +1,7 @@
 joints_names = {'right_wheel','left_wheel','prismatic_joint','ur5_shoulder_pan_joint','ur5_shoulder_lift_joint'...
     'ur5_elbow_joint','ur5_wrist_1_joint','ur5_wrist_2_joint','ur5_wrist_3_joint'};
 
-rosinit
+%rosinit
 
 %Get the transformation tree
 tftree = rostf;
@@ -15,7 +15,7 @@ odom_trans.Header.FrameId = 'odom';
 
 %Joints values
 state_msg.Name = joints_names;
-state_msg.Position = [0.0; 0.0; 0.0; 0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0];
+state_msg.Position = [0.0; 0.0; 0.0; 0.0; -pi; 3*pi/4; 5*pi/4; -pi/2; 0.0];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
 
@@ -46,4 +46,4 @@ while (rate.TotalElapsedTime <= 3)
     waitfor(rate);
 end
 
-rosshutdown
+%rosshutdown

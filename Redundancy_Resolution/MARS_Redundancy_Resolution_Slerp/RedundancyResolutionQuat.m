@@ -10,10 +10,11 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=10;
+testN=4;
 TestPoints
-lambda=2; %Overwrite lambda
+lambda=15; %Overwrite lambda
 ts=0.05;  %Overwrite ts
+%tf=60;
 
 
 %% Initial values of the generalized coordinates of the MM
@@ -59,12 +60,12 @@ mp_vel(:,1)=zeros(3,1);
 MM_man_measure(1)=0;
 
 %Set the step size
-alpha=0.08;  % Best: alpha=0.1;
+alpha=0.05;  % Best: alpha=0.08;
 
 %The weight matrix W
 Werror=lambda*eye(6);
-% Werror(1:3,1:3)=2*Werror(1:3,1:3);
-% Werror(4:6,4:6)=0.5*Werror(4:6,4:6);
+%Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
+%Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -127,10 +128,10 @@ while(k<N)
     dP=zeros(10,1);
     
     %Use MM manipulability
-    %dP=MM_dP;
+    dP=MM_dP;
     
     %Use the ur5 manipulability only
-    dP(5:10)=ur5_dP;
+    %dP(5:10)=ur5_dP;
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
