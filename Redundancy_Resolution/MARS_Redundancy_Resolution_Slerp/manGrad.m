@@ -18,7 +18,7 @@ JJt_ev=Jev*Jev';
 % w=prod(S);
 det_JJt=det(JJt_ev);
 w=sqrt(det_JJt);
-w_2=-w/2; %We use -w because the internal motion is substracted
+w_2=w/2; %We use -w because the internal motion is substracted
 
 %Calculate each of the elements of the gradient 
 inv_JJt=inv(JJt_ev);

@@ -1,4 +1,4 @@
-clear all
+%clear all
 close all
 
 %Add the MMUR5 path to use the class MMUR5
@@ -12,17 +12,20 @@ MARS=MARS_UR5();
 %Load the test point
 testN=4;
 TestPoints
-lambda=15; %Overwrite lambda
+lambda=10; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
 %tf=60;
 
+%Set the step size for the gradient descent method
+alpha=0.09;  % Best: alpha=0.09; 
+% Low values of alpha work for position behind MARS when using UR5 manip
 
 %% Initial values of the generalized coordinates of the MM
-q(:,1)=[tx;ty;phi_mp;tz;qa];
+q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
-T0=MARS.forwardKin(q(:,1));
+T0=MARS.forwardKin(q0);
 
-%% Get the desired transformation matrix %%%
+%% Get the desired pose transformation matrix %%%
 %RF=eulerToRotMat(roll,pitch,yaw,'ZYZ')
 RF=eul2rotm([roll, pitch, yaw],'XYZ')
 %RF=eul2rotm([psi theta phi],'ZYX')
@@ -52,15 +55,20 @@ Tf
 tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
+MotPlan = struct([]);
 MotPlan=TrajPlanQuat(T0,Tf,ts,tb,tf);
+%Set the number of iterations from the motion planning data
+N=size(MotPlan.x,2);
 
-%% Projected gradient method
-dq(:,1)=zeros(10,1);
+%% Initialize variables
+q=zeros(10,N);
+xi=zeros(7,N);
+JBar = zeros(6,9);
+eta=zeros(9,N);
+dq=zeros(10,N);
+MM_man_measure=zeros(1,N);
+ur5_man_measure=zeros(1,N);
 mp_vel(:,1)=zeros(3,1);
-MM_man_measure(1)=0;
-
-%Set the step size
-alpha=0.05;  % Best: alpha=0.08;
 
 %The weight matrix W
 Werror=lambda*eye(6);
@@ -73,9 +81,6 @@ Id=eye(9);
 %Create non-holonomic constrains matrix
 S=zeros(10,9);
 S(3:end,2:end)=eye(8);
-
-%Set the number of iterations from the motion planning data
-N=size(MotPlan.x,2);
 
 %Load the desired position and velocity from the motion planning data
 xi_des=zeros(6,N);
@@ -90,14 +95,13 @@ dxi_des(2,:)=[MotPlan.dy];
 dxi_des(3,:)=[MotPlan.dz];
 dxi_des(4:6,:)=[MotPlan.w];
 
-k=1;
-%Copy the initial position and orientation
+%Copy the initial values of the motion planning
+q(:,1)=q0;
 xi(:,1)=xi_des(:,1);
 quat_e=xi(4:7,1);
-quat(:,1)=quat_e;
 
-JBar = zeros(6,9);
 disp('Calculating the inverse velocity kinematics solution')
+k=1;
 while(k<N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -107,17 +111,17 @@ while(k<N)
     
     %Pseudoinverse of JBar
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
-        
+    
     %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
+    
     %Orientation error
     quat_d=xi_des(4:7,k);    
     eO=errorFromQuats(quat_d,quat_e);  
-    
+        
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    %errorRate(1:6,1)=zeros(6,1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
     %Manipulability gradient
@@ -141,17 +145,17 @@ while(k<N)
     %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
     dq_N = alpha*S'*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
-    
+        
     %Mobility control vector
-    eta(:,k)=cont_input-int_motion;    
+    eta(:,k)=cont_input+int_motion;    
     
     %% update variables for next iteration
         
     %Calculate the joints velocities
-    dq(:,k+1)=S*eta(:,k);
+    dq(:,k)=S*eta(:,k);
    
     %Calculate the joint values
-    q(:,k+1)=q(:,k)+dq(:,k+1)*ts; 
+    q(:,k+1)=q(:,k)+dq(:,k)*ts; 
         
     %Calculate the position of the end effector
     T=MARS.forwardKin(q(:,k+1));
@@ -163,17 +167,14 @@ while(k<N)
 %        quat_e=quat_e*-1; 
 %     end
     xi(4:7,k+1)=quat_e;
-    quat(:,k+1)=quat_e;   
     
-    currentPos=xi(:,k+1);
-    
-    %Store the mobile platform velocities
-    mp_vel(:,k+1)=eta(1:3,k);
+    %currentPos=xi(:,k+1);
     
     %increment the step
     k=k+1; 
     %pause()   
 end 
+dq(:,k)=dq(:,k-1);
 toc
 %time=MotPlan.time;
 k
@@ -207,13 +208,17 @@ TfObtained
 
 %Adjust manipulability measure values
 MM_man_measure(1)=MM_man_measure(2);
-MM_man_measure(k)=MM_man_measure(end);
+MM_man_measure(end)=MM_man_measure(end-1);
 ur5_man_measure(1)=ur5_man_measure(2);
-ur5_man_measure(k)=ur5_man_measure(end);
+ur5_man_measure(end)=ur5_man_measure(end-1);
+
+%Store the mobile platform velocities
+mp_vel=eta(1:3,:);
 
 PlotEvolution
 
 %% Plot the evolution of quat
+% quat=xi(4:7,:);   
 % figure()
 % subplot(2,2,1)
 % plot(time,quat(1,:),'r','LineWidth',2); grid on
