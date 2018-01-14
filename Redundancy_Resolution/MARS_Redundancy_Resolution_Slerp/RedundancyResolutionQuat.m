@@ -10,11 +10,13 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=4;
+testN=9;
 TestPoints
 lambda=10; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
 %tf=60;
+
+manipSel = 2;
 
 %Set the step size for the gradient descent method
 alpha=0.09;  % Best: alpha=0.09; 
@@ -130,12 +132,14 @@ while(k<N)
     [ur5_dP, ur5_manip]=UR5_manGrad(q(5:9,k));
     ur5_man_measure(k)=ur5_manip;
     dP=zeros(10,1);
-    
-    %Use MM manipulability
-    dP=MM_dP;
-    
-    %Use the ur5 manipulability only
-    %dP(5:10)=ur5_dP;
+
+    if manipSel == 1
+        %Use MM manipulability
+        dP=MM_dP;
+    else
+        %Use the ur5 manipulability only
+        dP(5:10)=ur5_dP;
+    end
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
