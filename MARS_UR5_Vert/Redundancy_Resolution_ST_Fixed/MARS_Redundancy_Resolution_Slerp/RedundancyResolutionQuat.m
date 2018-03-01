@@ -10,16 +10,15 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=11;
+testN=7;
 TestPoints
-lambda=0.1; %Overwrite lambda best=5
+lambda=0.5; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
-%tf=60;
 
-manipSel = 1;
+MM_manip_sel = 1;
 
 %Set the step size for the gradient descent method
-alpha=0.09;  % Best: alpha=0.09; 
+alpha=0.5;  % Best: alpha=0.09; 
 % Low values of alpha work for position behind MARS when using UR5 manip
 
 %% Initial values of the generalized coordinates of the MM
@@ -119,14 +118,14 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
 
     %Select the manipulability to use
-    if manipSel == 1
+    if MM_manip_sel == 1
         %Use MM manipulability
         dP=MM_dP;
     else
         %Use the ur5 manipulability only
         dP=ur5_dP;
     end
-        
+            
     %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);

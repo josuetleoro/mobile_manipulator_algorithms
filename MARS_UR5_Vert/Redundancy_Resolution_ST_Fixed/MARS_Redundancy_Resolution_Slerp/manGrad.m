@@ -18,7 +18,7 @@ w=sqrt(det_JJt);
 
 %Calculate each of the elements of the gradient 
 inv_JJt=inv(JJt);
-w_2=w/2; %We use -w because the internal motion is substracted
+w_2=-w/2; %We use -w because the internal motion is substracted
 dP(1,1)=0;
 dP(2,1)=0;
 dP(3,1)=w_2*trace(inv_JJt*dJJtdq3_ev);
@@ -33,7 +33,7 @@ dP(10,1)=0;
 %% UR5
 
 %Get the manipulability measure
-UR5_J=J(1:6,5:10);
+UR5_J=J(:,5:10);
 UR5_JJt=UR5_J*UR5_J';
 UR5_det_JJt=det(UR5_JJt);
 UR5_w=sqrt(UR5_det_JJt);
