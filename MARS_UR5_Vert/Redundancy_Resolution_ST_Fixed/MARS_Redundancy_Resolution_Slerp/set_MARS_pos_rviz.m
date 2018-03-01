@@ -1,7 +1,7 @@
 joints_names = {'right_wheel','left_wheel','prismatic_joint','ur5_shoulder_pan_joint','ur5_shoulder_lift_joint'...
     'ur5_elbow_joint','ur5_wrist_1_joint','ur5_wrist_2_joint','ur5_wrist_3_joint'};
 
-%rosinit
+rosinit
 
 %Get the transformation tree
 tftree = rostf;
@@ -13,19 +13,9 @@ odom_trans.Header.FrameId = 'odom';
 
 [state_pub, state_msg] = rospublisher('/mars_joint_states','sensor_msgs/JointState');
 
-x=0.0;
-y=0.0;
-phi=0.0;
-z=0.0;
-%ur5=[0.0,-pi/2,3*pi/4,5*pi/4,-pi/2,0.0];
-%ur5=[pi;-pi/4;pi/4;0;pi/2;0];
-%ur5=[0.4;0.6;-0.8;1.0;-1.2;1.4];
-ur5=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
-
-
 %Joints values
 state_msg.Name = joints_names;
-state_msg.Position = [0.0; 0.0; z; ur5(1); ur5(2); ur5(3); ur5(4); ur5(5); ur5(6)];
+state_msg.Position = [0.0; 0.0; 0.0; 0.0; -pi; pi/2; -pi/2; -pi/2; pi];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
 
@@ -42,7 +32,7 @@ while (rate.TotalElapsedTime <= 3)
     odom_trans.Transform.Translation.Z = 0.0;
     
     %quatrot = axang2quat([0 0 1 deg2rad(x_pos)]);
-    quatrot = eul2quat([phi 0 0],'ZYX');
+    quatrot = eul2quat([pi 0 0],'ZYZ');
     odom_trans.Transform.Rotation.W = quatrot(1);
     odom_trans.Transform.Rotation.X = quatrot(2);
     odom_trans.Transform.Rotation.Y = quatrot(3);
@@ -56,4 +46,4 @@ while (rate.TotalElapsedTime <= 3)
     waitfor(rate);
 end
 
-%rosshutdown
+rosshutdown
