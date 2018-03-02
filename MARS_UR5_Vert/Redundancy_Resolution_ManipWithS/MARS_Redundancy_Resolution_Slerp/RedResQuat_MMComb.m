@@ -10,7 +10,7 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=7;
 TestPoints
 ts=0.05;  %Overwrite ts
 
@@ -128,10 +128,10 @@ while(k<N)
     S(1,1)=cos(q(3,k)); S(2,1)=sin(q(3,k));
     
     %Calculate the Jacobian
-    J=evaluateJ(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));        
+    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));        
    
     %Manipulability gradient
-    [MM_dP,manip, ur5_dP, ur5_manip]=manGrad(q(:,k),J);   
+    [MM_dP,manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
     MM_man_measure(k)=manip;
     ur5_man_measure(k)=ur5_manip;
     dP = kappa*MM_dP + lambda*ur5_dP;
@@ -149,13 +149,12 @@ while(k<N)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
        
     %Calculate the control input and internal motion
-    JBar=J*S;
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     projM=(Id-inv_JBar*JBar);
     %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
-    dq_N = alpha*S'*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
+    dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
         
     %Mobility control vector
