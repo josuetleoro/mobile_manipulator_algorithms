@@ -10,12 +10,12 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=7;
+testN=9;
 TestPoints
 lambda=0.5; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
 
-MM_manip_sel = 1;
+MM_manip_sel = 0;
 
 %Set the step size for the gradient descent method
 alpha=0.5;  % Best: alpha=0.09; 
@@ -149,7 +149,7 @@ while(k<N)
     int_motion=projM*dq_N;
         
     %Mobility control vector
-    eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=cont_input-int_motion;    
     
     %% update variables for next iteration
         

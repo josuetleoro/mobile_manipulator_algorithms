@@ -10,15 +10,15 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=5;
+testN=9;
 TestPoints
-lambda=10; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
-%tf=60;
 
-%Set the step size for the gradient descent method
-alpha=0.09;  % Best: alpha=0.09; 
-% Low values of alpha work for position behind MARS when using UR5 manip
+%Error weight and gradient step descent step size
+WMM=0.1;
+WUR5=5;
+alphaMM=0.5;
+alphaUR5=0.5;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -105,10 +105,6 @@ kappa = 0;
 half = N/2;
 threeQ = 3*N/4;
 k=1;
-WMM=1;
-WUR5=25;
-alphaMM=0.05;
-alphaUR5=0.09;
 kappa = 1;
 lambda = 0;
 while(k<N)
@@ -151,8 +147,7 @@ while(k<N)
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
-    
+       
     %Calculate the control input and internal motion
     JBar=J*S;
     error_cont=Werror*errorRate;
@@ -164,7 +159,7 @@ while(k<N)
     int_motion=projM*dq_N;
         
     %Mobility control vector
-    eta(:,k)=cont_input+int_motion;     
+    eta(:,k)=cont_input-int_motion;     
     
     %% update variables for next iteration
         
@@ -180,9 +175,9 @@ while(k<N)
     Re=T(1:3,1:3);
     %quat_e=cartToQuat(Re);
     quat_e=rotm2quat(Re)';
-%     if quat_e(1) < 0
-%        quat_e=quat_e*-1; 
-%     end
+    if quat_e(1) < 0    %Always positive quat
+       quat_e=quat_e*-1; 
+    end
     xi(4:7,k+1)=quat_e;
     
     %currentPos=xi(:,k+1);
