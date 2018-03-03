@@ -10,16 +10,18 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=7;
+testN=1;
 TestPoints
-lambda=0.5; %Overwrite lambda best=5
 ts=0.05;  %Overwrite ts
 
-MM_manip_sel = 0;
+MM_manip_sel = 1;
 
-%Set the step size for the gradient descent method
-alpha=0.5;  % Best: alpha=0.09; 
-% Low values of alpha work for position behind MARS when using UR5 manip
+%Set the step size for the gradient descent method and
+%error weight.
+%The best results with mobile manipulator manipulability use 
+%a low error weight with a high alpha value
+alpha=0.5;
+lambda=0.005; %Overwrite lambda best=5
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];

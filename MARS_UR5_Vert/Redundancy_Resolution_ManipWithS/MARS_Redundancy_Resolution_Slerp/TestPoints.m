@@ -51,10 +51,15 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=20;          %Desired final time
+        tf=10;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         lambda = 1;     %error weight
+        
+        %Best results with:
+        %lamda=0.001;
+        %alpha=0.5;
+        
     case 4 %working (Check the end effector singularity here)
         % %Initial joints values
         tx=0;
