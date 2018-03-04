@@ -38,6 +38,7 @@ UR5_J=J(:,4:9);
 UR5_JJt=UR5_J*UR5_J';
 UR5_det_JJt=det(UR5_JJt);
 UR5_w=sqrt(UR5_det_JJt);
+[dJJtdq2_ev,dJJtdq4_ev,dJJtdq5_ev,dJJtdq6_ev,dJJtdq7_ev,dJJtdq8_ev]=evaluateUR5dJJtdq(q(3),q(5),q(6),q(7),q(8),q(9));
 
 %Calculate each of the elements of the gradient 
 UR5_inv_JJt=inv(UR5_JJt);
