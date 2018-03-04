@@ -10,18 +10,18 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=8;
+testN=11;
 TestPoints
 ts=0.05;  %Overwrite ts
 
-MM_manip_sel = 1;
+MM_manip_sel = 0;
 
 %Set the step size for the gradient descent method and
 %error weight.
 %The best results with mobile manipulator manipulability use 
 %a low error weight with a high alpha value
 alpha=0.5;
-lambda=0.001; %Overwrite lambda best=0.005
+lambda=0.7;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -29,15 +29,15 @@ q0=[tx;ty;phi_mp;tz;qa];
 T0=MARS.forwardKin(q0);
 
 %% Get the desired pose transformation matrix %%%
-%RF=eul2rotm([roll, pitch, yaw],'XYZ')
-RF=eul2rotm([yaw pitch roll],'ZYX')
+RF=eul2rotm([roll, pitch, yaw],'XYZ')
+%RF=eul2rotm([yaw pitch roll],'ZYX')
 Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=RF;
 Tf(1:3,4)=Pos;
 
-%Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
-Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
+Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
+%Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
 T0
 Tf
 
@@ -115,22 +115,20 @@ while(k<N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
-    MM_man_measure(k)=MM_manip;
+    [MM_dP,manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
+    MM_man_measure(k)=manip;
     ur5_man_measure(k)=ur5_manip;
     
     w5_measure(k)=w5;
 
-%     %Select the manipulability to use
-%     if MM_manip_sel == 1
-%         %Use MM manipulability
-%         dP=MM_dP;
-%     else
-%         %Use the ur5 manipulability only
-%         dP=ur5_dP;
-%     end
-    
-    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    %Select the manipulability to use
+    if MM_manip_sel == 1
+        %Use MM manipulability
+        dP=MM_dP;
+    else
+        %Use the ur5 manipulability only
+        dP=ur5_dP;
+    end
             
     %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
@@ -144,12 +142,6 @@ while(k<N)
     errorRate(4:6,1)=eO;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     
-%     if (k/N)>0.9
-%         c=1-k/N;
-%     	Werror=1.5*c*eye(6);   
-%         alpha=0.5*(1-c);
-%     end
-    
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
@@ -160,7 +152,7 @@ while(k<N)
     int_motion=projM*dq_N;
         
     %Mobility control vector
-    eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=cont_input-int_motion;    
     
     %% update variables for next iteration
         

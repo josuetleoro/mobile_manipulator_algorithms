@@ -3,25 +3,20 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5
-%Add path for the UR5 manipulability
-addpath UR5_manip
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %Load the test point
-testN=8;
+testN=2;
 TestPoints
 ts=0.05;  %Overwrite ts
 
-MM_manip_sel = 1;
-
-%Set the step size for the gradient descent method and
-%error weight.
-%The best results with mobile manipulator manipulability use 
-%a low error weight with a high alpha value
-alpha=0.5;
-lambda=0.001; %Overwrite lambda best=0.005
+%Error weight and gradient step descent step size
+WMM=0.7;
+WUR5=1.2;
+alphaMM=0.09;
+alphaUR5=0.5;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -29,15 +24,16 @@ q0=[tx;ty;phi_mp;tz;qa];
 T0=MARS.forwardKin(q0);
 
 %% Get the desired pose transformation matrix %%%
-%RF=eul2rotm([roll, pitch, yaw],'XYZ')
-RF=eul2rotm([yaw pitch roll],'ZYX')
+%RF=eulerToRotMat(roll,pitch,yaw,'ZYZ')
+RF=eul2rotm([roll, pitch, yaw],'XYZ')
+%RF=eul2rotm([psi,theta, phi],'ZYX')
 Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=RF;
 Tf(1:3,4)=Pos;
 
-%Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
-Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
+Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
+%Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
 T0
 Tf
 
@@ -65,17 +61,12 @@ N=size(MotPlan.x,2);
 %% Initialize variables
 q=zeros(10,N);
 xi=zeros(7,N);
-J = zeros(6,9);
+JBar = zeros(6,9);
 eta=zeros(9,N);
 dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
-w5_measure=zeros(1,N);
-
-%The weight matrix W
-Werror=lambda*eye(6);
-% Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
-% Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
+mp_vel(:,1)=zeros(3,1);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -103,35 +94,41 @@ xi(:,1)=xi_des(:,1);
 quat_e=xi(4:7,1);
 
 disp('Calculating the inverse velocity kinematics solution')
+kappa = 0;
+half = N/2;
+threeQ = 3*N/4;
 k=1;
+kappa = 1;
+lambda = 0;
 while(k<N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
+    
+    if k < half
+        kappa = 1;
+        lambda = 0;
+    elseif k >= half && k < threeQ
+        lambda = (k - half)/(threeQ-half);
+        kappa = 1 - lambda;
+    else
+        kappa = 0;
+        lambda = 1;        
+    end
+    Werror=(WMM*kappa + WUR5*lambda)*eye(6);
+    alpha = alphaMM*kappa + alphaUR5*lambda;
     
     %Replace the elements cos(phi) and sin (phi)
     S(1,1)=cos(q(3,k)); S(2,1)=sin(q(3,k));
     
     %Calculate the Jacobian
-    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
-        
+    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));        
+   
     %Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
-    MM_man_measure(k)=MM_manip;
+    [MM_dP,manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
+    MM_man_measure(k)=manip;
     ur5_man_measure(k)=ur5_manip;
+    dP = kappa*MM_dP + lambda*ur5_dP;
     
-    w5_measure(k)=w5;
-
-%     %Select the manipulability to use
-%     if MM_manip_sel == 1
-%         %Use MM manipulability
-%         dP=MM_dP;
-%     else
-%         %Use the ur5 manipulability only
-%         dP=ur5_dP;
-%     end
-    
-    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-            
     %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
@@ -142,14 +139,8 @@ while(k<N)
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-    
-%     if (k/N)>0.9
-%         c=1-k/N;
-%     	Werror=1.5*c*eye(6);   
-%         alpha=0.5*(1-c);
-%     end
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+       
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
@@ -160,7 +151,7 @@ while(k<N)
     int_motion=projM*dq_N;
         
     %Mobility control vector
-    eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=cont_input-int_motion;     
     
     %% update variables for next iteration
         
@@ -176,10 +167,12 @@ while(k<N)
     Re=T(1:3,1:3);
     %quat_e=cartToQuat(Re);
     quat_e=rotm2quat(Re)';
-%     if quat_e(1) < 0
-%        quat_e=quat_e*-1; 
-%     end
+    if quat_e(1) < 0    %Always positive quat
+       quat_e=quat_e*-1; 
+    end
     xi(4:7,k+1)=quat_e;
+    
+    %currentPos=xi(:,k+1);
     
     %increment the step
     k=k+1; 
@@ -222,17 +215,9 @@ MM_man_measure(1)=MM_man_measure(2);
 MM_man_measure(end)=MM_man_measure(end-1);
 ur5_man_measure(1)=ur5_man_measure(2);
 ur5_man_measure(end)=ur5_man_measure(end-1);
-w5_measure(1)=w5_measure(2);
-w5_measure(end)=w5_measure(end-1);
 
 %Store the mobile platform velocities
 mp_vel=eta(1:3,:);
-
-
-figure()
-plot(time,w5_measure,'b','LineWidth',1.5); hold on;
-legend('w5_manip')
-grid on
 
 PlotEvolution
 

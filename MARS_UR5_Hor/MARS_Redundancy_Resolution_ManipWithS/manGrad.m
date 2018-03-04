@@ -20,7 +20,7 @@ w5=sqrt(1-(S(end)^2/S(1)^2));
 
 %Calculate each of the elements of the gradient 
 inv_JJt=inv(JJt);
-w_2=w/2; %We use -w because the internal motion is substracted
+w_2=-w/2; %We use -w because the internal motion is substracted
 dP(1,1)=0;
 dP(2,1)=w_2*trace(inv_JJt*dJJtdq2_ev);
 dP(3,1)=0;
@@ -42,7 +42,7 @@ UR5_w=sqrt(UR5_det_JJt);
 
 %Calculate each of the elements of the gradient 
 UR5_inv_JJt=inv(UR5_JJt);
-UR5_w_2=UR5_w/2; %We use -w because the internal motion is substracted
+UR5_w_2=-UR5_w/2; %We use -w because the internal motion is substracted
 UR5_dP(1,1)=0;
 UR5_dP(2,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq2_ev);
 UR5_dP(3,1)=0;
