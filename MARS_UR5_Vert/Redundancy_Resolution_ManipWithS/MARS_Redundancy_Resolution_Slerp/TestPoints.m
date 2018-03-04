@@ -2,7 +2,7 @@
 %% Choose the initial joint values, final poistion and times
 
 switch(testN)
-    case 1 %working
+    case 1 
         % %Initial joints values
         tx=0;
         ty=0;
@@ -18,9 +18,8 @@ switch(testN)
         tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
         
-    case 2 %working
+    case 2 
         % %Initial joints values
         tx=0;
         ty=0;
@@ -36,9 +35,8 @@ switch(testN)
         tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight 
         
-    case 3 %working        
+    case 3 
         %Initial joints values
         tx=0;
         ty=0;
@@ -54,13 +52,8 @@ switch(testN)
         tf=10;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
         
-        %Best results with:
-        %lamda=0.001;
-        %alpha=0.5;
-        
-    case 4 %working (Check the end effector singularity here)
+    case 4 
         % %Initial joints values
         tx=0;
         ty=0;
@@ -71,18 +64,13 @@ switch(testN)
         
         %Desired Pose
         Pos=[1.0;-0.8;0.5];
-        roll=0*pi/180;
-        pitch=0*pi/180;
-        yaw=90*pi/180;
-        %This orientation (roll=90) is singular for the UR5 vertical
-%         roll=90*pi/180;
-%         pitch=90*pi/180;
-%         yaw=0*pi/180;
+        roll=90*pi/180;
+        pitch=90*pi/180;
+        yaw=0*pi/180;
 
         tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
     case 5 %Not working
         %Initial joints values
         tx=0;
@@ -99,7 +87,6 @@ switch(testN)
         tf=35;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
     case 6 %Not Working
         %Initial joints values
         tx=0;
@@ -116,7 +103,6 @@ switch(testN)
         tf=35;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
     case 7 %working
         %Initial joints values
         tx=0;
@@ -133,7 +119,6 @@ switch(testN)
         tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
     case 8 %Not working (Check the singularity here)
         %Initial joints values
         tx=0;
@@ -150,7 +135,6 @@ switch(testN)
         tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight   
     case 9
         %Initial joints values
         tx=0;
@@ -167,7 +151,6 @@ switch(testN)
         tf=20;          %Desired final time
         ts=0.05;         %time step
         tb=5;           %Blending time
-        lambda = 1;    %error weight
      case 10
         % %Initial joints values
         tx=0;
@@ -181,10 +164,9 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=15;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
     case 11
         % %Initial joints values
         tx=0;
@@ -201,5 +183,4 @@ switch(testN)
         tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-        lambda = 1;     %error weight
 end

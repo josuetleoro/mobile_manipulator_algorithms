@@ -10,7 +10,7 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=4;
 TestPoints
 ts=0.05;  %Overwrite ts
 
