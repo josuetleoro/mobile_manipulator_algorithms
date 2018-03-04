@@ -10,11 +10,11 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=4;
+testN=11;
 TestPoints
 ts=0.05;  %Overwrite ts
 
-MM_manip_sel = 1;
+MM_manip_sel = 0;
 
 %Set the step size for the gradient descent method and
 %error weight.

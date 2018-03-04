@@ -10,13 +10,13 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=7;
+testN=11;
 TestPoints
 ts=0.05;  %Overwrite ts
 
 %Error weight and gradient step descent step size
-WMM=0.1;
-WUR5=5;
+WMM=0.005;
+WUR5=2;
 alphaMM=0.5;
 alphaUR5=0.5;
 
@@ -69,11 +69,6 @@ dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 mp_vel(:,1)=zeros(3,1);
-
-%The weight matrix W
-Werror=lambda*eye(6);
-%Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
-%Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
