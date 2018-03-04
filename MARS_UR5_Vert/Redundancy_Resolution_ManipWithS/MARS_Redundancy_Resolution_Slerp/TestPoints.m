@@ -71,7 +71,7 @@ switch(testN)
         tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-    case 5 %Not working
+    case 5 
         %Initial joints values
         tx=0;
         ty=0;
@@ -87,7 +87,7 @@ switch(testN)
         tf=35;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-    case 6 %Not Working
+    case 6 
         %Initial joints values
         tx=0;
         ty=0;
@@ -103,7 +103,7 @@ switch(testN)
         tf=35;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-    case 7 %working
+    case 7 
         %Initial joints values
         tx=0;
         ty=0;
@@ -119,7 +119,7 @@ switch(testN)
         tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
-    case 8 %Not working (Check the singularity here)
+    case 8 
         %Initial joints values
         tx=0;
         ty=0;
