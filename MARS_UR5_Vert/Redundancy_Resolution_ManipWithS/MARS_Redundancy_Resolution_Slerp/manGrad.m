@@ -31,6 +31,10 @@ dP(7,1)=w_2*trace(inv_JJt*dJJtdq7_ev);
 dP(8,1)=w_2*trace(inv_JJt*dJJtdq8_ev);
 dP(9,1)=0;
 
+% MM_q3=trace(inv_JJt*dJJtdq2_ev);
+% w_2
+% dP
+
 %% UR5
 
 %Get the manipulability measure
@@ -52,5 +56,11 @@ UR5_dP(6,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq6_ev);
 UR5_dP(7,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq7_ev);
 UR5_dP(8,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq8_ev);
 UR5_dP(9,1)=0;
+
+% UR5_q3=trace(inv_JJt*dJJtdq2_ev);
+% UR5_w_2
+% UR5_dP
+% pause()
+
 
 end

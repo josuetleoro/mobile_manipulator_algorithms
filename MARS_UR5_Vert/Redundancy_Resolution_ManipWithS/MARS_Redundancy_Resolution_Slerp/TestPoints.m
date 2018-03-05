@@ -45,11 +45,11 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
-        Pos=[0.8;1.2;0.5];
+        Pos=[2;3;0.5];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=10;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         
@@ -68,7 +68,7 @@ switch(testN)
         pitch=90*pi/180;
         yaw=0*pi/180;
 
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 5 
@@ -84,7 +84,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=0*pi/180;
         yaw=0*pi/180;
-        tf=35;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 6 
@@ -100,7 +100,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
-        tf=35;          %Desired final time
+        tf=25;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 7 
@@ -116,7 +116,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 8 
@@ -148,7 +148,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=-90*pi/180;
         yaw=-90*pi/180;
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;         %time step
         tb=5;           %Blending time
      case 10
@@ -164,7 +164,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 11

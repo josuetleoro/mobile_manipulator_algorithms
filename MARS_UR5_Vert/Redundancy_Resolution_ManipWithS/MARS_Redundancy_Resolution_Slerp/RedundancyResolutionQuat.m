@@ -10,18 +10,24 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=8;
+testN=3;
 TestPoints
+
+%Set the step size for the gradient descent method and error weight. The 
+%best results with mobile manipulator manipulability use a low error weight
+
+%With Fs=50Hz
 ts=0.05;  %Overwrite ts
+alpha=3.5;  %Best alpha=3.5
+lambda=0.1; %Overwrite lambda best=0.05
 
-MM_manip_sel = 1;
+% %With Fs=100Hz
+% ts=0.01;  %Overwrite ts
+% alpha=3.5;
+% lambda=0.05; %Overwrite lambda best=0.05
 
-%Set the step size for the gradient descent method and
-%error weight.
-%The best results with mobile manipulator manipulability use 
-%a low error weight with a high alpha value
-alpha=0.5;
-lambda=0.001; %Overwrite lambda best=0.005
+% %For individual manipulabilities
+% MM_manip_sel = 1;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -74,8 +80,7 @@ w5_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-% Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
-% Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
+Werror(4:6,4:6)=0.005*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -119,8 +124,10 @@ while(k<N)
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
-    w5_measure(k)=w5;
-
+    w5_measure(k)=w5; 
+    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    %dP=0.2*MM_manip+0.8*ur5_dP;
+    
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1
 %         %Use MM manipulability
@@ -129,10 +136,8 @@ while(k<N)
 %         %Use the ur5 manipulability only
 %         dP=ur5_dP;
 %     end
-    
-    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
             
-    %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
+    %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
     
@@ -142,20 +147,13 @@ while(k<N)
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-    
-%     if (k/N)>0.9
-%         c=1-k/N;
-%     	Werror=1.5*c*eye(6);   
-%         alpha=0.5*(1-c);
-%     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     projM=(Id-inv_JBar*JBar);
-    %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
         
@@ -176,9 +174,6 @@ while(k<N)
     Re=T(1:3,1:3);
     %quat_e=cartToQuat(Re);
     quat_e=rotm2quat(Re)';
-%     if quat_e(1) < 0
-%        quat_e=quat_e*-1; 
-%     end
     xi(4:7,k+1)=quat_e;
     
     %increment the step
@@ -231,7 +226,7 @@ mp_vel=eta(1:3,:);
 
 figure()
 plot(time,w5_measure,'b','LineWidth',1.5); hold on;
-legend('w5_manip')
+legend('w5_{manip}')
 grid on
 
 PlotEvolution
