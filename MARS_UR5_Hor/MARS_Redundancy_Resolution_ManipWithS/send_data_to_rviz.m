@@ -42,7 +42,7 @@ state_msg.Name = joints_names;
 state_msg.Position = [0.0; 0.0; q(4,1); q(5,1); q(6,1); q(7,1); q(8,1); q(9,1); q(10,1)];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
-rate = rosrate(10);
+rate = rosrate(20);
 reset(rate);
 %Initial odom transformation
 odom_trans.Transform.Translation.X = q(1,1);

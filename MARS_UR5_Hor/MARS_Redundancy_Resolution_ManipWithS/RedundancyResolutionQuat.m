@@ -3,26 +3,22 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5
-%Add path for the UR5 manipulability
-addpath UR5_manip
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %Load the test point
-testN=11;
+testN=8;
 TestPoints
+
+%Set the step size for the gradient descent method and error weight. The 
+%best results with mobile manipulator manipulability use a low error weight
+%With Fs=20Hz
 ts=0.05;  %Overwrite ts
-
-MM_manip_sel = 0;
-
-%Set the step size for the gradient descent method and
-%error weight.
-%The best results with mobile manipulator manipulability use 
-%a low error weight with a high alpha value
 alpha=0.5;
-lambda=0.7;
+lambda=0.5;
 
+MM_manip_sel = 1;
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
@@ -74,8 +70,6 @@ w5_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-% Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
-% Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -115,20 +109,22 @@ while(k<N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %Manipulability gradient
-    [MM_dP,manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
-    MM_man_measure(k)=manip;
+    [MM_dP,MM_manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
+    MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
     w5_measure(k)=w5;
+    
+    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
 
-    %Select the manipulability to use
-    if MM_manip_sel == 1
-        %Use MM manipulability
-        dP=MM_dP;
-    else
-        %Use the ur5 manipulability only
-        dP=ur5_dP;
-    end
+%     %Select the manipulability to use
+%     if MM_manip_sel == 1
+%         %Use MM manipulability
+%         dP=MM_dP;
+%     else
+%         %Use the ur5 manipulability only
+%         dP=ur5_dP;
+%     end
             
     %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
@@ -146,13 +142,13 @@ while(k<N)
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
+    %cont_input=inv_JBar*dxi_des(:,k);
     projM=(Id-inv_JBar*JBar);
-    %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
         
     %Mobility control vector
-    eta(:,k)=cont_input-int_motion;    
+    eta(:,k)=cont_input+int_motion;    
     
     %% update variables for next iteration
         
