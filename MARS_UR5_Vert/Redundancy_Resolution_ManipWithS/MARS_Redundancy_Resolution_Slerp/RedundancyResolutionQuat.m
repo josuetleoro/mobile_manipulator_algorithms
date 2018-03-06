@@ -10,13 +10,13 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=3;
+testN=12;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. The 
 %best results with mobile manipulator manipulability use a low error weight
 
-%With Fs=50Hz
+%With Fs=20Hz
 ts=0.05;  %Overwrite ts
 alpha=3.5;  %Best alpha=3.5
 lambda=0.1; %Overwrite lambda best=0.05
@@ -76,7 +76,6 @@ eta=zeros(9,N);
 dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
-w5_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
@@ -120,11 +119,10 @@ while(k<N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip, w5]=manGrad(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
-    w5_measure(k)=w5; 
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
     %dP=0.2*MM_manip+0.8*ur5_dP;
     
@@ -217,17 +215,9 @@ MM_man_measure(1)=MM_man_measure(2);
 MM_man_measure(end)=MM_man_measure(end-1);
 ur5_man_measure(1)=ur5_man_measure(2);
 ur5_man_measure(end)=ur5_man_measure(end-1);
-w5_measure(1)=w5_measure(2);
-w5_measure(end)=w5_measure(end-1);
 
 %Store the mobile platform velocities
 mp_vel=eta(1:3,:);
-
-
-figure()
-plot(time,w5_measure,'b','LineWidth',1.5); hold on;
-legend('w5_{manip}')
-grid on
 
 PlotEvolution
 

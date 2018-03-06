@@ -198,7 +198,7 @@ q2=q(2,:);
 q3=q(3,:);
 
 %In the reference frame
-% plot(q2,q1,'LineWidth',1.5); hold on; grid on
+plot(q1,q2,'LineWidth',1.5); hold on; grid on
 
 %In the body frame
 n=length(q1);
@@ -208,9 +208,9 @@ R=[cos(q3(i)),sin(q3(i)),0;-sin(q3(i)),cos(q3(i)),0;0,0,1];
 PosNF(:,i)=R*Pos;
 end
 %plot(PosNF(2,:),PosNF(1,:),'LineWidth',1.5); hold on; grid on
-plot(time,PosNF(2,:),'LineWidth',1.5); hold on; grid on
+
 title('Mobile Platform Trajectory')
-xlabel('y(m)');
-ylabel('x(m)');
+xlabel('x(m)');
+ylabel('y(m)');
 %axis([-0.9,0.9,-0.2,2]);
 hold off;

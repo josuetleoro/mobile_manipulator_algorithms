@@ -1,4 +1,4 @@
-function [dP,w,UR5_dP,UR5_w,w5]=manGrad(q,J)
+function [dP,w,UR5_dP,UR5_w]=manGrad(q,J)
 
 %The first element, second and fourth element are zero (x,y,z does not
 %exist in the jacobian matrix, therefore the derivative of JJt with respect
@@ -13,7 +13,6 @@ JJt=J*J';
 %Calculate the manipulability measure
 S=svd(J);
 w=prod(S);
-w5=sqrt(1-(S(end)^2/S(1)^2));
 
 %det_JJt=det(JJt);
 %w=sqrt(det_JJt);

@@ -43,7 +43,7 @@ switch(testN)
         phi_mp=0;
         tz=0;
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
-        
+       
         %Desired Pose
         Pos=[2;3;0.5];
         roll=-180*pi/180;
@@ -164,7 +164,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=15;          %Desired final time
+        tf=30;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 11
@@ -183,4 +183,20 @@ switch(testN)
         tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
+    case 12 
+        %Initial joints values
+        tx=0;
+        ty=0;
+        phi_mp=0;
+        tz=0;
+        qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
+        
+        %Desired Pose
+        Pos=[8;10;0.5];
+        roll=-180*pi/180;
+        pitch=0*pi/180;
+        yaw=-180*pi/180;
+        tf=40;          %Desired final time
+        ts=0.05;        %time step
+        tb=10;           %Blending time
 end
