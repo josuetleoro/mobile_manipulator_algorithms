@@ -22,36 +22,32 @@ odom_trans.Header.FrameId = 'odom';
 
 %Create the path message
 [path_pub, path_msg] = rospublisher('/ur5_tool0_path','nav_msgs/Path');
-%path_msg = rosmessage('nav_msgs/Path');
 path_msg.Header.FrameId = 'odom';
-for i=1:n    
-    %temp_pose = rosmessage('geometry_msgs/Pose');
-%     temp_pose.Position.X = xi_des(1,i);
-%     temp_pose.Position.Y = xi_des(2,i);
-%     temp_pose.Position.Z = xi_des(3,i);
-%     temp_pose.Orientation.W = xi_des(4,i);
-%     temp_pose.Orientation.X = xi_des(5,i);
-%     temp_pose.Orientation.Y = xi_des(6,i);
-%     temp_pose.Orientation.Z = xi_des(7,i);    
-    
-%     path_msg.Poses(i).Pose.Position.X = xi_des(1,i);    
-%     path_msg.Poses(i).Pose.Position.Y = xi_des(2,i);
-%     path_msg.Poses(i).Pose.Position.Z = xi_des(3,i);
-%     path_msg.Poses(i).Pose.Orientation.W = xi_des(4,i);
-%     path_msg.Poses(i).Pose.Orientation.X = xi_des(5,i);
-%     path_msg.Poses(i).Pose.Orientation.Y = xi_des(6,i);
-%     path_msg.Poses(i).Pose.Orientation.Z = xi_des(7,i);    
 
-    path_msg.Poses(i).Pose.MessageType = true;
-    path_msg.Poses(i).Pose.Position.X = xi_des(1,i);    
-    path_msg.Poses(i).Pose.Position.Y = xi_des(2,i);
-    path_msg.Poses(i).Pose.Position.Z = xi_des(3,i);
-    path_msg.Poses(i).Pose.Orientation.W = xi_des(4,i);
-    path_msg.Poses(i).Pose.Orientation.X = xi_des(5,i);
-    path_msg.Poses(i).Pose.Orientation.Y = xi_des(6,i);
-    path_msg.Poses(i).Pose.Orientation.Z = xi_des(7,i);    
+path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/10)-1));        
 
-    
+k=1;
+for i=1:n  
+    if(mod(i,10)==0)        
+    path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
+    path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+    path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+    path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+    path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+    path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+    path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
+    k=k+1;
+    end
+%     if(i==n)        
+%     path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
+%     path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+%     path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+%     path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+%     path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+%     path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+%     path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
+%     k=k+1;
+%     end
 end
 
 %Create the transformation of the last pose to draw it
