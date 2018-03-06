@@ -68,7 +68,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=90*pi/180;
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         lambda = 1;     %error weight
@@ -85,7 +85,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=0*pi/180;
         yaw=0*pi/180;
-        tf=35;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         lambda = 1;     %error weight
@@ -102,7 +102,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
-        tf=35;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         lambda = 1;     %error weight
@@ -119,7 +119,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
         lambda = 1;     %error weight
@@ -153,7 +153,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=-90*pi/180;
         yaw=-90*pi/180;
-        tf=20;          %Desired final time
+        tf=15;          %Desired final time
         ts=0.05;         %time step
         tb=5;           %Blending time
         lambda = 1;    %error weight

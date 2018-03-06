@@ -20,6 +20,36 @@ odom_trans = rosmessage('geometry_msgs/TransformStamped');
 odom_trans.ChildFrameId = 'base_footprint';
 odom_trans.Header.FrameId = 'odom';
 
+%Create the path message
+[path_pub, path_msg] = rospublisher('/ur5_tool0_path','nav_msgs/Path');
+path_msg.Header.FrameId = 'odom';
+
+path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/10)-1));        
+
+k=1;
+for i=1:n  
+    if(mod(i,10)==0)        
+    path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
+    path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+    path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+    path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+    path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+    path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+    path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
+    k=k+1;
+    end
+%     if(i==n)        
+%     path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
+%     path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+%     path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+%     path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+%     path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+%     path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+%     path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
+%     k=k+1;
+%     end
+end
+
 %Create the transformation of the last pose to draw it
 desired_trans = rosmessage('geometry_msgs/TransformStamped');
 desired_trans.ChildFrameId = 'Desired_pos';
@@ -42,7 +72,7 @@ state_msg.Name = joints_names;
 state_msg.Position = [0.0; 0.0; q(4,1); q(5,1); q(6,1); q(7,1); q(8,1); q(9,1); q(10,1)];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
-rate = rosrate(20);
+rate = rosrate(10);
 reset(rate);
 %Initial odom transformation
 odom_trans.Transform.Translation.X = q(1,1);
@@ -59,7 +89,9 @@ while (~FS.Stop())
     state_msg.Header.Stamp = now;
     odom_trans.Header.Stamp = now;
     desired_trans.Header.Stamp = now;
+    path_msg.Header.Stamp = now;    
     send(state_pub,state_msg);
+    send(path_pub,path_msg);
     sendTransform(tftree, odom_trans);
     sendTransform(tftree, desired_trans);    
     waitfor(rate);    

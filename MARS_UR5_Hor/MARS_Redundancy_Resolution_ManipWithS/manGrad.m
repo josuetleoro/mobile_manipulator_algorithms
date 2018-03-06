@@ -11,12 +11,10 @@ function [dP,w,UR5_dP,UR5_w,w5]=manGrad(q,J)
 JJt=J*J';
 
 %Calculate the manipulability measure
-S=svd(J);
-w=prod(S);
-w5=sqrt(1-(S(end)^2/S(1)^2));
-
-%det_JJt=det(JJt);
-%w=sqrt(det_JJt);
+% S=svd(J);
+% w=prod(S);
+det_JJt=det(JJt);
+w=sqrt(det_JJt);
 
 %Calculate each of the elements of the gradient 
 inv_JJt=inv(JJt);
