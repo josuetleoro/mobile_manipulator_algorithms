@@ -3,14 +3,12 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5
-%Add path for the UR5 manipulability
-addpath UR5_manip
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %Load the test point
-testN=12;
+testN=9;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
