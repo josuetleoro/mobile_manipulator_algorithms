@@ -13,18 +13,19 @@ MARS=MARS_UR5();
 testN=12;
 TestPoints
 
-%Set the step size for the gradient descent method and error weight. The 
-%best results with mobile manipulator manipulability use a low error weight
+%Set the step size for the gradient descent method and error weight. A
+%higher error weight might decrease the manipulability because of its
+%influence on the motion.
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
 alpha=3.5;  %Best alpha=3.5
-lambda=0.1; %Overwrite lambda best=0.05
+lambda=1.0; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
 % alpha=3.5;
-% lambda=0.05; %Overwrite lambda best=0.05
+% lambda=1.0; %Overwrite lambda best=1.0
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
@@ -79,7 +80,6 @@ ur5_man_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-Werror(4:6,4:6)=0.005*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -170,8 +170,8 @@ while(k<N)
     T=MARS.forwardKin(q(:,k+1));
     xi(1:3,k+1)=T(1:3,4);
     Re=T(1:3,1:3);
-    %quat_e=cartToQuat(Re);
-    quat_e=rotm2quat(Re)';
+    quat_e=cartToQuat(Re);
+    %quat_e=rotm2quat(Re)';
     xi(4:7,k+1)=quat_e;
     
     %increment the step

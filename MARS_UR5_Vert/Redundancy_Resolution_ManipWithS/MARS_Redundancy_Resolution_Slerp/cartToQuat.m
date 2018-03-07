@@ -71,19 +71,7 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % q=[w;x;y;z];
 
-%Matlab Aerospace toolbox
+%%%%%%%%%%%%%% Matlab Aerospace toolbox %%%%%%%%%%%%
 q=rotm2quat(R)';
 
-end
-
-
-
-
-
-
-
-
-
-
-
-
+ end

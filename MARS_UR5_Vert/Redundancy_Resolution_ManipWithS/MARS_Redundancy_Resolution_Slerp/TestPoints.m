@@ -97,6 +97,7 @@ switch(testN)
         
         %Desired Pose
         Pos=[-2;2;0.6];
+        %Passes through singularity
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
@@ -161,9 +162,14 @@ switch(testN)
         
         %Desired Pose
         Pos=[-3;0.1091;0.8];
+        %Passes through singularity        
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
+        
+%         roll=0*pi/180;
+%         pitch=0*pi/180;
+%         yaw=180*pi/180;        
         tf=30;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time

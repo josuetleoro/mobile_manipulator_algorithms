@@ -10,7 +10,7 @@ addpath UR5_manip
 MARS=MARS_UR5();
 
 %Load the test point
-testN=6;
+testN=3;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. The 
@@ -18,8 +18,8 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=1.5;  %Best alpha=3.5
-lambda=1.5; %Overwrite lambda best=0.05
+alpha=2.5;  %Best alpha=3.5
+lambda=1.0; %Overwrite lambda best=0.05
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -65,6 +65,7 @@ disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
 MotPlan=TrajPlanQuatParabBlend(T0,Tf,ts,tb,tf);
+%MotPlan=TrajPlanQuat(T0,Tf,ts,tb,tf);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
@@ -79,7 +80,7 @@ ur5_man_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-Werror(4:6,4:6)=lambda*Werror(4:6,4:6);
+Werror(4:6,4:6)=1*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -171,6 +172,9 @@ while(k<N)
     xi(1:3,k+1)=T(1:3,4);
     Re=T(1:3,1:3);
     quat_e=cartToQuat(Re);
+%     if(quat_e(1)<0)
+%         quat_e=quat_e*-1;
+%     end
     %quat_e=rotm2quat(Re)';
     xi(4:7,k+1)=quat_e;
     

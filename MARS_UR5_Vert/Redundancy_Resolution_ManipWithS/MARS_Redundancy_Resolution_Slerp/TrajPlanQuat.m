@@ -11,21 +11,18 @@ posf=Tf(1:3,4);
 %% Motion planning for orientation
 %Initial Orientation
 %Transform the rotation matrix to a quaternion
-%q0=cartToQuat(T0);
-q0=rotm2quat(T0(1:3,1:3))';
-q0=q0/norm(q0);
+q0=cartToQuat(T0(1:3,1:3));
+%q0=rotm2quat(T0(1:3,1:3))';
 %T0Rec=quatToRotMat(q0)
 
 %Final Orientation
 %Transform the rotation matrix to a quaternion
-%qf=cartToQuat(Tf);
-qf=rotm2quat(Tf(1:3,1:3))';
-qf=qf/norm(qf);
+qf=cartToQuat(Tf(1:3,1:3));
+%qf=qf/norm(qf);
 %TfRec=quatToRotMat(qf)
 
 trajLength=tf/ts+1;
 quat=zeros(4,trajLength);
-dquat=zeros(4,trajLength);
 w=zeros(3,trajLength);
 quat_step=ts/tf;
 n=1;
@@ -33,27 +30,43 @@ n=1;
 %Create the quaternion objects
 Q0=Quat(q0');
 Qf=Quat(qf');
-%Change sign one of the quaternions to find the shortest path if needed
+
+%The shortest path may need a change of sign of the first quaternion in the
+%slerp function. Therefore, change the sign of the logq also
 if dot(Q0.vecRep(),Qf.vecRep())<0
-   Qf=-1*Qf; 
+    Qtemp=-1*Q0;
+    logq=Quat.log(Qtemp.conj()*Qf);
+else
+    logq=Quat.log(Q0.conj()*Qf);
 end
 
-logq=Quat.log(Q0.conj()*Qf);
+%logq=Quat.log(Q0.conj()*Qf);
 for i=0:quat_step:1
     quat(:,n)=slerp(q0,qf,i,0.001);    
-    quat(:,n)=quat(:,n)/norm(quat(:,n));    
+
+    %Original
     q=Quat(quat(:,n)');
     dq=q*logq;
     w4=2*dq*q.inv()/tf;
     w(:,n)=w4.getV();    
-    
+%     if aux==1
+%         w(:,n)=w(:,n)*-1;
+%     end    
+
+%     %Try1
 %     tempQuat=Quat(quat(:,n)');
 %     tempQuat=tempQuat*logq;
 %     dquat(:,n)=tempQuat.vecRep();
 %     w(:,n)=quatRatesToAxesRates(quat(:,n),dquat(:,n))/tf;        
+%     if aux==1
+%         w(:,n)=w(:,n)*-1;
+%     end
+
+%     %Try2
+%     w(:,n)=2*logq.v/norm(logq.v)*acos(logq.s);
+%     w(:,n)=2*logq.v;
+
     n=n+1;    
-    %w(:,n)=2*logq.v/norm(logq.v)*acos(logq.s);
-    %w(:,n)=2*logq.v;
 end
 time=0:ts:tf;
 
@@ -108,6 +121,7 @@ time=0:ts:tf;
 % xlabel('time(s)')
 % ylabel('wz')
 % title('wz')
+% 
 % 
 % %Plot the evolution of quat
 % time=0:ts:tf;
