@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=7;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,8 +17,8 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=2.0;  %Best alpha=3.5
-lambda=0.5; %Overwrite lambda best=1.0
+alpha=2.5;  %Best alpha=3.5
+lambda=1.0; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -34,15 +34,15 @@ q0=[tx;ty;phi_mp;tz;qa];
 T0=MARS.forwardKin(q0);
 
 %% Get the desired pose transformation matrix %%%
-RF=eul2rotm([roll, pitch, yaw],'XYZ')
-%RF=eul2rotm([yaw pitch roll],'ZYX')
+%RF=eul2rotm([roll, pitch, yaw],'XYZ')
+RF=eul2rotm([yaw pitch roll],'ZYX')
 Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=RF;
 Tf(1:3,4)=Pos;
 
-Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
-%Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
+%Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
+Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
 T0
 Tf
 
@@ -78,6 +78,7 @@ ur5_man_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
+%Werror(4:6,4:6)=lambda*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -122,6 +123,7 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    %dP=MM_dP;
     %dP=0.2*MM_manip+0.8*ur5_dP;
     
 %     %Select the manipulability to use

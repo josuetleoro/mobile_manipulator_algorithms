@@ -8,7 +8,10 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; 3*pi/4; -pi/4; pi/2; 0.0];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[3;0.1091;0.8];
@@ -26,7 +29,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[3;0.1091;0.8];
@@ -44,7 +49,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[0.8;1.2;0.5];
@@ -61,7 +68,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[3;-2.0;0.8];
@@ -78,7 +87,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[-1.5;-1.5;0.6];
@@ -95,7 +106,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[-2;2;0.6];
@@ -112,7 +125,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[2;2;0.6];
@@ -129,7 +144,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[2;2;0.7];
@@ -146,7 +163,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[0.5;-3;0.5];
@@ -163,7 +182,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[-3;0.1091;0.8];
@@ -180,7 +201,9 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %qa=[0.0; -pi; pi/2; -pi/2; -pi/2; pi];
+        %Cubi starting position
+        qa=[0.0; -pi; 2.2689690589904785; -2.2689269224749964; -1.5707863012896937; 3.1415679454803467];
         
         %Desired Pose
         Pos=[2;1;0.4];
