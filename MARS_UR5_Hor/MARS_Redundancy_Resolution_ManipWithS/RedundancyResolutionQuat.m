@@ -8,17 +8,26 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=1;
 TestPoints
 
-%Set the step size for the gradient descent method and error weight. The 
-%best results with mobile manipulator manipulability use a low error weight
+%Set the step size for the gradient descent method and error weight. A
+%higher error weight might decrease the manipulability because of its
+%influence on the motion.
+
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=3;
-lambda=3;
+alpha=2.0;  %Best alpha=3.5
+lambda=0.5; %Overwrite lambda best=1.0
 
-MM_manip_sel = 1;
+% %With Fs=100Hz
+% ts=0.01;  %Overwrite ts
+% alpha=3.5;
+% lambda=1.0; %Overwrite lambda best=1.0
+
+% %For individual manipulabilities
+% MM_manip_sel = 1;
+
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
@@ -66,11 +75,9 @@ eta=zeros(9,N);
 dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
-w5_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-Werror(4:6,4:6)=0.001*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -113,9 +120,10 @@ while(k<N)
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
-       
+    
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-
+    %dP=0.2*MM_manip+0.8*ur5_dP;
+    
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1
 %         %Use MM manipulability
@@ -125,7 +133,7 @@ while(k<N)
 %         dP=ur5_dP;
 %     end
             
-    %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
+    %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
     
@@ -135,13 +143,12 @@ while(k<N)
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
-    %cont_input=inv_JBar*dxi_des(:,k);
     projM=(Id-inv_JBar*JBar);
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
@@ -161,11 +168,8 @@ while(k<N)
     T=MARS.forwardKin(q(:,k+1));
     xi(1:3,k+1)=T(1:3,4);
     Re=T(1:3,1:3);
-    %quat_e=cartToQuat(Re);
-    quat_e=rotm2quat(Re)';
-%     if quat_e(1) < 0
-%        quat_e=quat_e*-1; 
-%     end
+    quat_e=cartToQuat(Re);
+    %quat_e=rotm2quat(Re)';
     xi(4:7,k+1)=quat_e;
     
     %increment the step
