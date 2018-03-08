@@ -37,20 +37,20 @@ UR5_J=J(:,5:10);
 UR5_JJt=UR5_J*UR5_J';
 UR5_det_JJt=det(UR5_JJt);
 UR5_w=sqrt(UR5_det_JJt);
-[dJJtdq3_ev,dJJtdq5_ev,dJJtdq6_ev,dJJtdq7_ev,dJJtdq8_ev,dJJtdq9_ev]=evaluateUR5dJJtdq(q(3),q(5),q(6),q(7),q(8),q(9));
+[UR5dJJtdq3_ev,UR5dJJtdq5_ev,UR5dJJtdq6_ev,UR5dJJtdq7_ev,UR5dJJtdq8_ev,UR5dJJtdq9_ev]=evaluateUR5dJJtdq(q(3),q(5),q(6),q(7),q(8),q(9));
 
 %Calculate each of the elements of the gradient 
 UR5_inv_JJt=inv(UR5_JJt);
 UR5_w_2=UR5_w/2; %We use -w because the internal motion is substracted
 UR5_dP(1,1)=0;
 UR5_dP(2,1)=0;
-UR5_dP(3,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq3_ev);
+UR5_dP(3,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq3_ev);
 UR5_dP(4,1)=0;
-UR5_dP(5,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq5_ev);
-UR5_dP(6,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq6_ev);
-UR5_dP(7,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq7_ev);
-UR5_dP(8,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq8_ev);
-UR5_dP(9,1)=UR5_w_2*trace(UR5_inv_JJt*dJJtdq9_ev);
+UR5_dP(5,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq5_ev);
+UR5_dP(6,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq6_ev);
+UR5_dP(7,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq7_ev);
+UR5_dP(8,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq8_ev);
+UR5_dP(9,1)=UR5_w_2*trace(UR5_inv_JJt*UR5dJJtdq9_ev);
 UR5_dP(10,1)=0;
 
 end
