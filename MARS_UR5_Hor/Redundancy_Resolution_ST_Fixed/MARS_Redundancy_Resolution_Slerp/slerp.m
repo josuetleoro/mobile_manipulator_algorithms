@@ -42,11 +42,11 @@ else
     
     C=dot(qi,qn);                  % Calculating the angle beteen the unit quaternions by dot product
     
-%     %% To look for the shortest path
-%     if C<0
-%         qi = -1*qi;
-%         C = -1*C;
-%     end
+    %% To look for the shortest path
+    if C<0
+        qi = -1*qi;
+        C = -1*C;
+    end
     %% Slerp algorithm    
     teta=acos(C);    
     if (1 - C) <= eps % if angle teta is close by epsilon to 0 degrees -> calculate by linear interpolation

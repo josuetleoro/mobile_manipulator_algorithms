@@ -3,24 +3,30 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5
-%Add path for the UR5 manipulability
-addpath UR5_manip
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %Load the test point
-testN=5;
+testN=1;
 TestPoints
-lambda=10; %Overwrite lambda best=5
+
+%Set the step size for the gradient descent method and error weight. A
+%higher error weight might decrease the manipulability because of its
+%influence on the motion.
+
+%With Fs=20Hz
 ts=0.05;  %Overwrite ts
-%tf=60;
+alpha=0.03;  %Best alpha=0.05
+lambda=0.5; %Overwrite lambda best=2.0
 
-manipSel = 2;
+% %With Fs=100Hz
+% ts=0.01;  %Overwrite ts
+% alpha=3.5;
+% lambda=1.0; %Overwrite lambda best=1.0
 
-%Set the step size for the gradient descent method
-alpha=0.09;  % Best: alpha=0.09; 
-% Low values of alpha work for position behind MARS when using UR5 manip
+% %For individual manipulabilities
+% MM_manip_sel = 1;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -28,16 +34,15 @@ q0=[tx;ty;phi_mp;tz;qa];
 T0=MARS.forwardKin(q0);
 
 %% Get the desired pose transformation matrix %%%
-%RF=eulerToRotMat(roll,pitch,yaw,'ZYZ')
-RF=eul2rotm([roll, pitch, yaw],'XYZ')
-%RF=eul2rotm([psi theta phi],'ZYX')
+%RF=eul2rotm([roll, pitch, yaw],'XYZ')
+RF=eul2rotm([yaw pitch roll],'ZYX')
 Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=RF;
 Tf(1:3,4)=Pos;
 
-Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
-%Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
+%Euler0=rotm2eul(T0(1:3,1:3),'XYZ')*180/pi
+Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
 T0
 Tf
 
@@ -70,12 +75,9 @@ eta=zeros(9,N);
 dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
-mp_vel(:,1)=zeros(3,1);
 
 %The weight matrix W
 Werror=lambda*eye(6);
-%Werror(1:3,1:3)=0.1*Werror(1:3,1:3);
-%Werror(4:6,4:6)=0.1*Werror(4:6,4:6);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -113,22 +115,26 @@ while(k<N)
     
     %Calculate the Jacobian
     J=evaluateJ(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
-    
-    %Manipulability gradient
-    [MM_dP,manip, ur5_dP, ur5_manip]=manGrad(q(:,k),J);   
-    MM_man_measure(k)=manip;
-    ur5_man_measure(k)=ur5_manip;
-
-    %Select the manipulability to use
-    if manipSel == 1
-        %Use MM manipulability
-        dP=MM_dP;
-    else
-        %Use the ur5 manipulability only
-        dP=ur5_dP;
-    end
+    JBar=J*S;
         
-    %%%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
+    %Manipulability gradient
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),J);   
+    MM_man_measure(k)=MM_manip;
+    ur5_man_measure(k)=ur5_manip;
+    
+    %dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    dP=1.0*MM_manip+0.0*ur5_dP;
+    
+%     %Select the manipulability to use
+%     if MM_manip_sel == 1
+%         %Use MM manipulability
+%         dP=MM_dP;
+%     else
+%         %Use the ur5 manipulability only
+%         dP=ur5_dP;
+%     end
+            
+    %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
     
@@ -138,15 +144,13 @@ while(k<N)
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     
     %Calculate the control input and internal motion
-    JBar=J*S;
     error_cont=Werror*errorRate;
     inv_JBar=pinv(JBar);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     projM=(Id-inv_JBar*JBar);
-    %dq_N = alpha*projM'*S'*dP; %(Bayle and Renaud NMM: Kin, Vel and Redun.)
     dq_N = alpha*S'*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
         
@@ -165,11 +169,8 @@ while(k<N)
     T=MARS.forwardKin(q(:,k+1));
     xi(1:3,k+1)=T(1:3,4);
     Re=T(1:3,1:3);
-    %quat_e=cartToQuat(Re);
-    quat_e=rotm2quat(Re)';
-%     if quat_e(1) < 0
-%        quat_e=quat_e*-1; 
-%     end
+    quat_e=cartToQuat(Re);
+    %quat_e=rotm2quat(Re)';
     xi(4:7,k+1)=quat_e;
     
     %increment the step

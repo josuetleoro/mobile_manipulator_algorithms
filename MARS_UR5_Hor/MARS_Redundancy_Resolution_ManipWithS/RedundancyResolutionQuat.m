@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=7;
+testN=1;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,7 +17,7 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=2.5;  %Best alpha=3.5
+alpha=0.05;  %Best alpha=3.5
 lambda=1.0; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
