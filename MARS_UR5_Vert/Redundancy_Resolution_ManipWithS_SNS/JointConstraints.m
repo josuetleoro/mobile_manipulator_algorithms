@@ -2,15 +2,15 @@
 q_limit=[-Inf, Inf;
          -Inf, Inf;
            0.0, 0.8;
-          -2*pi, 2*pi;
+          -pi/2, 5*pi/180;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12];
 
-dq_limit=[0.8;
-          pi/3;
+dq_limit=[1.0;
+          pi/2;
           0.1;
           pi;
           pi;

@@ -8,7 +8,7 @@ addpath MARS_UR5 sns
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=4;
 TestPoints
 JointConstraints
 
@@ -19,7 +19,7 @@ JointConstraints
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
 alpha=1.0;  %Best alpha=3.5
-lambda=1.0; %Overwrite lambda best=1.0
+lambda=0.5; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -168,6 +168,7 @@ while(k<N)
 %     eta
 %     pause()
     limit_exceeded = false;
+    scale = 1;
     for i=1:9
         if (eta(i,k)<dQmin(i,k)) || (eta(i,k)>dQmax(i,k))
             limit_exceeded = true;
