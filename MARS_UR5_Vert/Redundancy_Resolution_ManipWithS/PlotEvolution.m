@@ -18,6 +18,7 @@ figure()
 plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',1.5); hold off
 legend('MM_{manip}','UR5_{manip}')
+xlabel('time(s)')
 grid on
 
 %% End Effector Position
