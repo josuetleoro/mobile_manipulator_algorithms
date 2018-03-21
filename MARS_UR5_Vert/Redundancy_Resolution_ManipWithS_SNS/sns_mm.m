@@ -11,7 +11,7 @@ s=1.0;
 s_star=-1.0;
 dq_N_star = dq_N; %Start with the one given by the manipulability measure
 dq_N=zeros(9,1);
-dq_N_star=zeros(9,1);
+%dq_N_star=zeros(9,1);
 inv_JW_star = pinv(J*Ws);
 W_star=Ws;
 
@@ -30,20 +30,20 @@ while limit_exceeded
     JW_inv=pinv(J*Ws);
     dq=dq_N+JW_inv*(s*dx+error_cont-J*dq_N);
     
-    a = JW_inv*dx;
+    a = JW_inv*(s*dx+error_cont);
     b = dq - a;
     
     % j: most critical joint
     [scalingFactor,j]=getTaskScalingFactor(a,b,Ws,dQmax,dQmin);
-    %W
-    %scalingFactor
-    %pause
+    Ws
+    scalingFactor
+    pause
     
     %Check if the current velocity violates any of the box contrains by
     %evaluating the scalingFactor
     if scalingFactor >= 1.0
         %pause()
-        %disp('No task scaling needed')
+        disp('No task scaling needed')
     else
         limit_exceeded=true;
         disp('saturation applied');

@@ -1,4 +1,4 @@
-%clear all
+clear all
 close all
 
 %Add the MMUR5 path to use the class MMUR5
@@ -8,7 +8,7 @@ addpath MARS_UR5 sns
 MARS=MARS_UR5();
 
 %Load the test point
-testN=4;
+testN=3;
 TestPoints
 JointConstraints
 
@@ -18,8 +18,8 @@ JointConstraints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=1.0;  %Best alpha=3.5
-lambda=0.5; %Overwrite lambda best=1.0
+alpha=3.5;  %Best alpha=3.5
+lambda=1.0; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -27,7 +27,7 @@ lambda=0.5; %Overwrite lambda best=1.0
 % lambda=1.0; %Overwrite lambda best=1.0
 
 % %For individual manipulabilities
-% MM_manip_sel = 1;
+MM_manip_sel = 1;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -100,6 +100,15 @@ dxi_des(2,:)=[MotPlan.dy];
 dxi_des(3,:)=[MotPlan.dz];
 dxi_des(4:6,:)=[MotPlan.w];
 
+%SNS algorithm variables
+dQminMobPlat = zeros(2,N);
+dQmaxMobPlat = zeros(2,N);
+dQminArm = zeros(7,N);
+dQmaxArm = zeros(7,N);
+dQmin=zeros(9,N);
+dQmax=zeros(9,N);
+
+
 %Copy the initial values of the motion planning
 q(:,1)=q0;
 xi(:,1)=xi_des(:,1);
@@ -123,6 +132,8 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    %dP=MM_dP;
+    
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
@@ -175,8 +186,8 @@ while(k<N)
 %             dQmin(:,k)
 %             dQmax(:,k)
 %             eta(:,k)            
-%             disp('Joint bound exceeded');
-%             i
+            disp('Joint bound exceeded');
+            i
 %             pause()
         end
     end
@@ -189,20 +200,24 @@ while(k<N)
 %         q(:,k)
 %         eta(:,k)
 %         pause()
-        
+        eta(:,k)
         [eta_sns,scale,W]=sns_mm(dQmin(:,k),dQmax(:,k),dq_N,JBar,dxi_des(:,k),error_cont); 
+%         disp('dQmin')
 %         dQmin(:,k)
+%         disp('dQmax')
 %         dQmax(:,k)
 %         min=dQmin(:,k)
 %         max=dQmax(:,k)
-%         W
-%         eta(:,k)
+        W
+        eta_sns
+        pause()
         if(scale<1.0)
             scale
             disp('scaling applied');
         end
         %pause
         eta(:,k)=eta_sns;
+        %pause()
     end  
     if(scale <= 0)
         break;

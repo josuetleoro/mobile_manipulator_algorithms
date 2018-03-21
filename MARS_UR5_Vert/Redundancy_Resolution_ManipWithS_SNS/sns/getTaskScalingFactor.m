@@ -22,13 +22,14 @@ end
 mostCriticalJoint = idx;
 smin=max(Smin);
 
+%if (smin>smax) || (smax < 0.0) || (smin > 1.0) || (smax == Inf)
 if (smin>smax) || (smax < 0.0) || (smin > 1.0) || (smax == Inf)
 %     Smin(1:8)
 %     Smax(1:8)
 %     smin
 %     smax
-    scalingFactor = -1.0;
-    %scalingFactor = 0.0;
+    %scalingFactor = -1.0;
+    scalingFactor = 0.0;
 else
     scalingFactor = smax;
 end
