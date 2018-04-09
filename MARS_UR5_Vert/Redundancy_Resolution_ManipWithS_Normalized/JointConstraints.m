@@ -18,6 +18,17 @@ dq_limit=[1.5;
           pi;
           pi;
           pi];
+
+% dq_limit=[3.0;
+%           pi;
+%           0.8;
+%           2*pi;
+%           2*pi;
+%           2*pi;
+%           2*pi;
+%           2*pi;
+%           2*pi];
+      
       
 ddq_limit=[2.0;
            4.0; %4.0; 

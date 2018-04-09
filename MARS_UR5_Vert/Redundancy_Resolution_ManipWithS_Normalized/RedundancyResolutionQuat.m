@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=3;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,7 +17,7 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=5e-6;  %Best alpha=3.5
+alpha=0.35;  %Best alpha=3.5
 lambda=0.5; %Overwrite lambda best=1.0
 
 % %With Fs=100Hz
@@ -107,14 +107,10 @@ quat_e=xi(4:7,1);
 %% Calculate the maximum velocity normalization matrix
 JointConstraints
 Tq=zeros(9,9);
-manDQProdMM=1;
-manDQProdUR5=1;
+dqLimProd = 1;
 for i=1:9
-    Tq(i,i)=dq_limit(i);
-    manDQProdMM=manDQProdMM*dq_limit(i);
-    if i > 3
-        manDQProdUR5=manDQProdUR5*dq_limit(i);
-    end
+    Tq(i,i)=1/dq_limit(i);
+    dqLimProd=dqLimProd*dq_limit(i);
 end
 invTq=inv(Tq);
 
@@ -130,21 +126,20 @@ while(k<N)
     
     %Calculate the Jacobian
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
-    JBarNorm=JBar*invTq;
         
     %Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
-    MM_dP=MM_dP*manDQProdMM;
-    ur5_dP=ur5_dP*manDQProdUR5;
-    
-    MM_manip=MM_manip*manDQProdMM;
-    ur5_manip=ur5_manip*manDQProdUR5;
+%     MM_dP=MM_dP*manDQProdMM;
+%     ur5_dP=ur5_dP*manDQProdUR5;
+%     
+%     MM_manip=MM_manip*manDQProdMM;
+%     ur5_manip=ur5_manip*manDQProdUR5;
         
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    %dP=1/ur5_manip*MM_manip+1/MM_manip*ur5_dP;
+    dP=invTq*dP;
     
     %dP=MM_dP;
     %dP=ur5_dP;
@@ -172,6 +167,7 @@ while(k<N)
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
+    JBarNorm=JBar*invTq;
     inv_JBar=pinv(JBarNorm);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     projM=(Id-inv_JBar*JBarNorm);
@@ -181,6 +177,7 @@ while(k<N)
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=invTq*eta(:,k);
     
     %% update variables for next iteration
         
