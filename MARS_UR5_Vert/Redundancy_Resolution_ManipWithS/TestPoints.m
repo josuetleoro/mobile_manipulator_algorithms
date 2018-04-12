@@ -205,4 +205,20 @@ switch(testN)
         tf=40;          %Desired final time
         ts=0.05;        %time step
         tb=10;           %Blending time
+    case 13
+        %Initial joints values
+        tx=0;
+        ty=0;
+        phi_mp=0;
+        tz=0;
+        qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint values with maximum manipulability
+       
+        %Desired Pose
+        Pos=[2;3;1.6];
+        roll=-180*pi/180;
+        pitch=0*pi/180;
+        yaw=-180*pi/180;
+        tf=20;          %Desired final time
+        ts=0.05;        %time step
+        tb=5;           %Blending time
 end
