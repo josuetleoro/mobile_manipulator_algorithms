@@ -1,8 +1,8 @@
 %% MARS joints constrains
 q_limit=[-Inf, Inf;
          -Inf, Inf;
-           0.0, 0.4;
-           0.0, 150*pi/180;
+           -0.1, 0.4;
+           -0.1, 150*pi/180;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12;
           -22*pi/12, 22*pi/12;

@@ -46,7 +46,7 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
        
         %Desired Pose
-        Pos=[2;3;1.6];
+        Pos=[2;3;1.4];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
@@ -217,7 +217,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint angles with maximum manipulability
        
         %Desired Pose
-        Pos=[2;3;1.6];
+        Pos=[2;3;1.4];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
