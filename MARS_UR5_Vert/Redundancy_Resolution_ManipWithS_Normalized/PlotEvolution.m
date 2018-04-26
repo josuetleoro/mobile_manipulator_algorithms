@@ -89,6 +89,10 @@ ylabel('Mobile Platform phi(rad)')
 
 subplot(2,2,4)
 plot(time,q(4,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(3,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(3,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('Mobile Platform z(m)')
 
@@ -96,17 +100,29 @@ ylabel('Mobile Platform z(m)')
 figure()
 subplot(1,3,1)
 plot(time,mp_vel(1,:),'LineWidth',1.5); grid on
+% maxVel = refline(0,dq_limit(1));
+% maxVel.Color = 'r';
+% minVel = refline(0,-dq_limit(1));
+% minVel.Color = 'r';
 xlabel('time(s)')
 ylabel('Linear velocity v(m/s)')
 
 subplot(1,3,2)
 plot(time,mp_vel(2,:),'LineWidth',1.5); grid on
+% maxVel = refline(0,dq_limit(2));
+% maxVel.Color = 'r';
+% minVel = refline(0,-dq_limit(2));
+% minVel.Color = 'r';
 xlabel('time(s)')
 ylabel('Angular velocity w(rad/s)')
 title('Mobile platform velocities')
 
 subplot(1,3,3)
 plot(time,mp_vel(3,:),'LineWidth',1.5); grid on
+% maxVel = refline(0,dq_limit(3));
+% maxVel.Color = 'r';
+% minVel = refline(0,-dq_limit(3));
+% minVel.Color = 'r';
 xlabel('time(s)')
 ylabel('Prismatic joint velociti dz(m/s)')
 
@@ -114,36 +130,60 @@ ylabel('Prismatic joint velociti dz(m/s)')
 figure()
 subplot(2,3,1)
 plot(time,q(5,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(4,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(4,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q1(rad)')
 title('UR5 q1')
 
 subplot(2,3,2)
 plot(time,q(6,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(5,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(5,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q2(rad)')
 title('UR5 q2')
 
 subplot(2,3,3)
 plot(time,q(7,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(6,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(6,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q3(rad)')
 title('UR5 q3')
 
 subplot(2,3,4)
 plot(time,q(8,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(7,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(7,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q4(rad)')
 title('UR5 q4')
 
 subplot(2,3,5)
 plot(time,q(9,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(8,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(8,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q5(rad)')
 title('UR5 q5')
 
 subplot(2,3,6)
 plot(time,q(10,:),'LineWidth',1.5); grid on
+minPos = refline(0,q_limit(9,1));
+minPos.Color = 'r';
+maxPos = refline(0,q_limit(9,2));
+maxPos.Color = 'r';
 xlabel('time(s)')
 ylabel('q6(rad)')
 title('UR5 q6')
