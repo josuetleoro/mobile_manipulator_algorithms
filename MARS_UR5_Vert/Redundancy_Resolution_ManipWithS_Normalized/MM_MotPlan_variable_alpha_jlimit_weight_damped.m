@@ -78,6 +78,7 @@ ur5_man_measure=zeros(1,N);
 
 %The weight matrix W
 Werror=lambda*eye(6);
+alphaPlot=zeros(1,N);
 
 %The Wjlim weight matrix
 Wjlim=eye(9,9);
@@ -120,6 +121,10 @@ for i=1:9
     dqLimProd=dqLimProd*dq_limit(i);
 end
 invTq=inv(Tq);
+
+JWDamped=zeros(6+9,9);
+%JW(9:end,3:end)=0.01*eye(7,7); %With prism joint considered in the arm
+JWDamped(10:end,4:end)=0.05*eye(6,6); %Without prism joint considered in the arm
 
 %% Calculate the parameters for trapezoidal variable alpha
 blendPerc=tb/tf;
@@ -188,9 +193,15 @@ while(k<N)
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
     Wmatrix=sqrtInvWjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
-    inv_JBar=pinv(JBarWeighted);
-    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
-    projM=(Id-inv_JBar*JBarWeighted);
+    
+    JWDamped(1:6,:)=JBarWeighted;
+    invJWDamped=pinv(JWDamped);
+    cont_input=invJWDamped*([dxi_des(:,k)+error_cont;zeros(9,1)]);
+    
+    
+    inv_JBarWeighted=pinv(JBarWeighted);
+    cont_input=inv_JBarWeighted*(dxi_des(:,k)+error_cont);
+    projM=(Id-inv_JBarWeighted*JBarWeighted);
     
     %Calculate the gradient descent step size
     if k < accelStep
@@ -201,11 +212,9 @@ while(k<N)
         alpha=alpha0;
     end     
     
-%     alphaWjlim = 1/prod(diag(sqrtInvWjlim));
-%     if alphaWjlim > 2
-%         alphaWjlim = 2;
-%     end
-%     alpha = alphaWjlim*alpha; 
+    %alphaWjlim = prod(diag(sqrtInvWjlim));
+    %alphaWjlim = min(diag(sqrtInvWjlim));
+    %alpha = alphaWjlim*alpha;
 
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
@@ -223,15 +232,7 @@ while(k<N)
    
     %Calculate the joint values
     q(:,k+1)=q(:,k)+dq(:,k)*ts; 
-    
-%     if q(5,k+1) < q_limit(4,1)
-%         eta(:,k)
-%         q(:,k)
-%         Wjlim
-%         Wmatrix
-%         break;
-%     end
-        
+       
     %Calculate the position of the end effector
     T=MARS.forwardKin(q(:,k+1));
     xi(1:3,k+1)=T(1:3,4);
@@ -286,49 +287,3 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 PlotEvolution
-
-%% Plot the evolution of quat
-% quat=xi(4:7,:);   
-% figure()
-% subplot(2,2,1)
-% plot(time,quat(1,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_w')
-% title('quat_w')
-% 
-% subplot(2,2,2)
-% plot(time,quat(2,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_x')
-% title('quat_x')
-% 
-% subplot(2,2,3)
-% plot(time,quat(3,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_y')
-% title('quat_y')
-% 
-% subplot(2,2,4)
-% plot(time,quat(4,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_z')
-% title('quat_z')
-
-%% Show the mobile platform and end effector motion in 3D
-% Rd=zeros(4,4,length(time));
-% %Form the T6Traj matrix
-% for k=1:length(time)
-%    Rd(:,4,k)=[xi(1,k);xi(2,k);xi(3,k);1];
-%    Rd(1:3,1:3,k)=quatToRotMat(quat(:,k));  
-%    %Rd(1:3,1:3,k)=quat2rotm(quat(:,k)');
-% end
-% figure()
-% plotMobileManipulatorMotion(q(1:3,:),Rd,1);
-
-%% Save the redundancy resolution position and velocities
-% JointMotion.q_des=q;
-% JointMotion.dq_des=dq;
-% JointMotion.ts=ts;
-% JointMotion.tf=tf;
-% uisave('JointMotion','JointMotion.mat');
-
