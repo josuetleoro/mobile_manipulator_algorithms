@@ -25,7 +25,8 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
+        %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
+        qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[3;0.1091;0.8];
@@ -45,7 +46,7 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
        
         %Desired Pose
-        Pos=[2;3;0.5];
+        Pos=[2;3;1.4];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
@@ -93,7 +94,8 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
+        %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
+        qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[-2;2;0.6];
@@ -101,7 +103,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
-        tf=25;          %Desired final time
+        tf=35;          %Desired final time
         ts=0.05;        %time step
         tb=5;           %Blending time
     case 7 
@@ -149,7 +151,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=-90*pi/180;
         yaw=-90*pi/180;
-        tf=15;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;         %time step
         tb=5;           %Blending time
      case 10
@@ -205,16 +207,17 @@ switch(testN)
         tf=40;          %Desired final time
         ts=0.05;        %time step
         tb=10;           %Blending time
-    case 13
+        
+    case 13 
         %Initial joints values
         tx=0;
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint values with maximum manipulability
+        qa=[0.0;-0.40;1.06;4.06;-pi/2;0.0]; %Joint angles with maximum manipulability
        
         %Desired Pose
-        Pos=[2;3;1.6];
+        Pos=[2;3;1.4];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;

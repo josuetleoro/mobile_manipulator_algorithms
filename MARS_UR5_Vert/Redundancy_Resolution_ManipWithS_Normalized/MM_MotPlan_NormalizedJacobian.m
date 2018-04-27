@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=9;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,8 +17,8 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=3.5;  %Best alpha=3.5
-lambda=1.0; %Overwrite lambda best=1.0
+alpha=8;  %Best alpha=7
+lambda=1.5; %Overwrite lambda best=0.5
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -104,6 +104,17 @@ q(:,1)=q0;
 xi(:,1)=xi_des(:,1);
 quat_e=xi(4:7,1);
 
+%% Calculate the maximum velocity normalization matrix
+JointConstraints
+Tq=zeros(9,9);
+dqLimProd = 1;
+for i=1:9
+    Tq(i,i)=1/dq_limit(i);
+    dqLimProd=dqLimProd*dq_limit(i);
+end
+invTq=inv(Tq);
+
+%%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
 while(k<N)
@@ -118,11 +129,20 @@ while(k<N)
         
     %Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
+%     MM_dP=MM_dP*manDQProdMM;
+%     ur5_dP=ur5_dP*manDQProdUR5;
+%     
+%     MM_manip=MM_manip*manDQProdMM;
+%     ur5_manip=ur5_manip*manDQProdUR5;
+        
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    %dP=0.2*MM_manip+0.8*ur5_dP;
+    dP=Tq*dP;
+    
+    %dP=invTq*MM_dP;
+    %dP=invTq*ur5_dP;
     
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1
@@ -147,14 +167,17 @@ while(k<N)
     
     %Calculate the control input and internal motion
     error_cont=Werror*errorRate;
-    inv_JBar=pinv(JBar);
+    JBarNorm=JBar*invTq;
+    inv_JBar=pinv(JBarNorm);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
-    projM=(Id-inv_JBar*JBar);
+    projM=(Id-inv_JBar*JBarNorm);
+    
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=invTq*eta(:,k);
     
     %% update variables for next iteration
         
