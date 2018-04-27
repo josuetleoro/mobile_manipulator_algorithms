@@ -206,7 +206,7 @@ switch(testN)
         yaw=-180*pi/180;
         tf=40;          %Desired final time
         ts=0.05;        %time step
-        tb=10;           %Blending time
+        tb=5;           %Blending time
         
     case 13 
         %Initial joints values

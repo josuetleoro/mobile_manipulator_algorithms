@@ -27,7 +27,7 @@ lambda=1.5; %Overwrite lambda best=0.5
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
-
+%JW(7:end,1:end)=0.05*eye(9,9); %All the joints are damped
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector

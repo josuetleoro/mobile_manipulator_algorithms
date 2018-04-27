@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=3;
+testN=12;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -124,7 +124,7 @@ invTq=inv(Tq);
 
 JWDamped=zeros(6+9,9);
 %JW(9:end,3:end)=0.01*eye(7,7); %With prism joint considered in the arm
-JWDamped(10:end,4:end)=0.05*eye(6,6); %Without prism joint considered in the arm
+JWDamped(10:end,4:end)=0.01*eye(6,6); %Without prism joint considered in the arm
 
 %% Calculate the parameters for trapezoidal variable alpha
 blendPerc=tb/tf;

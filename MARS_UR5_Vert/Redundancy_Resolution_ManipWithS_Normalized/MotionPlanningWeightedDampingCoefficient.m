@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=3;
+testN=13;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,7 +17,7 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha=2;  %Best alpha=7
+alpha=7;  %Best alpha=7
 lambda=0.5; %Overwrite lambda best=0.5
 
 % %With Fs=100Hz
@@ -115,9 +115,9 @@ end
 invTq=inv(Tq);
 
 JW=zeros(6+9,9);
-%JW(9:end,3:end)=0.01*eye(7,7); %With prism joint considered in the arm
-JW(10:end,4:end)=0.05*eye(6,6); %Without prism joint considered in the arm
-
+%JW(9:end,3:end)=0.05*eye(7,7); %With prism joint considered in the arm
+JW(10:end,4:end)=0.01*eye(6,6); %Without prism joint considered in the arm
+%JW(7:end,1:end)=0.05*eye(9,9); %All the joints are damped
 
 %%
 disp('Calculating the inverse velocity kinematics solution')

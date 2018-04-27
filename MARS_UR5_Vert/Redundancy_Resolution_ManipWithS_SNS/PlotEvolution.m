@@ -1,10 +1,11 @@
-% clear all
-% 
-% %Open a dialog box to look for the motion data
-% uiopen();
-% 
-% % Show the final position
-% xi(:,end)
+close all
+
+clear all
+%Open a dialog box to look for the motion data
+uiopen();
+
+% Show the final position
+xi(:,end)
 
 addpath MARS_UR5
 %Create a MMUR5 object
@@ -14,7 +15,7 @@ Tf=MARS.forwardKin(qf);
 
 %% Manipulability plots
 
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',1.5); hold off
 legend('MM_{manip}','UR5_{manip}')
@@ -22,7 +23,7 @@ xlabel('time(s)')
 grid on
 
 %% End Effector Position
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(1,3,1)
 plot(time,xi(1,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -39,7 +40,7 @@ plot(time,xi(3,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
 ylabel('End effector pos z(m)')
 
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(2,2,1)
 plot(time,xi(4,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -71,7 +72,7 @@ set(gca,'yticklabel',num2str(tix,'%.3f'))
 
 
 %% Mobile platform movement
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(2,2,1)
 plot(time,q(1,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -93,7 +94,7 @@ xlabel('time(s)')
 ylabel('Mobile Platform z(m)')
 
 %% Mobile platform velocities (including prismatic joint)
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(1,3,1)
 plot(time,mp_vel(1,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -111,7 +112,7 @@ xlabel('time(s)')
 ylabel('Prismatic joint velociti dz(m/s)')
 
 %% Angles of the joints of the UR5
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(2,3,1)
 plot(time,q(5,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -149,7 +150,7 @@ ylabel('q6(rad)')
 title('UR5 q6')
 
 %% UR5 joints velocities
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 subplot(2,3,1)
 plot(time,dq(5,:),'LineWidth',1.5); grid on
 xlabel('time(s)')
@@ -191,7 +192,7 @@ title('UR5 dq6')
 %Draw the mobile manipulator in the current position
 %drawMobilePlatform(q(1,1),q(2,1),q(3,1),xi(1,1),xi(2,1))
 
-figure()
+figure('rend','painters','pos',[50 50 900 600])
 clear PosNF
 
 q1=q(1,:);

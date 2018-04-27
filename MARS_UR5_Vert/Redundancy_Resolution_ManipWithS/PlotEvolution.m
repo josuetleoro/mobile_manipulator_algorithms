@@ -1,5 +1,4 @@
-% clear all
-% 
+%clear all
 % %Open a dialog box to look for the motion data
 % uiopen();
 % 
