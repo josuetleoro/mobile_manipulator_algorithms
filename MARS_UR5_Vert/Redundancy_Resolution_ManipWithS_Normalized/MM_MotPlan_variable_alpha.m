@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=4;
+testN=7;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
