@@ -50,9 +50,9 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=15;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
-        tb=3;           %Blending time
+        tb=5;           %Blending time
         
     case 4 
         % %Initial joints values
