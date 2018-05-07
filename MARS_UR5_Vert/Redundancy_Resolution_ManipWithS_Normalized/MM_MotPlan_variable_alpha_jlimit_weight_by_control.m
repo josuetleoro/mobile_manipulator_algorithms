@@ -17,7 +17,7 @@ TestPointsTaskNorm
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha0=60;  %Best alpha=20
+alpha0=170;  %Best alpha=20
 lambda=1.5; %Overwrite lambda best=0.5
 
 % %With Fs=100Hz
@@ -127,13 +127,6 @@ accelStep=floor(blendPerc*N);
 decelStep=N-accelStep;
 alpha_slope=alpha0/accelStep;
 
-maxdxi=max(abs(dxi_des),[],2);
-for i=1:6
-   if maxdxi(i)==0
-      maxdxi(i)=1; 
-   end
-end
-
 %%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
@@ -163,7 +156,16 @@ while(k<N)
         
     %dP=invTq*MM_dP;
     %dP=invTq*ur5_dP;
-        
+    
+%     %Select the manipulability to use
+%     if MM_manip_sel == 1
+%         %Use MM manipulability
+%         dP=MM_dP;
+%     else
+%         %Use the ur5 manipulability only
+%         dP=ur5_dP;
+%     end
+    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(2:end,k),q_limit);
     invWjlim=inv(Wjlim);
@@ -189,21 +191,19 @@ while(k<N)
     inv_JBar=pinv(JBarWeighted);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     
-    %aux=norm(cont_input);
-    aux=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    
+    aux=norm(cont_input);
     Waux=aux*eye(9,9);
     dP=Waux*dP;
     
     %Calculate the gradient descent step size
-%     if k < accelStep
-%         alpha=alpha_slope*k;
-%     elseif k >= decelStep
-%         alpha=alpha_slope*(N-k);
-%     else 
-%         alpha=alpha0;
-%     end 
-    alpha=alpha0;
+    if k < accelStep
+        alpha=alpha_slope*k;
+    elseif k >= decelStep
+        alpha=alpha_slope*(N-k);
+    else 
+        alpha=alpha0;
+    end 
+    %alpha=alpha0;
     
             
 %     alphaWjlim = 1/prod(diag(sqrtInvWjlim));
