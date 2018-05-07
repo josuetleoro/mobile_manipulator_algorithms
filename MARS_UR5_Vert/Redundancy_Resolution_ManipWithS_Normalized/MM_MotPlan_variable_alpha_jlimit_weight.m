@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=6;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,7 +17,7 @@ TestPoints
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha0=20;  %Best alpha=12
+alpha0=20;  %Best alpha=20
 lambda=1.0; %Overwrite lambda best=0.5
 
 % %With Fs=100Hz
@@ -190,7 +190,6 @@ while(k<N)
     JBarWeighted=JBar*Wmatrix;
     inv_JBar=pinv(JBarWeighted);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
-    projM=(Id-inv_JBar*JBarWeighted);
     
     %Calculate the gradient descent step size
     if k < accelStep
@@ -199,16 +198,21 @@ while(k<N)
         alpha=alpha_slope*(N-k);
     else 
         alpha=alpha0;
-    end     
-    
+    end    
+            
 %     alphaWjlim = 1/prod(diag(sqrtInvWjlim));
 %     if alphaWjlim > 2
 %         alphaWjlim = 2;
 %     end
 %     alpha = alphaWjlim*alpha; 
 
+    projM=(Id-inv_JBar*JBarWeighted);
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
+    
+%     cont_input
+%     int_motion
+%     pause()
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
