@@ -205,7 +205,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=40;          %Desired final time
+        tf=45;          %Desired final time (tf=40 has problems)
         ts=0.05;        %time step
         tb=5;           %Blending time
         
