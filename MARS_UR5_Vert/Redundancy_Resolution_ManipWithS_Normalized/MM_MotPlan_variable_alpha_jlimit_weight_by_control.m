@@ -17,8 +17,8 @@ TestPointsTaskNorm
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha0=170;  %Best alpha=20
-lambda=1.5; %Overwrite lambda best=0.5
+alpha0=60;  %Best alpha=20
+lambda=2.0; %Overwrite lambda best=1.5
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -76,8 +76,9 @@ dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
-%The weight matrix W
+%The error weighting matrix Werror
 Werror=lambda*eye(6);
+Werror(4:6,4:6)=Werror(4:6,4:6)/10;
 
 %The Wjlim weight matrix
 Wjlim=eye(9,9);
@@ -152,10 +153,6 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    dP=Tq*dP;
-        
-    %dP=invTq*MM_dP;
-    %dP=invTq*ur5_dP;
     
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1

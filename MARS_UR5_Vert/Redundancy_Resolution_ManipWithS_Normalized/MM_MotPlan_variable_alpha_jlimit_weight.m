@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=6;
+testN=2;
 TestPoints
 
 %Set the step size for the gradient descent method and error weight. A
@@ -152,10 +152,6 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    dP=Tq*dP;
-        
-    %dP=invTq*MM_dP;
-    %dP=invTq*ur5_dP;
     
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1

@@ -157,11 +157,7 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    dP=Tq*dP;
-        
-    %dP=invTq*MM_dP;
-    %dP=invTq*ur5_dP;
-    
+   
 %     %Select the manipulability to use
 %     if MM_manip_sel == 1
 %         %Use MM manipulability

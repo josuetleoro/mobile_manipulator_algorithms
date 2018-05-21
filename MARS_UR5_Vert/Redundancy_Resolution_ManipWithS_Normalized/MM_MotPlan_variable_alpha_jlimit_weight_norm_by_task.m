@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=6;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -17,8 +17,8 @@ TestPointsTaskNorm
 
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
-alpha0=60;  %Best alpha=20
-lambda=1.5; %Overwrite lambda best=0.5
+alpha=20;  %Best alpha=20
+lambda=2.0; %Overwrite lambda best=0.5
 
 % %With Fs=100Hz
 % ts=0.01;  %Overwrite ts
@@ -76,8 +76,9 @@ dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
-%The weight matrix W
+%The error weighting matrix Werror
 Werror=lambda*eye(6);
+Werror(4:6,4:6)=Werror(4:6,4:6)/10;
 
 %The Wjlim weight matrix
 Wjlim=eye(9,9);
@@ -121,12 +122,7 @@ for i=1:9
 end
 invTq=inv(Tq);
 
-%% Calculate the parameters for trapezoidal variable alpha
-blendPerc=tb/tf;
-accelStep=floor(blendPerc*N);
-decelStep=N-accelStep;
-alpha_slope=alpha0/accelStep;
-
+%% Get the maximum desired velocity for each coordinate
 maxdxi=max(abs(dxi_des),[],2);
 for i=1:6
    if maxdxi(i)==0
@@ -159,11 +155,7 @@ while(k<N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    dP=Tq*dP;
-        
-    %dP=invTq*MM_dP;
-    %dP=invTq*ur5_dP;
-        
+       
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(2:end,k),q_limit);
     invWjlim=inv(Wjlim);
@@ -189,33 +181,17 @@ while(k<N)
     inv_JBar=pinv(JBarWeighted);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     
-    %aux=norm(cont_input);
-    aux=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    
+    %Calculate the weighting by task velocity
+    aux=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
     Waux=aux*eye(9,9);
     dP=Waux*dP;
     
-    %Calculate the gradient descent step size
-%     if k < accelStep
-%         alpha=alpha_slope*k;
-%     elseif k >= decelStep
-%         alpha=alpha_slope*(N-k);
-%     else 
-%         alpha=alpha0;
-%     end 
-    alpha=alpha0;
-    
-            
-%     alphaWjlim = 1/prod(diag(sqrtInvWjlim));
-%     if alphaWjlim > 2
-%         alphaWjlim = 2;
-%     end
-%     alpha = alphaWjlim*alpha; 
-
     projM=(Id-inv_JBar*JBarWeighted);
     dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
     int_motion=projM*dq_N;
-    
+
+%     dxi_des(:,k)
+%     error_cont
 %     cont_input
 %     int_motion
 %     pause()
