@@ -1,4 +1,4 @@
-function alpha=calcMaxAlpha(dqp,dqh,dq_limit)
+function [maxAlpha, minAlpha]=calcMaxMinAlpha(dqp,dqh,dq_limit)
 n=size(dqp);
 kmax = Inf;
 kmin = -Inf;
@@ -8,10 +8,6 @@ for k=1:n
    kmax = min(kmax_aux,kmax);
    kmin = max(kmin_aux,kmin);
 end
-if kmax > kmin
-   alpha = kmax; 
-end
-if kmax < kmin
-   alpha = -Inf;
-end
+maxAlpha = kmax;
+minAlpha = kmin;
 end

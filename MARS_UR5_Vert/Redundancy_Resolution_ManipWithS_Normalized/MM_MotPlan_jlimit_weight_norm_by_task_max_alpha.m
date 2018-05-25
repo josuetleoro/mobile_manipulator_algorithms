@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=6;
+testN=13;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -161,7 +161,6 @@ while(k<N)
     Wjlim=jLimitGrad(q(2:end,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
-    dP=sqrtInvWjlim*Tq*dP;    
     %prod(diag(sqrtInvWjlim))
     
     %% Inverse differential kinematics         
@@ -183,26 +182,25 @@ while(k<N)
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
     
     %Calculate the weighting by task velocity
+    dP=sqrtInvWjlim*Tq*dP;  
     aux=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
     Waux=aux*eye(9,9);
     dP=Waux*dP;
-    projM=(Id-inv_JBar*JBarWeighted);
     
-    %Calculate the maximum step size
-    maxAlpha(k) = calcMaxAlpha(cont_input,dP,dq_limit);
-    auxAlpha = maxAlpha(k)
-    if maxAlpha(k) == -Inf
-       maxAlpha(k) = 0; %Otherwise cannot plot
+    %Calculate the internal motion
+    int_motion=(Id-inv_JBar*JBarWeighted)*dP;    
+    
+    %Calculate the maximum and minimum step size
+    [maxAlpha(k),minAlpha] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
+    if maxAlpha(k) < minAlpha
        disp('Could not achieve task that complies with joint velocities limits')
        break; %Could not accomplish task 
     end
-    
+    %Saturate alpha in case is higher than the maximum
     if alpha > maxAlpha(k)
        alpha = maxAlpha(k);
     end
-        
-    dq_N = alpha*dP;         %(De Luca A., et al., Kin and Modeling and Redun. of NMM)
-    int_motion=projM*dq_N;    
+    int_motion = alpha*int_motion;    
     
 %     dxi_des(:,k)
 %     error_cont
@@ -290,17 +288,17 @@ plot(time,maxAlpha,'b','LineWidth',1.5); hold on;
 xlabel('time(s)')
 grid on
 
-% %% Plot all the variables
-% % Adjust the manipulability measures
-% MM_man_measure(1)=MM_man_measure(2);
-% MM_man_measure(end)=MM_man_measure(end-1);
-% ur5_man_measure(1)=ur5_man_measure(2);
-% ur5_man_measure(end)=ur5_man_measure(end-1);
-% % Store the mobile platform velocities
-% mp_vel=eta(1:3,:);
-% 
-% %Plot all the variables
-% PlotEvolution
+%% Plot all the variables
+% Adjust the manipulability measures
+MM_man_measure(1)=MM_man_measure(2);
+MM_man_measure(end)=MM_man_measure(end-1);
+ur5_man_measure(1)=ur5_man_measure(2);
+ur5_man_measure(end)=ur5_man_measure(end-1);
+% Store the mobile platform velocities
+mp_vel=eta(1:3,:);
+
+%Plot all the variables
+PlotEvolution
 
 %% Plot the evolution of quat
 % quat=xi(4:7,:);   
