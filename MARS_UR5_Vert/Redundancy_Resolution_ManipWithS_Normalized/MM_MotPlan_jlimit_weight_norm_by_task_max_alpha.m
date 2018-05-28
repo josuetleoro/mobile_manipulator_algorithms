@@ -63,7 +63,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=TrajPlanQuat(T0,Tf,ts,tb,tf);
+MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
