@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=2;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -18,12 +18,12 @@ TestPointsTaskNorm
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
 alpha=20;  %Best alpha=20
-lambda=2.0; %Overwrite lambda best=0.5
+lambda=2.0; %Overwrite  lambda best=2.0
 
-% %With Fs=100Hz
-% ts=0.01;  %Overwrite ts
-% alpha=3.5;
-% lambda=1.0; %Overwrite lambda best=1.0
+% % %With Fs=100Hz
+% ts=0.005;  %Overwrite ts
+% alpha=20;   %Best alpha=20
+% lambda=2.0; %Overwrite lambda best=2.0
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
@@ -64,6 +64,7 @@ disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
 MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf);
+%MotPlan=TrajPlanQuat(T0,Tf,ts,tb,tf);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
@@ -146,16 +147,11 @@ while(k<N)
         
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
-%     MM_dP=MM_dP*manDQProdMM;
-%     ur5_dP=ur5_dP*manDQProdUR5;
-%     
-%     MM_manip=MM_manip*manDQProdMM;
-%     ur5_manip=ur5_manip*manDQProdUR5;
-        
     MM_man_measure(k)=MM_manip;
-    ur5_man_measure(k)=ur5_manip;
-    
+    ur5_man_measure(k)=ur5_manip;    
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
+    %dP=MM_dP;
+    %dP=ur5_dP;
        
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(2:end,k),q_limit);
@@ -183,9 +179,8 @@ while(k<N)
     
     %Calculate the weighting by task velocity
     dP=sqrtInvWjlim*Tq*dP;  
-    aux=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
-    Waux=aux*eye(9,9);
-    dP=Waux*dP;
+    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
+    dP=taskNorm*dP;
     
     %Calculate the internal motion
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;    
@@ -256,9 +251,9 @@ end
 time=MotPlan.time(1:k);
 
 %Error of the end effector position
-%fprintf('Desired Final Position\n');
+fprintf('Desired Final Position\n');
 xi_des(:,k)
-%fprintf('Obtained Final Position\n');
+fprintf('Obtained Final Position\n');
 xi(:,k)
 
 xi_pos_error=xi_des(1:3,k)-xi(1:3,k);

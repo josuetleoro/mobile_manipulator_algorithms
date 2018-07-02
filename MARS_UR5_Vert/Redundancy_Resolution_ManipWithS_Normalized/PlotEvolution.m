@@ -68,162 +68,224 @@ tix=get(gca,'ytick')';
 set(gca,'yticklabel',num2str(tix,'%.3f'))
 
 
-
 %% Mobile platform movement
 figure()
-subplot(2,2,1)
-plot(time,q(1,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('Mobile Platform x(m)')
+% %%Separate plots
+% subplot(2,2,1)
+% plot(time,q(1,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('Mobile Platform x(m)')
+% 
+% subplot(2,2,2)
+% plot(time,q(2,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('Mobile Platform y(m)')
+% 
+% subplot(2,2,3)
+% plot(time,q(3,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('Mobile Platform phi(rad)')
+% 
+% subplot(2,2,4)
+% plot(time,q(4,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(3,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(3,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('Mobile Platform z(m)')
+% 
+% %%Same plot
+% plot(time,q(5,:),'LineWidth',1.5); hold on
+% plot(time,q(6,:),'LineWidth',1.5); hold on
+% plot(time,q(7,:),'LineWidth',1.5); hold on
+% plot(time,q(8,:),'LineWidth',1.5); hold on
+% plot(time,q(9,:),'LineWidth',1.5); hold on
+% plot(time,q(10,:),'LineWidth',1.5); hold on
+% xlabel('time[s]')
+% ylabel('q[rad]')
+% legend('q_{1}','q_{2}','q_{3}','q_{4}','q_{5}','q_{6}')
+% grid on
 
-subplot(2,2,2)
-plot(time,q(2,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('Mobile Platform y(m)')
-
-subplot(2,2,3)
-plot(time,q(3,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('Mobile Platform phi(rad)')
-
-subplot(2,2,4)
-plot(time,q(4,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(3,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(3,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('Mobile Platform z(m)')
+%%Same plot
+plot(time,q(1,:),'LineWidth',1.5); hold on
+plot(time,q(2,:),'LineWidth',1.5); hold on
+plot(time,q(3,:),'LineWidth',1.5); hold on
+plot(time,q(4,:),'LineWidth',1.5); hold on
+xlabel('time[s]')
+legend('x[m]','y[m]','theta[rad]','z[m]')
+title('Mobile platform positions')
+grid on
 
 %% Mobile platform velocities (including prismatic joint)
 figure()
-subplot(1,3,1)
-plot(time,mp_vel(1,:),'LineWidth',1.5); grid on
-% maxVel = refline(0,dq_limit(1));
-% maxVel.Color = 'r';
-% minVel = refline(0,-dq_limit(1));
-% minVel.Color = 'r';
-xlabel('time(s)')
-ylabel('Linear velocity v(m/s)')
 
-subplot(1,3,2)
-plot(time,mp_vel(2,:),'LineWidth',1.5); grid on
-% maxVel = refline(0,dq_limit(2));
-% maxVel.Color = 'r';
-% minVel = refline(0,-dq_limit(2));
-% minVel.Color = 'r';
-xlabel('time(s)')
-ylabel('Angular velocity w(rad/s)')
+% %%Separate plots
+% subplot(1,3,1)
+% plot(time,mp_vel(1,:),'LineWidth',1.5); grid on
+% % maxVel = refline(0,dq_limit(1));
+% % maxVel.Color = 'r';
+% % minVel = refline(0,-dq_limit(1));
+% % minVel.Color = 'r';
+% xlabel('time(s)')
+% ylabel('Linear velocity v(m/s)')
+% 
+% subplot(1,3,2)
+% plot(time,mp_vel(2,:),'LineWidth',1.5); grid on
+% % maxVel = refline(0,dq_limit(2));
+% % maxVel.Color = 'r';
+% % minVel = refline(0,-dq_limit(2));
+% % minVel.Color = 'r';
+% xlabel('time(s)')
+% ylabel('Angular velocity w(rad/s)')
+% title('Mobile platform velocities')
+% 
+% subplot(1,3,3)
+% plot(time,mp_vel(3,:),'LineWidth',1.5); grid on
+% % maxVel = refline(0,dq_limit(3));
+% % maxVel.Color = 'r';
+% % minVel = refline(0,-dq_limit(3));
+% % minVel.Color = 'r';
+% xlabel('time(s)')
+% ylabel('Prismatic joint velociti dz(m/s)')
+
+%%Same plot
+plot(time,mp_vel(1,:),'LineWidth',1.5); hold on
+plot(time,mp_vel(2,:),'LineWidth',1.5); hold on
+plot(time,mp_vel(3,:),'LineWidth',1.5); hold on
+xlabel('time[s]')
+%ylabel('vel[m/s,rad/s]')
+legend('dv[m/s]','w[rad/s]','dz[m/s]')
 title('Mobile platform velocities')
-
-subplot(1,3,3)
-plot(time,mp_vel(3,:),'LineWidth',1.5); grid on
-% maxVel = refline(0,dq_limit(3));
-% maxVel.Color = 'r';
-% minVel = refline(0,-dq_limit(3));
-% minVel.Color = 'r';
-xlabel('time(s)')
-ylabel('Prismatic joint velociti dz(m/s)')
+grid on
 
 %% Angles of the joints of the UR5
 figure()
-subplot(2,3,1)
-plot(time,q(5,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(4,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(4,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q1(rad)')
-title('UR5 q1')
 
-subplot(2,3,2)
-plot(time,q(6,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(5,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(5,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q2(rad)')
-title('UR5 q2')
+%%Separate plots
+% subplot(2,3,1)
+% plot(time,q(5,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(4,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(4,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q1(rad)')
+% title('UR5 q1')
+% 
+% subplot(2,3,2)
+% plot(time,q(6,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(5,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(5,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q2(rad)')
+% title('UR5 q2')
+% 
+% subplot(2,3,3)
+% plot(time,q(7,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(6,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(6,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q3(rad)')
+% title('UR5 q3')
+% 
+% subplot(2,3,4)
+% plot(time,q(8,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(7,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(7,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q4(rad)')
+% title('UR5 q4')
+% 
+% subplot(2,3,5)
+% plot(time,q(9,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(8,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(8,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q5(rad)')
+% title('UR5 q5')
+% 
+% subplot(2,3,6)
+% plot(time,q(10,:),'LineWidth',1.5); grid on
+% % minPos = refline(0,q_limit(9,1));
+% % minPos.Color = 'r';
+% % maxPos = refline(0,q_limit(9,2));
+% % maxPos.Color = 'r';
+% xlabel('time(s)')
+% ylabel('q6(rad)')
+% title('UR5 q6')
 
-subplot(2,3,3)
-plot(time,q(7,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(6,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(6,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q3(rad)')
-title('UR5 q3')
-
-subplot(2,3,4)
-plot(time,q(8,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(7,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(7,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q4(rad)')
-title('UR5 q4')
-
-subplot(2,3,5)
-plot(time,q(9,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(8,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(8,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q5(rad)')
-title('UR5 q5')
-
-subplot(2,3,6)
-plot(time,q(10,:),'LineWidth',1.5); grid on
-% minPos = refline(0,q_limit(9,1));
-% minPos.Color = 'r';
-% maxPos = refline(0,q_limit(9,2));
-% maxPos.Color = 'r';
-xlabel('time(s)')
-ylabel('q6(rad)')
-title('UR5 q6')
+%%Same plot
+plot(time,q(5,:),'LineWidth',1.5); hold on
+plot(time,q(6,:),'LineWidth',1.5); hold on
+plot(time,q(7,:),'LineWidth',1.5); hold on
+plot(time,q(8,:),'LineWidth',1.5); hold on
+plot(time,q(9,:),'LineWidth',1.5); hold on
+plot(time,q(10,:),'LineWidth',1.5); hold on
+xlabel('time[s]')
+ylabel('q[rad]')
+legend('q_{1}','q_{2}','q_{3}','q_{4}','q_{5}','q_{6}')
+grid on
 
 %% UR5 joints velocities
 figure()
-subplot(2,3,1)
-plot(time,dq(5,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq1(rad/s)')
-title('UR5 dq1')
 
-subplot(2,3,2)
-plot(time,dq(6,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq2(rad/s)')
-title('UR5 dq2')
+%%Separate plots
+% subplot(2,3,1)
+% plot(time,dq(5,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq1(rad/s)')
+% title('UR5 dq1')
+% 
+% subplot(2,3,2)
+% plot(time,dq(6,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq2(rad/s)')
+% title('UR5 dq2')
+% 
+% subplot(2,3,3)
+% plot(time,dq(7,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq3(rad/s)')
+% title('UR5 dq3')
+% 
+% subplot(2,3,4)
+% plot(time,dq(8,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq4(rad/s)')
+% title('UR5 dq4')
+% 
+% subplot(2,3,5)
+% plot(time,dq(9,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq5(rad/s)')
+% title('UR5 dq5')
+% 
+% subplot(2,3,6)
+% plot(time,dq(10,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('dq6(rad/s)')
+% title('UR5 dq6')
 
-subplot(2,3,3)
-plot(time,dq(7,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq3(rad/s)')
-title('UR5 dq3')
-
-subplot(2,3,4)
-plot(time,dq(8,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq4(rad/s)')
-title('UR5 dq4')
-
-subplot(2,3,5)
-plot(time,dq(9,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq5(rad/s)')
-title('UR5 dq5')
-
-subplot(2,3,6)
-plot(time,dq(10,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('dq6(rad/s)')
-title('UR5 dq6')
+%%Same plot
+plot(time,dq(5,:),'LineWidth',1.5); hold on
+plot(time,dq(6,:),'LineWidth',1.5); hold on
+plot(time,dq(7,:),'LineWidth',1.5); hold on
+plot(time,dq(8,:),'LineWidth',1.5); hold on
+plot(time,dq(9,:),'LineWidth',1.5); hold on
+plot(time,dq(10,:),'LineWidth',1.5); hold on
+xlabel('time[s]')
+ylabel('dq[rad/s]')
+legend('dq_{1}','dq_{2}','dq_{3}','dq_{4}','dq_{5}','dq_{6}')
+grid on
 
 %% Mobile Platform Trajectory
 
