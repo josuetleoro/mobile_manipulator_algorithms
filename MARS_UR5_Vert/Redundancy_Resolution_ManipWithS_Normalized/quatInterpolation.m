@@ -20,15 +20,11 @@ ddNi=0;
 dNf=0;
 ddNf=0;
 
-%Compute dQf and ddQf
+%% Calculate the polynomial coefficients
+dQi=quatDerNorm(Qwi,dNi,Qi);
+ddQi=quatSecDerNorm(Qwi,Qdwi,dNi,ddNi,Qi);
 dQf=quatDerNorm(Qwf,dNf,Qf);
 ddQf=quatSecDerNorm(Qwf,Qdwf,dNf,ddNf,Qf);
-
-%% Calculate the polynomial coefficients
-dQi=1/2*Qwi*Qi;
-ddQi=1/2*Qdwi*Qi-1/4*norm(Qwi.getV())*Qi+ddNi*Qi;
-dQf=1/2*Qwf*Qf;
-ddQf=1/2*Qdwf*Qf-1/4*norm(Qwf.getV())*Qf+ddNf*Qf;
 
 p0=Qi;
 p1=3*Qi+dQi*T;
@@ -40,12 +36,19 @@ p5=1/2*ddQf*T^2-3*dQf*T+6*Qf;
 %% Perform the interpolation
 m=T/ts;
 h=ts;
+%initialize arrays to accelerate calculations
+w=zeros(3,m-1);
+dw=zeros(3,m-1);
+quat=zeros(4,m-1);
+q=Quat.empty(0,m-1);
+dq=Quat.empty(0,m-1);
+ddq=Quat.empty(0,m-1);
 for k=0:m-1
-    t(k+1)=ti+(k+1)*h;
-    tau(k+1)=(t(k+1)-ti)/(tf-ti);
-    q(k+1)=quatPol(tau(k+1),p0,p1,p2,p3,p4,p5);
-    dq(k+1)=dquatPol(t(k+1),ti,tf,p0,p1,p2,p3,p4,p5);
-    ddq(k+1)=ddquatPol(t(k+1),ti,tf,p0,p1,p2,p3,p4,p5);
+    t=ti+(k+1)*h;
+    tau=(t-ti)/(tf-ti);
+    q(k+1)=quatPol(tau,p0,p1,p2,p3,p4,p5);
+    dq(k+1)=dquatPol(t,ti,tf,p0,p1,p2,p3,p4,p5);
+    ddq(k+1)=ddquatPol(t,ti,tf,p0,p1,p2,p3,p4,p5);
     
     %Compute w(k+1) and dw(k+1)
     Qwk_p_1=2*dq(k+1)*q(k+1).inv();
@@ -58,7 +61,6 @@ for k=0:m-1
     quat(:,k+1)=qN.vecRep();
 end
 %Add the initial condition
-t=[0,t];
 quat=[Qi.vecRep(),quat];
 w=[wi,w];
 dw=[dwi,dw];
