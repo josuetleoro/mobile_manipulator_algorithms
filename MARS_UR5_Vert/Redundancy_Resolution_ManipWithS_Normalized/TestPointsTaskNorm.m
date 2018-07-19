@@ -8,7 +8,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;0.9484;-pi/2;0.0]; 
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
         
         %Desired Pose
         Pos=[3;0.1091;0.8];
@@ -26,7 +26,7 @@ switch(testN)
         phi_mp=0;
         tz=0;
         %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
-        qa=[0.0;-0.40;1.06;0.9484;-pi/2;0.0]; %Joint angles with maximum manipulability
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[3;0.1091;0.8];
@@ -43,7 +43,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
        
         %Desired Pose
         Pos=[2;3;1.4];
@@ -60,7 +60,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         %qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
         
         %Desired Pose
@@ -78,7 +78,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
         Pos=[-1.2;-1.2;0.6];
@@ -96,7 +96,7 @@ switch(testN)
         phi_mp=0;
         tz=0;
         %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
-        qa=[0.0;-0.40;1.06;0.9484;-pi/2;0.0]; %Joint angles with maximum manipulability
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[-2;2;0.6];
@@ -115,7 +115,7 @@ switch(testN)
         phi_mp=0;
         tz=0;
         %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
-        qa=[0.0;-0.40;1.06;0.9484;-pi/2;0.0]; %Joint angles with maximum manipulability
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[1;1;0.6];
@@ -150,7 +150,7 @@ switch(testN)
         phi_mp=0;
         tz=0;
         %qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
-        qa=[0.0;-0.40;1.06;0.9484;-pi/2;0.0]; %Joint angles with maximum manipulability
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[0.5;-3;0.5];
@@ -167,7 +167,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
         Pos=[-3;0.1091;0.8];
@@ -189,7 +189,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
         Pos=[2;1;0.4];
@@ -223,7 +223,7 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0;
-        qa=[0.0;-0.40;1.06;0.9484;-pi/2;0.0]; %Joint angles with maximum manipulability
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
        
         %Desired Pose
         Pos=[2;3;1.4];
