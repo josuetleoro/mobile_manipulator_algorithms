@@ -66,54 +66,54 @@ time=0:ts:tf;
 % ylabel('z')
 % title('z')
 % 
-%Plot the evolution of wx, wy and wz
-figure()
-subplot(1,3,1)
-plot(time,w(1,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('wx')
-title('wx')
-
-subplot(1,3,2)
-plot(time,w(2,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('wy')
-title('wy')
-
-subplot(1,3,3)
-plot(time,w(3,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('wz')
-title('wz')
-
-
-%Plot the evolution of quat
-time=0:ts:tf;
-figure()
-subplot(2,2,1)
-plot(time,quat(1,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('quat_w')
-title('quat_w')
-
-subplot(2,2,2)
-plot(time,quat(2,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('quat_x')
-title('quat_x')
-
-subplot(2,2,3)
-plot(time,quat(3,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('quat_y')
-title('quat_y')
-
-subplot(2,2,4)
-plot(time,quat(4,:),'r','LineWidth',2); grid on
-xlabel('time(s)')
-ylabel('quat_z')
-title('quat_z')
-pause()
+% %Plot the evolution of wx, wy and wz
+% figure()
+% subplot(1,3,1)
+% plot(time,w(1,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('wx')
+% title('wx')
+% 
+% subplot(1,3,2)
+% plot(time,w(2,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('wy')
+% title('wy')
+% 
+% subplot(1,3,3)
+% plot(time,w(3,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('wz')
+% title('wz')
+% 
+% 
+% %Plot the evolution of quat
+% time=0:ts:tf;
+% figure()
+% subplot(2,2,1)
+% plot(time,quat(1,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('quat_w')
+% title('quat_w')
+% 
+% subplot(2,2,2)
+% plot(time,quat(2,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('quat_x')
+% title('quat_x')
+% 
+% subplot(2,2,3)
+% plot(time,quat(3,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('quat_y')
+% title('quat_y')
+% 
+% subplot(2,2,4)
+% plot(time,quat(4,:),'r','LineWidth',2); grid on
+% xlabel('time(s)')
+% ylabel('quat_z')
+% title('quat_z')
+% pause()
 
 %Return the motion planning data
 MotPlan={};

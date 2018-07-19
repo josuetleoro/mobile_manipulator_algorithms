@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=2;
+testN=13;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -18,7 +18,7 @@ TestPointsTaskNorm
 %With Fs=20Hz
 ts=0.05;  %Overwrite ts
 alpha=20;  %Best alpha=20
-lambda=2.0; %Overwrite  lambda best=2.0
+lambda=20.0; %Overwrite  lambda best=20.0
 
 % % %With Fs=100Hz
 % ts=0.005;  %Overwrite ts
@@ -188,8 +188,7 @@ while(k<N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha
-       disp('Could not achieve task that complies with joint velocities limits')
-       break; %Could not accomplish task 
+       error('Could not achieve task that complies with joint velocities limits')
     end
     %Saturate alpha in case is higher than the maximum
     if alpha > maxAlpha(k)
@@ -259,7 +258,7 @@ xi(:,k)
 xi_pos_error=xi_des(1:3,k)-xi(1:3,k);
 fprintf('Final Position Error\n');
 xi_pos_error(:,end)
-fprintf('Norm error: %f\n',norm(xi_pos_error(:,end)));
+fprintf('Norm error: %fmm\n',norm(xi_pos_error(:,end))*1000);
 
 fprintf('Desired Final Transformation Matrix\n');
 Tf
