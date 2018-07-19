@@ -195,7 +195,7 @@ switch(testN)
         %Desired Pose
         Pos=[2;1;0.4];
         roll=180*pi/180;
-        pitch=-30*pi/180;
+        pitch=30*pi/180;
         yaw=30*pi/180;
         tf=15;          
         ts=0.05;        
@@ -214,7 +214,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=20;          %Desired final time (tf=40 has problems)
+        tf=25;          %Desired final time (tf=40 has problems)
         ts=0.05;        
         tb=5;           
         

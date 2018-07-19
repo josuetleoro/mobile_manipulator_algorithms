@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=3;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -23,7 +23,7 @@ lambda=20.0; %Overwrite  lambda best=20.0
 % % %With Fs=100Hz
 % ts=0.005;  %Overwrite ts
 % alpha=20;   %Best alpha=20
-% lambda=2.0; %Overwrite lambda best=2.0
+% lambda=20.0; %Overwrite lambda best=2.0
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
@@ -79,7 +79,8 @@ ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
 Werror=lambda*eye(6);
-Werror(4:6,4:6)=Werror(4:6,4:6)/10;
+Werror(4:6,4:6)=0.1*eye(3);
+%Werror(4:6,4:6)=Werror(4:6,4:6)/20;
 
 %The Wjlim weight matrix
 Wjlim=eye(9,9);
@@ -292,7 +293,7 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 %Plot all the variables
-PlotEvolution
+%PlotEvolution
 
 %% Plot the evolution of quat
 % quat=xi(4:7,:);   
