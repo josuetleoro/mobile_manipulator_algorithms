@@ -13,10 +13,10 @@ q_limit=[-Inf, Inf;
          -Inf, Inf;
            -0.1, 0.4;
            -0.1, 150*pi/180;
-          -pi/2, pi/2;         %Needs review
+          -pi, pi;         %Needs review
           -pi, pi;             %Needs review
           -2*pi, 2*pi;         
-          80*pi/180, 270*pi/180;
+          -2*pi, 2*pi;
           -2*pi, 2*pi];
 
 dq_limit=[1.0;
