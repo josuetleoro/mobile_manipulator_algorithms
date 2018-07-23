@@ -24,34 +24,6 @@ odom_trans.Header.FrameId = 'odom';
 [path_pub, path_msg] = rospublisher('/ur5_tool0_path','nav_msgs/Path');
 path_msg.Header.FrameId = 'odom';
 
-path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/10)-1));        
-
-k=1;
-for i=1:n  
-    if(mod(i,10)==0)        
-    path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
-    path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
-    path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
-    path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
-    path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
-    path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
-    path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
-    k=k+1;
-    end
-end
-
-%Create the transformation of the last pose to draw it
-desired_trans = rosmessage('geometry_msgs/TransformStamped');
-desired_trans.ChildFrameId = 'Desired_pos';
-desired_trans.Header.FrameId = 'odom';
-desired_trans.Transform.Translation.X = xi_des(1,end);
-desired_trans.Transform.Translation.Y = xi_des(2,end);
-desired_trans.Transform.Translation.Z = xi_des(3,end);
-desired_trans.Transform.Rotation.W = xi_des(4,end);
-desired_trans.Transform.Rotation.X = xi_des(5,end);
-desired_trans.Transform.Rotation.Y = xi_des(6,end);
-desired_trans.Transform.Rotation.Z = xi_des(7,end);
-
 [state_pub, state_msg] = rospublisher('/mars_joint_states','sensor_msgs/JointState');
 
 %Use stoploop function to wait for ok button
@@ -78,18 +50,15 @@ while (~FS.Stop())
     now = rostime('now');
     state_msg.Header.Stamp = now;
     odom_trans.Header.Stamp = now;
-    desired_trans.Header.Stamp = now;
-    path_msg.Header.Stamp = now;    
     send(state_pub,state_msg);
-    send(path_pub,path_msg);
     sendTransform(tftree, odom_trans);
-    sendTransform(tftree, desired_trans);    
     waitfor(rate);    
 end
 FS.Clear()
 clear FS;
 clear rate
 
+k=1;
 rate = rosrate(20);
 reset(rate);
 for i=1:n    
@@ -116,10 +85,31 @@ for i=1:n
     %Publish the joint states and transformations
     state_msg.Header.Stamp = now;
     odom_trans.Header.Stamp = now;
-    desired_trans.Header.Stamp = now;
     send(state_pub,state_msg);
     sendTransform(tftree, odom_trans);
-    sendTransform(tftree, desired_trans);    
+    
+    %Add point to the path and publish it
+    if(mod(i,5)==0)
+        path_msg_temp = rosmessage(path_pub);
+        if k > 1
+            path_msg_temp = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,k-1));
+            path_msg_temp(1:k-1)=path_msg.Poses(1:k-1);
+            path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,k));
+            path_msg.Poses(1:k-1)=path_msg_temp;
+        else
+            path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,k));
+        end
+        path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
+        path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+        path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+        path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+        path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+        path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+        path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
+        path_msg.Header.Stamp = now;    
+        send(path_pub,path_msg);
+        k=k+1;
+    end    
     waitfor(rate);    
 end
 
