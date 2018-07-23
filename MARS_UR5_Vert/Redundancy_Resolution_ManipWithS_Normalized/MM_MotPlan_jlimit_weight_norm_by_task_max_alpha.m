@@ -64,7 +64,8 @@ disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
 MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf);
-%MotPlan=TrajPlanQuat(T0,Tf,ts,tb,tf);
+%MotPlan=LissajousPath(T0,ts,tf,0.45);
+
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
@@ -256,7 +257,7 @@ xi_des(:,k)
 fprintf('Obtained Final Position\n');
 xi(:,k)
 
-xi_pos_error=xi_des(1:3,k)-xi(1:3,k);
+xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
 fprintf('Final Position Error\n');
 xi_pos_error(:,end)
 fprintf('Norm error: %fmm\n',norm(xi_pos_error(:,end))*1000);
@@ -276,12 +277,12 @@ if k < N
 end
 
 %% Plot max alpha evolution
-maxAlpha(end) = maxAlpha(end-1);
-figure()
-title('Max alpha')
-plot(time,maxAlpha,'b','LineWidth',1.5); hold on;
-xlabel('time(s)')
-grid on
+% maxAlpha(end) = maxAlpha(end-1);
+% figure()
+% title('Max alpha')
+% plot(time,maxAlpha,'b','LineWidth',1.5); hold on;
+% xlabel('time(s)')
+% grid on
 
 %% Plot all the variables
 % Adjust the manipulability measures
@@ -293,7 +294,13 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 %Plot all the variables
-%PlotEvolution
+PlotEvolution
+
+%% Plot end effector path
+figure()
+plot(xi(1,:),xi(2,:));
+xlabel('x[m]')
+ylabel('y[m]')
 
 %% Plot the evolution of quat
 % quat=xi(4:7,:);   

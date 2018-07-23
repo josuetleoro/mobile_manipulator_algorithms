@@ -67,6 +67,15 @@ ylabel('quat_z')
 tix=get(gca,'ytick')';
 set(gca,'yticklabel',num2str(tix,'%.3f'))
 
+%% Position error
+figure()
+plot(time,xi_pos_error(1,:),'LineWidth',1.5); hold on
+plot(time,xi_pos_error(2,:),'LineWidth',1.5); hold on
+plot(time,xi_pos_error(3,:),'LineWidth',1.5); hold on
+xlabel('time[s]')
+legend('e_{x}','e_{y}','e_{z}')
+title('Position error[m]')
+grid on
 
 %% Mobile platform movement
 figure()
