@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=3;
+testN=12;
 TestPointsTaskNorm
 
 %Set the step size for the gradient descent method and error weight. A
@@ -64,8 +64,6 @@ disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
 MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf);
-%MotPlan=LissajousPath(T0,ts,tf,0.45);
-
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
@@ -298,9 +296,12 @@ PlotEvolution
 
 %% Plot end effector path
 figure()
-plot(xi(1,:),xi(2,:));
+plot3(xi(1,:),xi(2,:),xi(3,:));
 xlabel('x[m]')
 ylabel('y[m]')
+zlabel('z[m]')
+zlim([0,1.5])
+grid on;
 
 %% Plot the evolution of quat
 % quat=xi(4:7,:);   

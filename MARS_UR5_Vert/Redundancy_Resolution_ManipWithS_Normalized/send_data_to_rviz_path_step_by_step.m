@@ -89,7 +89,7 @@ for i=1:n
     sendTransform(tftree, odom_trans);
     
     %Add point to the path and publish it
-    if(mod(i,5)==0)
+    if(mod(i,10)==0)
         path_msg_temp = rosmessage(path_pub);
         if k > 1
             path_msg_temp = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,k-1));
