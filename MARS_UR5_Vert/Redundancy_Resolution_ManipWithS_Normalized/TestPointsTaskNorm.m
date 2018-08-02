@@ -15,9 +15,9 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=15;          %Desired final time
+        tf=20;          %Desired final time
         ts=0.05;        %time step
-        tb=5;           %Blending time
+        tb=4;           %Blending time
         
     case 2 
         % %Initial joints values
@@ -33,9 +33,9 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=15;          
+        tf=8;          
         ts=0.05;        
-        tb=5;           
+        tb=2;           
         
     case 3 
         %Initial joints values
@@ -50,9 +50,9 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=20;          
+        tf=12;          
         ts=0.05;        
-        tb=5;           
+        tb=3;           
         
     case 4 
         % %Initial joints values
@@ -68,9 +68,9 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=15;          
+        tf=12;          
         ts=0.05;        
-        tb=5;           
+        tb=3;           
         
     case 5 
         %Initial joints values
@@ -85,9 +85,9 @@ switch(testN)
         roll=180*pi/180;
         pitch=0*pi/180;
         yaw=0*pi/180;
-        tf=20;          
+        tf=12;          
         ts=0.05;        
-        tb=5;           
+        tb=3;           
         
     case 6 
         %Initial joints values
@@ -104,9 +104,9 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
-        tf=20;          
+        tf=12;          
         ts=0.05;        
-        tb=4;          
+        tb=3;          
         
     case 7 
         %Initial joints values
@@ -122,9 +122,9 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=15;          
+        tf=6;          
         ts=0.05;        
-        tb=5;     
+        tb=2;     
         
     case 8 
         %Initial joints values
@@ -139,9 +139,9 @@ switch(testN)
         roll=180*pi/180;
         pitch=90*pi/180;
         yaw=-90*pi/180;
-        tf=15;          
+        tf=8;          
         ts=0.05;        
-        tb=5;           
+        tb=2;           
         
     case 9
         %Initial joints values
@@ -157,9 +157,9 @@ switch(testN)
         roll=-180*pi/180;
         pitch=90*pi/180; %-90*pi/180 cannot be executed with high lambda
         yaw=-90*pi/180;
-        tf=15;          
+        tf=8;          
         ts=0.05;         
-        tb=5;        
+        tb=2;        
         
      case 10
         % %Initial joints values
@@ -179,9 +179,9 @@ switch(testN)
 %         roll=0*pi/180;
 %         pitch=0*pi/180;
 %         yaw=180*pi/180;        
-        tf=15;          
+        tf=10;          
         ts=0.05;        
-        tb=5;           
+        tb=2;           
         
     case 11
         % %Initial joints values
@@ -197,7 +197,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=30*pi/180;
         yaw=30*pi/180;
-        tf=15;          
+        tf=12;          
         ts=0.05;        
         tb=5;           
         
@@ -214,7 +214,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=25;          %Desired final time (tf=40 has problems)
+        tf=30;          %Desired final time (tf=40 has problems)
         ts=0.05;        
         tb=5;           
         
@@ -231,7 +231,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=20;          
+        tf=12;          
         ts=0.05;        
-        tb=5;           
+        tb=3;           
 end
