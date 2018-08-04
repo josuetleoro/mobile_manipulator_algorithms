@@ -13,8 +13,9 @@ testN='_Lissajous';
 tx=0;
 ty=0;
 phi_mp=0;
-tz=0;
+tz=0.05;
 qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
+%qa=[0.0;-0.20;1;1;-pi/2;0.0]; %Joint angles with maximum manipulability
 
 %Set the step size for the gradient descent method and error weight. A
 %higher error weight might decrease the manipulability because of its
@@ -46,7 +47,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=LissajousPath2(T0,50,ts,10);
+MotPlan=LissajousPath2(T0,60,ts,10);
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
@@ -62,7 +63,7 @@ ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
 Werror=lambda*eye(6);
-Werror(4:6,4:6)=0.1*eye(3);
+Werror(4:6,4:6)=0.01*eye(3);
 %Werror(4:6,4:6)=Werror(4:6,4:6)/20;
 
 %The Wjlim weight matrix
@@ -138,7 +139,7 @@ while(k<N)
     %dP=ur5_dP;
        
     %% Joint limit cost function gradient
-    Wjlim=jLimitGrad(q(2:end,k),q_limit);
+    Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
     %prod(diag(sqrtInvWjlim))
