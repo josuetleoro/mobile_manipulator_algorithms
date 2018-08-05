@@ -164,7 +164,7 @@ while(k<N)
 %     end
     
     %% Joint limit cost function gradient
-    Wjlim=jLimitGrad(q(2:end,k),q_limit);
+    Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
     dP=sqrtInvWjlim*Tq*dP;    

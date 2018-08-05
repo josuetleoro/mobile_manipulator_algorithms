@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=3;
 TestPointsTaskNorm
 
 %Load the joints constraints
@@ -157,7 +157,7 @@ while(k<=N)
     %dP=ur5_dP;
        
     %% Joint limit cost function gradient
-    Wjlim=jLimitGrad(q(2:end,k),q_limit);
+    Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
     %prod(diag(sqrtInvWjlim))
