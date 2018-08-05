@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=6;
+testN=2;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -286,9 +286,9 @@ end
 % grid on
 
 figure()
-title('Distance elbow-mob plat')
 plot(time(1:k),dist(1:k),'b','LineWidth',1.5); hold on;
 xlabel('time(s)')
+title('Distance elbow to mob plat')
 grid on
 
 %% Plot all the variables
