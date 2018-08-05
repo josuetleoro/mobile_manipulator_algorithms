@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=6;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -92,7 +92,9 @@ Wmatrix=zeros(9,9);
 maxAlpha=zeros(1,N);
 minAlpha=zeros(1,N);
 clear jLimitGrad;
+clear prevGradP
 elbowz=zeros(1,N);
+dist=zeros(1,N);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -152,7 +154,7 @@ while(k<=N)
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
-    ur5_man_measure(k)=ur5_manip;    
+    ur5_man_measure(k)=ur5_manip;
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
     %dP=MM_dP;
     %dP=ur5_dP;
@@ -164,9 +166,11 @@ while(k<=N)
     %prod(diag(sqrtInvWjlim))
     
     %% Collision avoidance gradient
-    [Wcol, elbowz(k)]=elbowColMat(q(:,k),1,50,2);
+    [Wcol, elbowz(k),dist(k)]=elbowColMat(q(:,k),1,70,1);
     %Wcol=eye(9,9);
-    invWcol=inv(Wcol);        
+    
+    invWcol=inv(Wcol);
+    invWcol=sqrt(invWcol);    
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
@@ -197,7 +201,11 @@ while(k<=N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-       error('Could not achieve task that complies with joint velocities limits')
+       %error('Could not achieve task that complies with joint velocities limits')
+       disp('Could not achieve task that complies with joint velocities limits')
+       invWcol
+       sqrtInvWjlim
+       break
     end
     
     %Saturate alpha in case is out of bounds
@@ -271,9 +279,15 @@ if k < N
 end
 
 %% Plot elbow position
+% figure()
+% title('Elbow z pos')
+% plot(time(1:k),elbowz(1:k),'b','LineWidth',1.5); hold on;
+% xlabel('time(s)')
+% grid on
+
 figure()
-title('Elbow z pos')
-plot(time,elbowz,'b','LineWidth',1.5); hold on;
+title('Distance elbow-mob plat')
+plot(time(1:k),dist(1:k),'b','LineWidth',1.5); hold on;
 xlabel('time(s)')
 grid on
 

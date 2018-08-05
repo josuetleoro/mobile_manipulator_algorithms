@@ -11,10 +11,10 @@
 
 q_limit=[-Inf, Inf;
          -Inf, Inf;
-           -0.1, 0.4;
-           -0.1, 150*pi/180;
-          -pi, pi;         %Needs review
-          -pi, pi;             %Needs review
+           0.0, 0.4;
+          -100*pi/180, 0.1;
+          -pi/2, pi/2;         %Needs review
+          -pi/2, pi/2;             %Needs review
           -2*pi, 2*pi;         
           -2*pi, 2*pi;
           -2*pi, 2*pi];
