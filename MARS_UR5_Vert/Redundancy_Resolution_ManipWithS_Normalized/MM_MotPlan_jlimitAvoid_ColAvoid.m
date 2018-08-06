@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=2;
+testN=1;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -163,7 +163,8 @@ while(k<=N)
     Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
-    %prod(diag(sqrtInvWjlim))
+%     sqrtInvWjlim
+%     pause()
     
     %% Collision avoidance gradient
     [Wcol, elbowz(k),dist(k)]=elbowColMat(q(:,k),1,70,1);
@@ -191,7 +192,7 @@ while(k<=N)
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
-    dP=invWcol*sqrtInvWjlim*Tq*dP;  
+    dP=invWcol*sqrtInvWjlim*Tq*dP;
     taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
     dP=taskNorm*dP;
     
@@ -201,10 +202,9 @@ while(k<=N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-       %error('Could not achieve task that complies with joint velocities limits')
+%        invWcol
+%        sqrtInvWjlim
        disp('Could not achieve task that complies with joint velocities limits')
-       invWcol
-       sqrtInvWjlim
        break
     end
     

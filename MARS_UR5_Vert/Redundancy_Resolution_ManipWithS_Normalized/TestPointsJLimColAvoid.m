@@ -180,9 +180,9 @@ switch(testN)
 %         roll=0*pi/180;
 %         pitch=0*pi/180;
 %         yaw=180*pi/180;        
-        tf=10;          
+        tf=25;          
         ts=0.05;        
-        tb=2;           
+        tb=5;           
         
     case 11
         % %Initial joints values
