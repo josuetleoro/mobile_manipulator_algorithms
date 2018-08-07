@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=13;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -202,8 +202,8 @@ while(k<=N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-%        invWcol
-%        sqrtInvWjlim
+       invWcol
+       sqrtInvWjlim
        disp('Could not achieve task that complies with joint velocities limits')
        break
     end
