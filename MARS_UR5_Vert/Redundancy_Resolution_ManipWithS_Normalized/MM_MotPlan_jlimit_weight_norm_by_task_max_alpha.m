@@ -8,8 +8,11 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=12;
+testN=3;
 TestPointsTaskNorm
+
+%Load the joints constraints
+JointConstraints
 
 %Set the step size for the gradient descent method and error weight. A
 %higher error weight might decrease the manipulability because of its
@@ -87,6 +90,7 @@ invWjlim=zeros(9,9);
 sqrtInvWjlim=zeros(9,9);
 Wmatrix=zeros(9,9);
 maxAlpha=zeros(1,N);
+minAlpha=zeros(1,N);
 clear jLimitGrad;
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
@@ -115,7 +119,6 @@ xi(:,1)=xi_des(:,1);
 quat_e=xi(4:7,1);
 
 %% Calculate the maximum velocity normalization matrix
-JointConstraints
 Tq=zeros(9,9);
 dqLimProd = 1;
 for i=1:9
@@ -135,7 +138,7 @@ end
 %%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
-while(k<N)
+while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
     
@@ -154,7 +157,7 @@ while(k<N)
     %dP=ur5_dP;
        
     %% Joint limit cost function gradient
-    Wjlim=jLimitGrad(q(2:end,k),q_limit);
+    Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
     sqrtInvWjlim=sqrt(invWjlim);
     %prod(diag(sqrtInvWjlim))
@@ -175,76 +178,63 @@ while(k<N)
     Wmatrix=sqrtInvWjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
     inv_JBar=pinv(JBarWeighted);
-    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
+    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
     dP=sqrtInvWjlim*Tq*dP;  
-    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
+    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
     dP=taskNorm*dP;
     
     %Calculate the internal motion
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;    
     
     %Calculate the maximum and minimum step size
-    [maxAlpha(k),minAlpha] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
-    if maxAlpha(k) < minAlpha
+    [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
+    if maxAlpha(k) < minAlpha(k)
        error('Could not achieve task that complies with joint velocities limits')
     end
-    %Saturate alpha in case is higher than the maximum
+    
+    %Saturate alpha in case is out of bounds
     if alpha > maxAlpha(k)
        alpha = maxAlpha(k);
     end
+    if alpha < minAlpha(k)
+        alpha = minAlpha(k);
+    end
     int_motion = alpha*int_motion;    
-    
-%     dxi_des(:,k)
-%     error_cont
-%     cont_input
-%     int_motion
-%     pause()
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
     eta(:,k)=sqrtInvWjlim*invTq*eta(:,k);
-%     eta(:,k)
-%     pause() 
     
-    %% update variables for next iteration
-        
     %Calculate the joints velocities
     dq(:,k)=S*eta(:,k);
-   
-    %Calculate the joint values
-    q(:,k+1)=q(:,k)+dq(:,k)*ts; 
     
-%     if q(5,k+1) < q_limit(4,1)
-%         eta(:,k)
-%         q(:,k)
-%         Wjlim
-%         Wmatrix
-%         break;
-%     end
+    %% update variables for next iteration       
+    if k < N
+        %Calculate the joint values
+        q(:,k+1)=q(:,k)+dq(:,k)*ts;
         
-    %Calculate the position of the end effector
-    T=MARS.forwardKin(q(:,k+1));
-    xi(1:3,k+1)=T(1:3,4);
-    Re=T(1:3,1:3);
-    quat_e=cartToQuat(Re);
-    %quat_e=rotm2quat(Re)';
-    xi(4:7,k+1)=quat_e;
+        %Calculate the position of the end effector
+        T=MARS.forwardKin(q(:,k+1));
+        xi(1:3,k+1)=T(1:3,4);
+        Re=T(1:3,1:3);
+        quat_e=cartToQuat(Re);
+        %quat_e=rotm2quat(Re)';
+        xi(4:7,k+1)=quat_e;
+    end
     
-    %increment the step
-    k=k+1; 
-    %pause()   
-end 
-dq(:,k)=dq(:,k-1);
+    %increment iteration step
+    k=k+1;  
+end
 toc
-%time=MotPlan.time;
-k
-N
+k=k-1;
 if k==N
     disp('Task completed')
 else
     disp('Task cannot be executed')
+    k
+    N
 end
 
 time=MotPlan.time(1:k);
@@ -295,13 +285,13 @@ mp_vel=eta(1:3,:);
 PlotEvolution
 
 %% Plot end effector path
-figure()
-plot3(xi(1,:),xi(2,:),xi(3,:));
-xlabel('x[m]')
-ylabel('y[m]')
-zlabel('z[m]')
-zlim([0,1.5])
-grid on;
+% figure()
+% plot3(xi(1,:),xi(2,:),xi(3,:));
+% xlabel('x[m]')
+% ylabel('y[m]')
+% zlabel('z[m]')
+% zlim([0,1.5])
+% grid on;
 
 %% Plot the evolution of quat
 % quat=xi(4:7,:);   
@@ -329,17 +319,6 @@ grid on;
 % xlabel('time(s)')
 % ylabel('quat_z')
 % title('quat_z')
-
-%% Show the mobile platform and end effector motion in 3D
-% Rd=zeros(4,4,length(time));
-% %Form the T6Traj matrix
-% for k=1:length(time)
-%    Rd(:,4,k)=[xi(1,k);xi(2,k);xi(3,k);1];
-%    Rd(1:3,1:3,k)=quatToRotMat(quat(:,k));  
-%    %Rd(1:3,1:3,k)=quat2rotm(quat(:,k)');
-% end
-% figure()
-% plotMobileManipulatorMotion(q(1:3,:),Rd,1);
 
 %% Save the redundancy resolution position and velocities
 % JointMotion.q_des=q;

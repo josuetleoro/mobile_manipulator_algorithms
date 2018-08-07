@@ -1,4 +1,4 @@
-close all
+% close all
 % clear all
 % %Open a dialog box to look for the motion data
 % uiopen();
@@ -18,6 +18,7 @@ plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',1.5); hold off
 legend('MM_{manip}','UR5_{manip}')
 xlabel('time(s)')
+title('Manipulability measure')
 grid on
 
 %% End Effector Position
@@ -242,6 +243,7 @@ plot(time,q(10,:),'LineWidth',1.5); hold on
 xlabel('time[s]')
 ylabel('q[rad]')
 legend('q_{1}','q_{2}','q_{3}','q_{4}','q_{5}','q_{6}')
+title('Arm joints'' positions')
 grid on
 
 %% UR5 joints velocities
@@ -294,6 +296,7 @@ plot(time,dq(10,:),'LineWidth',1.5); hold on
 xlabel('time[s]')
 ylabel('dq[rad/s]')
 legend('dq_{1}','dq_{2}','dq_{3}','dq_{4}','dq_{5}','dq_{6}')
+title('Arm joints'' velocities')
 grid on
 
 %% Mobile Platform Trajectory
