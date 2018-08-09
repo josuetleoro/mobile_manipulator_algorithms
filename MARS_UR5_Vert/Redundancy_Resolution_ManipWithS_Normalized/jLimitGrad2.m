@@ -12,51 +12,22 @@ qmin=limits(:,1);
 range=limits(:,2)-limits(:,1);
 ql=limits(:,1)+rho*range();
 qh=limits(:,2)-rho*range();
-beta=10;
+beta=1000;
 for i=3:9
-    if q(i) > qh(i)
-        gradH = abs(beta*(q(i)-qh(i))/range(i));
-    elseif q(i) < ql(i)
-        gradH = abs(beta*(q(i)-ql(i))/range(i));
-    else
-        gradH = 0;
-    end
-
-%     if q(i) > qh(i)
-%         gradH = atanh((q(i)-qh(i))/(qmax(i)-qh(i)));
-%     elseif q(i) < ql(i)
-%         gradH = atanh((ql(i)-q(i))/(ql(i)-qmin(i)));
-%     else
-%         gradH = 0;
-%     end
-
-%     if q(i) > qh(i)
-%         gradH = (exp(((q(i)-qh(i))/(qmax(i)-qh(i))))-1)/(qmax(i)-q(i));
-%     elseif q(i) < ql(i)
-%         gradH = (exp(((ql(i)-q(i))/(ql(i)-qmin(i))))-1)/(q(i)-qmin(i));
-%     else
-%         gradH = 0;
-%     end
-    
-
-    gradH = abs(gradH);
-
+    x = pi/range(i)*(q(i)-qmin(i))-pi/2;
+    gradH = abs(2*pi/(beta*range(i))*tan(x)*sec(x)^2);
     gradHDif = gradH - prevGradH(i);
-    prevGradH(i) = gradH;   
-    
+    prevGradH(i) = gradH;        
+%     if i == 5
+%         gradH
+%         gradHDif
+%     end
     if gradHDif > 0
         Wjlim(i,i) = 1 + gradH;
     else
         Wjlim(i,i) = 1;
     end
-    
-    if q(i) >= qmax(i)
-        Wjlim(i,i) = inf;
-    end
-    if q(i) <= qmin(i)
-        Wjlim(i,i) = inf;
-    end 
 end
-% Wjlim(3,3)
+% Wjlim
 % pause()
 end

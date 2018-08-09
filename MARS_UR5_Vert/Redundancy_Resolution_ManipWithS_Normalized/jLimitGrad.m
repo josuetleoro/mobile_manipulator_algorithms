@@ -5,7 +5,7 @@ if isempty(prevGradH)
 end
 q=qk(2:end);
 Wjlim=eye(9,9);
-beta=50;
+beta=50; %default 50
 for i=3:9
     gradH = abs((limits(i,2)-limits(i,1))^2*(2*q(i)-limits(i,2)-limits(i,1))/(4*(limits(i,2)-q(i))^2*(q(i)-limits(i,1))^2));
     gradH = gradH/beta;
