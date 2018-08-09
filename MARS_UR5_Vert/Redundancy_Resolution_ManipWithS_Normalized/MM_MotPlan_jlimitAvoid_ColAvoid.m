@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=13;
+testN=2;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -91,10 +91,9 @@ sqrtInvWjlim=zeros(9,9);
 Wmatrix=zeros(9,9);
 maxAlpha=zeros(1,N);
 minAlpha=zeros(1,N);
-clear jLimitGrad;
-clear prevGradP
-elbowz=zeros(1,N);
-dist=zeros(1,N);
+clear prevGradH prevGradPElbow prevGradPWrist;
+dist_elbow=zeros(1,N);
+dist_wrist=zeros(1,N);
 
 %Identity matrix of size delta=9, delta=M-1 =>10DOF-1
 Id=eye(9);
@@ -166,12 +165,16 @@ while(k<=N)
 %     sqrtInvWjlim
 %     pause()
     
-    %% Collision avoidance gradient
-    [Wcol, elbowz(k),dist(k)]=elbowColMat(q(:,k),1,70,1);
+    %% Collision avoidance weighting matrices
+    [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),1,70,1);
+    [Wcol_wrist, dist_wrist(k)]=wristColMat(q(:,k),1,70,1);
+
+    Wcol=Wcol_elbow*Wcol_wrist;
+    %Wcol=Wcol_elbow;
     %Wcol=eye(9,9);
     
     invWcol=inv(Wcol);
-    invWcol=sqrt(invWcol);    
+    %invWcol=sqrt(invWcol);    
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
@@ -278,17 +281,18 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-%% Plot elbow position
-% figure()
-% title('Elbow z pos')
-% plot(time(1:k),elbowz(1:k),'b','LineWidth',1.5); hold on;
-% xlabel('time(s)')
-% grid on
-
+%% Plot elbow collision distance
 figure()
-plot(time(1:k),dist(1:k),'b','LineWidth',1.5); hold on;
+plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
 xlabel('time(s)')
 title('Distance elbow to mob plat')
+grid on
+
+%% Plot wrist collision distance
+figure()
+plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
+xlabel('time(s)')
+title('Distance wrist to front of mob plat')
 grid on
 
 %% Plot all the variables
