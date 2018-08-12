@@ -12,10 +12,12 @@ qmin=limits(:,1);
 range=limits(:,2)-limits(:,1);
 ql=limits(:,1)+rho*range();
 qh=limits(:,2)-rho*range();
-beta=1000;
+beta=500;
 for i=3:9
     x = pi/range(i)*(q(i)-qmin(i))-pi/2;
-    gradH = abs(2*pi/(beta*range(i))*tan(x)*sec(x)^2);
+    %gradH = abs(2*pi/(beta*range(i))*tan(x)*sec(x)^2);
+    %P=1/beta*(sec(x)-1);
+    gradH = abs(pi/(beta*range(i))*sec(x)*tan(x));
     gradHDif = gradH - prevGradH(i);
     prevGradH(i) = gradH;        
     if gradHDif > 0
