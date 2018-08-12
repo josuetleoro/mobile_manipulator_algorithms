@@ -28,9 +28,7 @@ deltad_deltaq=1/dist*(Jelbow'*pa_pb);
 deltaP_deltad=-rho*exp(-alpha*dist)*dist^(-beta)*(beta/dist+alpha);
 gradP = abs(deltaP_deltad*deltad_deltaq);
 %dist
-% P=exp(-alpha*dist)*dist^(-beta)
-% pause()
-%gradP
+%P=exp(-alpha*dist)*dist^(-beta)
 Wcol=eye(9,9);
 gradPDif = gradP - prevGradPElbow;
 for i=3:5
@@ -40,7 +38,5 @@ for i=3:5
         Wcol(i,i) = 1;
     end
 end
-%Wcol(3,3)=1;
-%elbowz=pos_elbow(3);
 prevGradPElbow = gradP;
 end

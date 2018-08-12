@@ -18,10 +18,6 @@ for i=3:9
     gradH = abs(2*pi/(beta*range(i))*tan(x)*sec(x)^2);
     gradHDif = gradH - prevGradH(i);
     prevGradH(i) = gradH;        
-%     if i == 5
-%         gradH
-%         gradHDif
-%     end
     if gradHDif > 0
         Wjlim(i,i) = 1 + gradH;
     else

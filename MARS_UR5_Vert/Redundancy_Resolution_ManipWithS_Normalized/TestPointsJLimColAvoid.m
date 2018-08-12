@@ -11,7 +11,7 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
         
         %Desired Pose
-        Pos=[3;-0.1091;0.12];
+        Pos=[3;-0.1091;0.18];
         roll=0*pi/180;
         pitch=180*pi/180;
         yaw=0*pi/180;       
@@ -29,13 +29,13 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos=[3;0.1091;0.22];
+        Pos=[3;0.1091;0.24];
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
         tf=20;          
         ts=0.05;        
-        tb=5;           
+        tb=3;           
         
     case 3 
         %Initial joints values
@@ -65,7 +65,7 @@ switch(testN)
         %qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
         
         %Desired Pose
-        Pos=[1.0;-0.8;0.5];
+        Pos=[1.0;-0.8;0.3];
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
@@ -82,13 +82,13 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
-        Pos=[-1.2;-1.2;0.6];
+        Pos=[-1.2;-1.2;0.15];
         roll=180*pi/180;
         pitch=0*pi/180;
         yaw=0*pi/180;
-        tf=12;          
+        tf=14;          
         ts=0.05;        
-        tb=3;           
+        tb=4;           
         
     case 6 
         %Initial joints values
@@ -154,7 +154,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos=[0.5;-3;0.10];
+        Pos=[0.5;-3;0.1];
         roll=-180*pi/180;
         pitch=90*pi/180; %-90*pi/180 cannot be executed with high lambda
         yaw=-90*pi/180;
@@ -228,11 +228,28 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
        
         %Desired Pose
-        Pos=[2;3;1.4];
+        Pos=[2;3;0.15];
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=12;          
+        tf=13;          
         ts=0.05;        
-        tb=3;           
+        tb=4;
+        
+    case 14 
+        %Initial joints values
+        tx=0;
+        ty=0;
+        phi_mp=0;
+        tz=0.05;
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
+    
+        %Desired Pose
+        Pos=[-0.3;0;0.07];
+        roll=0*pi/180;
+        pitch=180*pi/180;
+        yaw=0*pi/180;   
+        tf=8;          
+        ts=0.05;        
+        tb=2;
 end
