@@ -167,8 +167,8 @@ while(k<=N)
 %     pause()
     
     %% Collision avoidance weighting matrices
-    [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),1,70,1);
-    [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),1,100,1);
+    [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
+    [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     
     Wcol=Wcol_elbow*Wcol_wrist;
     %Wcol=(Wcol_elbow+Wcol_wrist)/2;
@@ -291,20 +291,20 @@ title('Distance elbow to mob plat')
 grid on
 
 %% Plot wrist collision distance
-% figure()
-% plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
-% xlabel('time(s)')
-% title('Distance wrist to front of mob plat')
-% grid on
+figure()
+plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
+xlabel('time(s)')
+title('Distance wrist to front of mob plat')
+grid on
 
 %% Plot wrist x and z position
-figure()
-plot(time(1:k),wrist_pos(1,1:k),'b','LineWidth',1.5); hold on;
-plot(time(1:k),wrist_pos(3,1:k),'r','LineWidth',1.5); hold on;
-xlabel('time(s)')
-title('Wrist position')
-legend('x','z');
-grid on
+% figure()
+% plot(time(1:k),wrist_pos(1,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),wrist_pos(3,1:k),'r','LineWidth',1.5); hold on;
+% xlabel('time(s)')
+% title('Wrist position')
+% legend('x','z');
+% grid on
 
 %% Plot all the variables
 % Adjust the manipulability measures

@@ -24,7 +24,7 @@ Jwrist = [0 0 0 -0.1961250000e0 * sin(q3 + q1 + q2) - 0.1961250000e0 * sin(-q3 +
 %% Calculate the collision gradient
 Wcol=eye(9,9);
 pa_pb=(wrist_pos(1)-wrist_safe_dist);
-dist_signed = wrist_pos(1);
+dist_signed = pa_pb;
 dist = norm(pa_pb);
 % For the wrist calculate the gradient only if the wrist height is below a 
 % safe distance, otherwise use identity matrix
