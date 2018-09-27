@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=14;
+testN=5;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -158,7 +158,8 @@ while(k<=N)
     dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
     %dP=MM_dP;
     %dP=ur5_dP;
-       
+    dP=S'*dP;
+    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
     invWjlim=inv(Wjlim);
