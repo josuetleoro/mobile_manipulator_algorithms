@@ -21,7 +21,7 @@ xlabel('time(s)')
 title('Manipulability measure')
 grid on
 
-%% End Effector Position
+%% End Effector Pose
 figure()
 subplot(1,3,1)
 plot(time,xi(1,:),'LineWidth',1.5); grid on
