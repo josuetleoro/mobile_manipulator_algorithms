@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=1;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -19,14 +19,16 @@ JointConstraints
 %influence on the motion.
 
 % Use Fs=20Hz
-ts=0.05;  %Overwrite ts
-alpha=20;  %Best alpha=20
-lambda=20.0; %Overwrite  lambda best=20.0
+ts=0.05;    %Overwrite ts
+alpha=20;   %Best alpha=20
+kappa=20;  %Position error weight
+lambda=0.5;   %Orientation error weigth
 
 % Use Fs=100Hz
 % ts=0.005;  %Overwrite ts
 % alpha=20;   %Best alpha=20
-% lambda=20.0; %Overwrite lambda best=2.0
+% kappa=20;  %Position error weight
+% lambda=0.5;   %Orientation error weigth
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -75,8 +77,8 @@ MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
-Werror=lambda*eye(6);
-Werror(4:6,4:6)=0.1*eye(3);
+Werror=kappa*eye(6);
+Werror(4:6,4:6)=lambda*eye(3);
 
 %The Wjlim weight matrix
 maxAlpha=zeros(1,N);
@@ -113,10 +115,8 @@ quat_e=xi(4:7,1);
 
 %% Calculate the maximum velocity normalization matrix
 Tq=zeros(9,9);
-dqLimProd = 1;
 for i=1:9
     Tq(i,i)=1/dq_limit(i);
-    dqLimProd=dqLimProd*dq_limit(i);
 end
 invTq=inv(Tq);
 
@@ -241,17 +241,22 @@ end
 time=MotPlan.time(1:k);
 
 %Error of the end effector position
-fprintf('Desired Final Position\n');
-xi_des(:,k)
-fprintf('Obtained Final Position\n');
-xi(:,k)
+fprintf('\nDesired Final Pose');
+xi_des(:,k)'
+fprintf('\nObtained Final Pose');
+xi(:,k)'
 
 xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
-fprintf('Final Position Error\n');
-xi_pos_error(:,end)
-fprintf('Norm error: %fmm\n',norm(xi_pos_error(:,end))*1000);
+fprintf('\nFinal Position Error:');
+xi_pos_error(:,end)'
+fprintf('Pos norm error: %fmm\n',norm(xi_pos_error(:,end))*1000');
 
-fprintf('Desired Final Transformation Matrix\n');
+fprintf('\nFinal Orientation Error');
+xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
+xi_orient_error
+fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
+
+fprintf('\nDesired Final Transformation Matrix\n');
 Tf
 
 fprintf('Obtained Final Transformation Matrix\n');

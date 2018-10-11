@@ -8,7 +8,8 @@ switch(testN)
         ty=0;
         phi_mp=0;
         tz=0.2;
-        qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
+        %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0]; 
+        qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
         Pos=[3;-0.1091;0.18];
