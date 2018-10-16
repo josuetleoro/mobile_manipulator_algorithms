@@ -1,4 +1,4 @@
-clear all
+%clear all
 close all
 
 %Add the MMUR5 path to use the class MMUR5
@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=6;
 TestPoints
 
 %Load the joints constraints
@@ -22,7 +22,7 @@ JointConstraints
 ts=0.05;    %Overwrite ts
 alpha=20;   %Best alpha=20
 kappa=20;  %Position error weight
-lambda=0.1;   %Orientation error weigth
+lambda=0.5;   %Orientation error weigth
 
 % Use Fs=100Hz
 % ts=0.005;  %Overwrite ts
@@ -34,35 +34,27 @@ lambda=0.1;   %Orientation error weigth
 q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
 T0=MARS.forwardKin(q0);
-Pos_0=T0(1:3,4);
-quat_0=cartToQuat(T0(1:3,1:3));
+Pos_0=MARS.forwardKin(q(:,k+1));
+Re=T(1:3,1:3);
+quat_e=cartToQuat(Re);
 
 %% Get the desired pose transformation matrix %%%
-Rf=quat2rotm(quat_f');
+Rf=quat2rotm(quat_d);
 Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=Rf;
-Tf(1:3,4)=Pos_f;
-
-% Tf2=zeros(4,4);
-% Tf2(4,4)=1;
-% Tf2(1:3,1:3)=Rf2;
-% Tf2(1:3,4)=Pos_f;
-% Tf2(2,4)=Tf2(2,4)+2;
-% Tf2
+Tf(1:3,4)=Pos_d;
 
 T0
 Tf
-
 
 %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
 % % figure()
 % %Mobile platform initial pos
 % plotFrame(eye(4),2,'mp_0'); hold on;
 % %plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
-% plotFrame(T0,2,'T0'); hold on;
-% plotFrame(Tf,2,'Tf'); 
-% plotFrame(Tf2,2,'Tf2');
+% plotFrame(T0,2,'T0'); 
+% plotFrame(Tf,2,'Tf'); hold on;
 % xlabel('x')
 % ylabel('y')
 % zlabel('z')
@@ -74,7 +66,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=TrajPlanQuatPolynomials(Pos_0,quat_0,Pos_f,quat_f,ts,tb,tf);
+MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 

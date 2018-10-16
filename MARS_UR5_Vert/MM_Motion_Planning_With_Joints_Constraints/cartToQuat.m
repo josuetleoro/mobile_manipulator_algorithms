@@ -72,6 +72,6 @@
 % q=[w;x;y;z];
 
 %%%%%%%%%%%%%% Matlab Aerospace toolbox %%%%%%%%%%%%
-quat = rotm2quat(R);
-q=quat';
+quat_aux = rotm2quat(R);
+q=quat_aux';
  end

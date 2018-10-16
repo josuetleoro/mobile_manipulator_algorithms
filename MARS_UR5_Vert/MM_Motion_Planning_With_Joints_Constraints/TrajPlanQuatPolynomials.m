@@ -1,7 +1,4 @@
-function MotPlan=TrajPlanQuatPolynomials(T0,Tf,ts,tb,tf)
-
-pos0=T0(1:3,4);
-posf=Tf(1:3,4);
+function MotPlan=TrajPlanQuatPolynomials(pos0,q0,posf,qf,ts,tb,tf)
 
 %% Motion planning for positon (x,y,z)
 [x,dx,~]=ParabBlend(pos0(1),posf(1),ts,tb,tf);
@@ -9,16 +6,6 @@ posf=Tf(1:3,4);
 [z,dz,~]=ParabBlend(pos0(3),posf(3),ts,tb,tf);
 
 %% Motion planning for orientation using quaternion polynomial
-%Initial Orientation
-%Transform the rotation matrix to a quaternion
-q0=cartToQuat(T0(1:3,1:3));
-%q0=rotm2quat(T0(1:3,1:3))';
-
-%Final Orientation
-%Transform the rotation matrix to a quaternion
-qf=cartToQuat(Tf(1:3,1:3));
-%qf=qf/norm(qf);
-
 %Create the quaternion objects
 Q0=Quat(q0');
 Qf=Quat(qf');
