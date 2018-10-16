@@ -253,4 +253,22 @@ switch(testN)
         tf=10;          
         ts=0.05;        
         tb=2;
+     case 15
+        %Initial joints values
+        tx=0;
+        ty=0;
+        phi_mp=0;
+        tz=0.05;
+        %qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
+        qa=[0.0;-0.40;1.06;3*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
+        
+        %Desired Pose
+        Pos=[0.7221;3;0.7246];
+        roll=-90*pi/180;
+        pitch=0*pi/180;
+        yaw=-82.8152*pi/180;
+        tf=10;          
+        ts=0.05;         
+        tb=2;
+        
 end

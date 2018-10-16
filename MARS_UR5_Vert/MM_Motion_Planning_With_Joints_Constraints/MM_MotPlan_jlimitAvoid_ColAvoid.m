@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=2;
 TestPointsJLimColAvoid
 
 %Load the joints constraints
@@ -150,11 +150,14 @@ while(k<=N)
     %dP=ur5_dP;                                                             %Robot arm alone
     dP=S'*dP;
     
+    MM_man_measure(k)=sqrt(det(JBar*JBar'));
+    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
-    invWjlim=inv(Wjlim);
-    invWjlim=sqrt(invWjlim);
+    %Wjlim=eye(9,9);
     
+    invWjlim=inv(Wjlim);
+    invWjlim=sqrt(invWjlim);    
     %% Collision avoidance weighting matrices
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
@@ -270,19 +273,19 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-%% Plot elbow collision distance
-figure()
-plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
-xlabel('time(s)')
-title('Distance elbow to mob plat')
-grid on
-
-%% Plot wrist collision distance
-figure()
-plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
-xlabel('time(s)')
-title('Distance wrist to front of mob plat')
-grid on
+% %% Plot elbow collision distance
+% figure()
+% plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
+% xlabel('time(s)')
+% title('Distance elbow to mob plat')
+% grid on
+% 
+% %% Plot wrist collision distance
+% figure()
+% plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
+% xlabel('time(s)')
+% title('Distance wrist to front of mob plat')
+% grid on
 
 %% Plot all the variables
 % Adjust the manipulability measures

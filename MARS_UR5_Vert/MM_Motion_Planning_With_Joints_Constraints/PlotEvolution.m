@@ -21,52 +21,52 @@ xlabel('time(s)')
 title('Manipulability measure')
 grid on
 
-%% End Effector Pose
-figure()
-subplot(1,3,1)
-plot(time,xi(1,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('End effector pos x(m)')
-
-subplot(1,3,2)
-plot(time,xi(2,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('End effector pos y(m)')
-title('End effector position')
-
-subplot(1,3,3)
-plot(time,xi(3,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('End effector pos z(m)')
-
-figure()
-subplot(2,2,1)
-plot(time,xi(4,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('quat_w')
-tix=get(gca,'ytick')';
-set(gca,'yticklabel',num2str(tix,'%.3f'))
-
-subplot(2,2,2)
-plot(time,xi(5,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('quat_x')
-tix=get(gca,'ytick')';
-set(gca,'yticklabel',num2str(tix,'%.3f'))
-
-subplot(2,2,3)
-plot(time,xi(6,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('quat_y')
-tix=get(gca,'ytick')';
-set(gca,'yticklabel',num2str(tix,'%.3f'))
-
-subplot(2,2,4)
-plot(time,xi(6,:),'LineWidth',1.5); grid on
-xlabel('time(s)')
-ylabel('quat_z')
-tix=get(gca,'ytick')';
-set(gca,'yticklabel',num2str(tix,'%.3f'))
+% %% End Effector Pose
+% figure()
+% subplot(1,3,1)
+% plot(time,xi(1,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('End effector pos x(m)')
+% 
+% subplot(1,3,2)
+% plot(time,xi(2,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('End effector pos y(m)')
+% title('End effector position')
+% 
+% subplot(1,3,3)
+% plot(time,xi(3,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('End effector pos z(m)')
+% 
+% figure()
+% subplot(2,2,1)
+% plot(time,xi(4,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('quat_w')
+% tix=get(gca,'ytick')';
+% set(gca,'yticklabel',num2str(tix,'%.3f'))
+% 
+% subplot(2,2,2)
+% plot(time,xi(5,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('quat_x')
+% tix=get(gca,'ytick')';
+% set(gca,'yticklabel',num2str(tix,'%.3f'))
+% 
+% subplot(2,2,3)
+% plot(time,xi(6,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('quat_y')
+% tix=get(gca,'ytick')';
+% set(gca,'yticklabel',num2str(tix,'%.3f'))
+% 
+% subplot(2,2,4)
+% plot(time,xi(6,:),'LineWidth',1.5); grid on
+% xlabel('time(s)')
+% ylabel('quat_z')
+% tix=get(gca,'ytick')';
+% set(gca,'yticklabel',num2str(tix,'%.3f'))
 
 %% Position error
 figure()
