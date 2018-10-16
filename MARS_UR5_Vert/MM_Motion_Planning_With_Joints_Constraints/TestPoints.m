@@ -4,6 +4,7 @@
 % Transformation from euler angles to axes angle
 % Rf2=eul2rotm([yaw pitch roll],'ZYX');
 % rotm2axang(Rf2)
+% pause()
 
 
 switch(testN)
@@ -273,19 +274,25 @@ switch(testN)
         %Initial joints values
         tx=0;
         ty=0;
-        phi_mp=0;
+        phi_mp=pi/2;
         tz=0.05;
-        %qa=[0.0;-pi/2;3*pi/4;pi/4;-pi/2;0.0];
-        qa=[0.0;-0.40;1.06;3*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
+        %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
+        qa=[-pi/2;-pi/4;pi/2;3*pi/4;-pi/2;0.0];
         
         %Desired Pose
         Pos_f=[0.7221;3;0.7246];
+%         quat_f=axang2quat([-1 1 1 120*pi/180])';
+%         roll=-90*pi/180;
+%         pitch=90*pi/180;
+%         yaw=0*pi/180;
+        %Orientation with a problem of mobile platform rotation        
         quat_f=axang2quat([-1 1 -1 120*pi/180])';
         roll=-90*pi/180;
         pitch=0*pi/180;
-        yaw=-90*pi/180;
-        tf=10;          
+        yaw=-90*pi/180;       
+        
+        tf=12;          
         ts=0.05;         
-        tb=2;
+        tb=3;
         
 end
