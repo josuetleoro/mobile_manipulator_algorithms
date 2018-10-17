@@ -2,7 +2,7 @@ clear all
 clc
 
 %Open a dialog box to look for the motion data
-uiopen();
+uiopen('*.mat');
 
 %Determine the number of iterations
 n=size(q,2);

@@ -2,7 +2,8 @@
 q_limit=[-Inf, Inf;
          -Inf, Inf;
            0.0, 0.4;
-          -100*pi/180, 0.01;
+          %-100*pi/180, 0.0175;
+          -100*pi/180, -pi/3;
           -pi/2, 25*pi/180;         %Needs review
           -pi/2, 150*pi/180;        %Needs review
           -2*pi, 2*pi;         
@@ -17,17 +18,7 @@ dq_limit=[0.8;
           pi;
           pi;
           pi;
-          pi];      
-
-% dq_limit=[4.0;
-%           2*pi;
-%           1.0;
-%           2*pi;
-%           2*pi;
-%           2*pi;
-%           2*pi;
-%           2*pi;
-%           2*pi];  
+          pi]; 
       
 ddq_limit=[2.0;
            4.0;

@@ -69,7 +69,7 @@ Werror(4:6,4:6)=0.01*eye(3);
 %The Wjlim weight matrix
 Wjlim=eye(9,9);
 invWjlim=zeros(9,9);
-sqrtInvWjlim=zeros(9,9);
+Wjlim=zeros(9,9);
 Wmatrix=zeros(9,9);
 maxAlpha=zeros(1,N);
 clear jLimitGrad;
@@ -120,7 +120,7 @@ end
 %%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
-while(k<N)
+while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
     
@@ -133,16 +133,23 @@ while(k<N)
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
-    ur5_man_measure(k)=ur5_manip;    
-    dP=MM_dP*ur5_manip+ur5_dP*MM_manip;
-    %dP=MM_dP;
-    %dP=ur5_dP;
-       
+    ur5_man_measure(k)=ur5_manip;
+    dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
+    %dP=MM_dP;                                                              %Mobile manipulator system
+    %dP=ur5_dP;                                                             %Robot arm alone
+    dP=S'*dP;
+    
+    MM_man_measure(k)=sqrt(det(JBar*JBar'));
+    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
-    invWjlim=inv(Wjlim);
-    sqrtInvWjlim=sqrt(invWjlim);
-    %prod(diag(sqrtInvWjlim))
+    %Wjlim=eye(9,9);    
+    
+    %% Collision avoidance weighting matrices
+    [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
+    [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
+    Wcol=Wcol_elbow*Wcol_wrist;
+    %Wcol=eye(9,9);
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
@@ -157,107 +164,98 @@ while(k<N)
     errorRate(4:6,1)=eO;
     error_cont=Werror*errorRate;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
-    Wmatrix=sqrtInvWjlim*invTq;
+    Wmatrix=Wcol*Wjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
     inv_JBar=pinv(JBarWeighted);
-    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);
+    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
-    dP=sqrtInvWjlim*Tq*dP;  
-    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));    
-    dP=taskNorm*dP;
-    
+    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
+    dP=taskNorm*dP;    
     %Calculate the internal motion
-    int_motion=(Id-inv_JBar*JBarWeighted)*dP;    
-    
+    dP=Wcol*Wjlim*dP;
+    int_motion=(Id-inv_JBar*JBarWeighted)*dP;
+   
     %Calculate the maximum and minimum step size
-    [maxAlpha(k),minAlpha] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
-    if maxAlpha(k) < minAlpha
-       error('Could not achieve task that complies with joint velocities limits')
+    [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
+    if maxAlpha(k) < minAlpha(k)
+       diag(Wcol)
+       diag(invWjlim)
+       disp('Could not achieve task that complies with joint velocities limits')
+       break
     end
-    %Saturate alpha in case is higher than the maximum
+    
+    %Saturate alpha in case is out of bounds
     if alpha > maxAlpha(k)
        alpha = maxAlpha(k);
     end
+    if alpha < minAlpha(k)
+        alpha = minAlpha(k);
+    end
     int_motion = alpha*int_motion;    
-    
-%     dxi_des(:,k)
-%     error_cont
-%     cont_input
-%     int_motion
-%     pause()
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
-    eta(:,k)=sqrtInvWjlim*invTq*eta(:,k);
-%     eta(:,k)
-%     pause() 
     
-    %% update variables for next iteration
-        
     %Calculate the joints velocities
-    dq(:,k)=S*eta(:,k);
-   
-    %Calculate the joint values
-    q(:,k+1)=q(:,k)+dq(:,k)*ts; 
+    dq(:,k)=S*Wcol*Wjlim*invTq*eta(:,k);
     
-%     if q(5,k+1) < q_limit(4,1)
-%         eta(:,k)
-%         q(:,k)
-%         Wjlim
-%         Wmatrix
-%         break;
-%     end
+    %% update variables for next iteration       
+    if k < N
+        %Calculate the joint values
+        q(:,k+1)=q(:,k)+dq(:,k)*ts;
         
-    %Calculate the position of the end effector
-    T=MARS.forwardKin(q(:,k+1));
-    xi(1:3,k+1)=T(1:3,4);
-    Re=T(1:3,1:3);
-    quat_e=cartToQuat(Re);
-    %quat_e=rotm2quat(Re)';
-    xi(4:7,k+1)=quat_e;
+        %Calculate the position of the end effector
+        T=MARS.forwardKin(q(:,k+1));
+        xi(1:3,k+1)=T(1:3,4);
+        Re=T(1:3,1:3);
+        quat_e=cartToQuat(Re);
+        xi(4:7,k+1)=quat_e;
+    end
     
-    %increment the step
-    k=k+1; 
-    %pause()   
-end 
-dq(:,k)=dq(:,k-1);
+    %increment iteration step
+    k=k+1;  
+end
 toc
-%time=MotPlan.time;
-k
-N
+k=k-1;
 if k==N
     disp('Task completed')
 else
     disp('Task cannot be executed')
+    k
+    N
 end
-
 time=MotPlan.time(1:k);
 
 %Error of the end effector position
-fprintf('Desired Final Position\n');
-xi_des(:,k)
-fprintf('Obtained Final Position\n');
-xi(:,k)
+fprintf('\nDesired Final Pose');
+xi_des(:,k)'
+fprintf('\nObtained Final Pose');
+xi(:,k)'
 
 xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
-fprintf('Final Position Error\n');
-xi_pos_error(:,end)
-fprintf('Norm error: %fmm\n',norm(xi_pos_error(:,end))*1000);
+fprintf('\nFinal Position Error:');
+xi_pos_error(:,end)'
+fprintf('Pos norm error: %fmm\n',norm(xi_pos_error(:,end))*1000');
+
+fprintf('\nFinal Orientation Error');
+xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
+xi_orient_error
+fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
+
+fprintf('\nDesired Final Transformation Matrix\n');
+Tf
+
+fprintf('Obtained Final Transformation Matrix\n');
+TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
+TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
+TfObtained
 
 if k < N
     MM_man_measure = MM_man_measure(1:k);
     ur5_man_measure = ur5_man_measure(1:k);
     maxAlpha = maxAlpha(1:k);
 end
-
-%% Plot max alpha evolution
-% maxAlpha(end) = maxAlpha(end-1);
-% figure()
-% title('Max alpha')
-% plot(time,maxAlpha,'b','LineWidth',1.5); hold on;
-% xlabel('time(s)')
-% grid on
 
 %% Plot all the variables
 % Adjust the manipulability measures
@@ -279,44 +277,6 @@ ylabel('y[m]')
 zlabel('z[m]')
 zlim([0,1.5])
 grid on;
-
-%% Plot the evolution of quat
-% quat=xi(4:7,:);   
-% figure()
-% subplot(2,2,1)
-% plot(time,quat(1,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_w')
-% title('quat_w')
-% 
-% subplot(2,2,2)
-% plot(time,quat(2,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_x')
-% title('quat_x')
-% 
-% subplot(2,2,3)
-% plot(time,quat(3,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_y')
-% title('quat_y')
-% 
-% subplot(2,2,4)
-% plot(time,quat(4,:),'r','LineWidth',2); grid on
-% xlabel('time(s)')
-% ylabel('quat_z')
-% title('quat_z')
-
-%% Show the mobile platform and end effector motion in 3D
-% Rd=zeros(4,4,length(time));
-% %Form the T6Traj matrix
-% for k=1:length(time)
-%    Rd(:,4,k)=[xi(1,k);xi(2,k);xi(3,k);1];
-%    Rd(1:3,1:3,k)=quatToRotMat(quat(:,k));  
-%    %Rd(1:3,1:3,k)=quat2rotm(quat(:,k)');
-% end
-% figure()
-% plotMobileManipulatorMotion(q(1:3,:),Rd,1);
 
 %% Save the redundancy resolution position and velocities
 % JointMotion.q_des=q;

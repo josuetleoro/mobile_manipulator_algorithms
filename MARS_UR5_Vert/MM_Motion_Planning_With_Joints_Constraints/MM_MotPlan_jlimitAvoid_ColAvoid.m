@@ -20,8 +20,8 @@ JointConstraints
 
 % Use Fs=20Hz
 ts=0.05;    %Overwrite ts
-alpha=20;   %Best alpha=20
-kappa=20;  %Position error weight
+alpha=5;   %Best alpha=5
+kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
 % Use Fs=100Hz
@@ -50,10 +50,8 @@ Tf(1:3,4)=Pos_f;
 % Tf2(1:3,4)=Pos_f;
 % Tf2(2,4)=Tf2(2,4)+2;
 % Tf2
-
 T0
 Tf
-
 
 %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
 % % figure()
@@ -165,18 +163,14 @@ while(k<=N)
     
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
-    %Wjlim=eye(9,9);
+    %Wjlim=eye(9,9);    
     
-    invWjlim=inv(Wjlim);
-    invWjlim=sqrt(invWjlim);    
     %% Collision avoidance weighting matrices
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     Wcol=Wcol_elbow*Wcol_wrist;
     %Wcol=eye(9,9);
     
-    invWcol=inv(Wcol);
-    invWcol=sqrt(invWcol);        
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
@@ -190,7 +184,7 @@ while(k<=N)
     errorRate(4:6,1)=eO;
     error_cont=Werror*errorRate;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
-    Wmatrix=invWcol*invWjlim*invTq;
+    Wmatrix=Wcol*Wjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
     inv_JBar=pinv(JBarWeighted);
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
@@ -199,14 +193,14 @@ while(k<=N)
     taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
     dP=taskNorm*dP;    
     %Calculate the internal motion
-    dP=invWcol*invWjlim*dP;
+    dP=Wcol*Wjlim*dP;
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;
    
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-       diag(invWcol)
-       diag(invWjlim)
+       diag(Wcol)
+       diag(Wjlim)
        disp('Could not achieve task that complies with joint velocities limits')
        break
     end
@@ -224,7 +218,7 @@ while(k<=N)
     eta(:,k)=cont_input+int_motion;    
     
     %Calculate the joints velocities
-    dq(:,k)=S*invWcol*invWjlim*invTq*eta(:,k);
+    dq(:,k)=S*Wcol*Wjlim*invTq*eta(:,k);
     
     %% update variables for next iteration       
     if k < N
@@ -251,7 +245,6 @@ else
     k
     N
 end
-
 time=MotPlan.time(1:k);
 
 %Error of the end effector position

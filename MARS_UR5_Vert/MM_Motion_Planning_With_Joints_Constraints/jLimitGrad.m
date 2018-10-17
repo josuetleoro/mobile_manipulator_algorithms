@@ -12,7 +12,7 @@ for i=3:9
     gradHDif = gradH - prevGradH(i);
     prevGradH(i) = gradH;
     if gradHDif >= 0
-        Wjlim(i,i) = 1 + gradH;
+        Wjlim(i,i) = 1/sqrt(1 + gradH);
     else
         Wjlim(i,i) = 1;
     end
