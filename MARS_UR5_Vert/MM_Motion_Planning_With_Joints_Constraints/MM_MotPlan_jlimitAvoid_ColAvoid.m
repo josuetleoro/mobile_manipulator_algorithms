@@ -20,7 +20,7 @@ JointConstraints
 
 % Use Fs=20Hz
 ts=0.05;    %Overwrite ts
-alpha=5;   %Best alpha=5
+alpha=3;   %Best alpha=3
 kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
@@ -151,7 +151,7 @@ while(k<=N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %% Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
