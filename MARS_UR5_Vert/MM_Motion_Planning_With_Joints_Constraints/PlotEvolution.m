@@ -15,8 +15,9 @@ Tf=MARS.forwardKin(qf);
 
 figure()
 plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
-plot(time,ur5_man_measure,'r','LineWidth',1.5); hold off
-legend('MM_{manip}','UR5_{manip}')
+plot(time,ur5_man_measure,'r','LineWidth',1.5);
+plot(time,W_measure,'g','LineWidth',1.5); hold off
+legend('MM_{manip}','UR5_{manip}','W_{manip}')
 xlabel('time(s)')
 title('Manipulability measure')
 grid on

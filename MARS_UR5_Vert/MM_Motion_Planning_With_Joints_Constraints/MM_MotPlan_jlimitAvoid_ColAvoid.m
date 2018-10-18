@@ -18,17 +18,17 @@ JointConstraints
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-% Use Fs=20Hz
-ts=0.05;    %Overwrite ts
+%Use Fs=20Hz
+ts=1/20;   
 alpha=3;   %Best alpha=3
 kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
-% Use Fs=100Hz
-% ts=0.005;  %Overwrite ts
-% alpha=20;   %Best alpha=20
-% kappa=20;  %Position error weight
-% lambda=0.5;   %Orientation error weigth
+% %Use Fs=100Hz
+% ts=1/100;  %Overwrite ts
+% alpha=3;   %Best alpha=3
+% kappa=5;   %Position error weight
+% lambda=0.1;   %Orientation error weigth
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -82,11 +82,13 @@ xi=zeros(7,N);
 J = zeros(6,9);
 eta=zeros(9,N);
 dq=zeros(10,N);
+W_measure=zeros(1,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
-Werror=kappa*eye(6);
+Werror=zeros(6,6);
+Werror(1:3,1:3)=kappa*eye(3);
 Werror(4:6,4:6)=lambda*eye(3);
 
 %The Wjlim weight matrix
@@ -140,6 +142,10 @@ end
 %%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
+trans=sigmoid(MotPlan.time,2*tf/3,2);
+errorPrev=zeros(6,1);
+ierror=zeros(6,1);
+error_cont=zeros(6,1);
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -154,8 +160,17 @@ while(k<=N)
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
+
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
-    %dP=MM_dP;                                                              %Mobile manipulator system
+    W_measure(k)=MM_manip*ur5_manip;
+    
+%     dP=(1-trans(k))*(ur5_manip*MM_dP+MM_manip*ur5_dP)+trans(k)*ur5_dP;    %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-trans(k))*MM_manip*ur5_manip+trans(k)*ur5_manip;      %Using product and transition
+
+%     dP=(1-trans(k))*MM_dP+trans(k)*ur5_dP;                                %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-trans(k))*MM_manip+trans(k)*ur5_manip;                %With transition
+
+    %dP=MM_dP;                                                              %Mobile manipulator system alone
     %dP=ur5_dP;                                                             %Robot arm alone
     dP=S'*dP;
     
@@ -263,13 +278,13 @@ xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
 xi_orient_error
 fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
 
-fprintf('\nDesired Final Transformation Matrix\n');
-Tf
-
-fprintf('Obtained Final Transformation Matrix\n');
-TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
-TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
-TfObtained
+% fprintf('\nDesired Final Transformation Matrix\n');
+% Tf
+% 
+% fprintf('Obtained Final Transformation Matrix\n');
+% TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
+% TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
+% TfObtained
 
 if k < N
     MM_man_measure = MM_man_measure(1:k);
