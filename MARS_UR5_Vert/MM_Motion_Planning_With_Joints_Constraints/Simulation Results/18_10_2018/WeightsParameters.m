@@ -3,13 +3,13 @@
 %influence on the motion.
 
 % Use Fs=20Hz
-ts=0.05;    %Overwrite ts
-alpha=3;   %Best alpha=3
+ts=1/20;   
+alpha=5;   %Best alpha=5
 kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
 % Use Fs=100Hz
 % ts=0.005;  %Overwrite ts
-% alpha=20;   %Best alpha=20
-% kappa=20;  %Position error weight
-% lambda=0.5;   %Orientation error weigth
+% alpha=8;   %Best alpha=8
+% kappa=10;  %Position error weight
+% lambda=0.1;   %Orientation error weigth

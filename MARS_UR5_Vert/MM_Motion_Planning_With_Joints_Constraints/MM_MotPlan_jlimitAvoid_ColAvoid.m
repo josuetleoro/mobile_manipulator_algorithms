@@ -20,14 +20,14 @@ JointConstraints
 
 %Use Fs=20Hz
 ts=1/20;   
-alpha=3;   %Best alpha=3
+alpha=5;   %Best alpha=5
 kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
 % %Use Fs=100Hz
 % ts=1/100;  %Overwrite ts
-% alpha=3;   %Best alpha=3
-% kappa=5;   %Position error weight
+% alpha=5;   %Best alpha=5
+% kappa=10;   %Position error weight
 % lambda=0.1;   %Orientation error weigth
 
 %% Initial values of the generalized coordinates of the MM
@@ -173,8 +173,6 @@ while(k<=N)
     %dP=MM_dP;                                                              %Mobile manipulator system alone
     %dP=ur5_dP;                                                             %Robot arm alone
     dP=S'*dP;
-    
-    MM_man_measure(k)=sqrt(det(JBar*JBar'));
     
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
