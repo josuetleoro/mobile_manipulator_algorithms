@@ -20,16 +20,19 @@ JointConstraints
 
 %Use Fs=20Hz
 ts=1/20;   
-alpha=3;   %Best alpha=3
-kappa=2;  %Position error weight
-lambda=0.3;   %Orientation error weigth
-miu=10;
+alpha=6;   
+Kp=10;
+Kd=0.0;
+Ki=50;
+linAngRel=1/40;
 
 % %Use Fs=100Hz
+% alpha=6;
 % ts=1/100;  %Overwrite ts
-% alpha=3;   %Best alpha=3
-% kappa=5;   %Position error weight
-% lambda=0.1;   %Orientation error weigth
+% Kp=10;
+% Kd=0.1;
+% Ki=16;
+% linAngRel=1/40;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -89,16 +92,16 @@ ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
 Werror=zeros(6,6);
-Werror(1:3,1:3)=kappa*eye(3);
-Werror(4:6,4:6)=1/100*kappa*eye(3);
+Werror(1:3,1:3)=Kp*eye(3);
+Werror(4:6,4:6)=linAngRel*Kp*eye(3);
 
 Wderror=zeros(6,6);
-Wderror(1:3,1:3)=lambda*eye(3);
-Wderror(4:6,4:6)=1/100*lambda*eye(3);
+Wderror(1:3,1:3)=Kd*eye(3);
+Wderror(4:6,4:6)=linAngRel*0*eye(3);
 
 Wierror=zeros(6,6);
-Wierror(1:3,1:3)=miu*eye(3);
-Wierror(4:6,4:6)=1/100*miu*eye(3);
+Wierror(1:3,1:3)=Ki*eye(3);
+Wierror(4:6,4:6)=linAngRel*0*eye(3);
 
 %The Wjlim weight matrix
 maxAlpha=zeros(1,N);
