@@ -2,8 +2,7 @@
 q_limit=[-Inf, Inf;
          -Inf, Inf;
            0.0, 0.4;
-          %-100*pi/180, 0.0175;
-          -100*pi/180, -pi/3;
+          -100*pi/180, 1*pi/180;
           -pi/2, 25*pi/180;         %Needs review
           -pi/2, 150*pi/180;        %Needs review
           -2*pi, 2*pi;         
