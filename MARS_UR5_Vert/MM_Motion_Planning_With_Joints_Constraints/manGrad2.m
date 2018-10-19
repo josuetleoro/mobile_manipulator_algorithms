@@ -40,7 +40,7 @@ dP(10,1)=0;
 
 %Get the manipulability measure
 UR5_J=evaluateUR5J(q(5),q(6),q(7),q(8),q(9));
-UR5_w=sqrt(det(UR5_J));
+UR5_w=abs(det(UR5_J));
 [dJdq1,dJdq2,dJdq3,dJdq4,dJdq5]=evaluateUR5dJdq(q(5),q(6),q(7),q(8),q(9));
 
 %Calculate each of the elements of the gradient 
