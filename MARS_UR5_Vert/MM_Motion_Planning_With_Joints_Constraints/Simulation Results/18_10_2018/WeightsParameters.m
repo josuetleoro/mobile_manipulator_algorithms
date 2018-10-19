@@ -4,7 +4,7 @@
 
 % Use Fs=20Hz
 ts=1/20;   
-alpha=5;   %Best alpha=5
+alpha=6;
 kappa=10;  %Position error weight
 lambda=0.1;   %Orientation error weigth
 
