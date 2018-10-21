@@ -90,7 +90,7 @@ W_measure=zeros(1,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
-%The error weighting matrix Werror
+%The error weighting matrices
 Werror=zeros(6,6);
 Werror(1:3,1:3)=Kp_pos*eye(3);
 Werror(4:6,4:6)=Kp_or*eye(3);
@@ -180,10 +180,7 @@ while(k<=N)
 
     %dP=MM_dP;                                                              %Mobile manipulator system alone
     %dP=ur5_dP;                                                             %Robot arm alone
-    dP=S'*dP;
-    
-    MM_man_measure(k)=sqrt(det(JBar*JBar'));
-    
+    dP=S'*dP;    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
     %Wjlim=eye(9,9);    

@@ -22,9 +22,12 @@ qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
 %influence on the motion.
 
 %With Fs=20Hz
-ts=0.05;  %Overwrite ts
-alpha=20;  %Best alpha=20
-lambda=20.0; %Overwrite  lambda best=20.0
+ts=1/20;   
+alpha=10;   %alpha=6 works for all cases except test 10
+Kp_pos=10;
+Ki_pos=50;
+Kp_or=0.001;
+Ki_or=0.0001;
 
 % % %With Fs=100Hz
 % ts=0.005;  %Overwrite ts
@@ -39,7 +42,7 @@ q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
 T0=MARS.forwardKin(q0);
 
-Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
+%Euler0=rotm2eul(T0(1:3,1:3),'ZYX')*180/pi
 T0
 
 %% Trajectory planning
@@ -61,14 +64,15 @@ dq=zeros(10,N);
 MM_man_measure=zeros(1,N);
 ur5_man_measure=zeros(1,N);
 
-%The error weighting matrix Werror
-Werror=lambda*eye(6);
-Werror(4:6,4:6)=0.01*eye(3);
-%Werror(4:6,4:6)=Werror(4:6,4:6)/20;
+%The error weighting matrices
+Werror=zeros(6,6);
+Werror(1:3,1:3)=Kp_pos*eye(3);
+Werror(4:6,4:6)=Kp_or*eye(3);
 
+Wierror=zeros(6,6);
+Wierror(1:3,1:3)=Ki_pos*eye(3);
+Wierror(4:6,4:6)=Ki_or*eye(3);
 %The Wjlim weight matrix
-Wjlim=eye(9,9);
-invWjlim=zeros(9,9);
 Wjlim=zeros(9,9);
 Wmatrix=zeros(9,9);
 maxAlpha=zeros(1,N);
@@ -131,15 +135,22 @@ while(k<=N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %% Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
+
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
-    %dP=MM_dP;                                                              %Mobile manipulator system
-    %dP=ur5_dP;                                                             %Robot arm alone
-    dP=S'*dP;
+    W_measure(k)=MM_manip*ur5_manip;
     
-    MM_man_measure(k)=sqrt(det(JBar*JBar'));
+%     dP=(1-trans(k))*(ur5_manip*MM_dP+MM_manip*ur5_dP)+trans(k)*ur5_dP;    %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-trans(k))*MM_manip*ur5_manip+trans(k)*ur5_manip;      %Using product and transition
+
+%     dP=(1-trans(k))*MM_dP+trans(k)*ur5_dP;                                %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-trans(k))*MM_manip+trans(k)*ur5_manip;                %With transition
+
+    %dP=MM_dP;                                                              %Mobile manipulator system alone
+    %dP=ur5_dP;                                                             %Robot arm alone
+    dP=S'*dP;   
     
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
@@ -155,14 +166,18 @@ while(k<=N)
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
+    xi_pos_error(1:3,k)=eP;
     
     %Orientation error
     quat_d=xi_des(4:7,k);    
-    eO=errorFromQuats(quat_d,quat_e);  
+    eO=errorFromQuats(quat_d,quat_e);
+    xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    error_cont=Werror*errorRate;
+    ierror=ierror+errorRate*ts;
+    errorPrev=errorRate;
+    error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
     Wmatrix=Wcol*Wjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
