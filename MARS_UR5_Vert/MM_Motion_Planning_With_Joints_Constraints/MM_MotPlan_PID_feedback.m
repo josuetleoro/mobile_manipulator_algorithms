@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=10;
 TestPoints
 
 %Load the joints constraints
@@ -20,11 +20,11 @@ JointConstraints
 
 %Use Fs=20Hz
 ts=1/20;   
-alpha=6;   
-Kp=10;
-Kd=0.0;
-Ki=50;
-linAngRel=1/40;
+alpha=10;   %alpha=6 works for all cases except test 10
+Kp_pos=10;
+Ki_pos=50;
+Kp_or=0.001;
+Ki_or=0.0001;
 
 % %Use Fs=100Hz
 % alpha=6;
@@ -92,16 +92,12 @@ ur5_man_measure=zeros(1,N);
 
 %The error weighting matrix Werror
 Werror=zeros(6,6);
-Werror(1:3,1:3)=Kp*eye(3);
-Werror(4:6,4:6)=linAngRel*Kp*eye(3);
-
-Wderror=zeros(6,6);
-Wderror(1:3,1:3)=Kd*eye(3);
-Wderror(4:6,4:6)=linAngRel*0*eye(3);
+Werror(1:3,1:3)=Kp_pos*eye(3);
+Werror(4:6,4:6)=Kp_or*eye(3);
 
 Wierror=zeros(6,6);
-Wierror(1:3,1:3)=Ki*eye(3);
-Wierror(4:6,4:6)=linAngRel*0*eye(3);
+Wierror(1:3,1:3)=Ki_pos*eye(3);
+Wierror(4:6,4:6)=Ki_or*eye(3);
 
 %The Wjlim weight matrix
 maxAlpha=zeros(1,N);
@@ -202,19 +198,18 @@ while(k<=N)
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
+    xi_pos_error(1:3,k)=eP;
     
     %Orientation error
     quat_d=xi_des(4:7,k);    
-    eO=errorFromQuats(quat_d,quat_e);  
+    eO=errorFromQuats(quat_d,quat_e);
+    xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
     ierror=ierror+errorRate*ts;
-    derror=errorRate-errorPrev;
     errorPrev=errorRate;
-    %error_cont=error_cont+Werror*errorRate+Wderror*derror/ts;
-    error_cont=Werror*errorRate+Wderror*derror/ts+Wierror*ierror;
-    %error_cont=error_cont+Werror*errorRate;
+    error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
     Wmatrix=Wcol*Wjlim*invTq;
     JBarWeighted=JBar*Wmatrix;
@@ -264,9 +259,8 @@ while(k<=N)
         quat_e=cartToQuat(Re);
         xi(4:7,k+1)=quat_e;
     end
-    
     %increment iteration step
-    k=k+1;  
+    k=k+1;
 end
 toc
 k=k-1;
@@ -285,23 +279,23 @@ xi_des(:,k)'
 fprintf('\nObtained Final Pose');
 xi(:,k)'
 
-xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
+%xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
 fprintf('\nFinal Position Error:');
 xi_pos_error(:,end)'
 fprintf('Pos norm error: %fmm\n',norm(xi_pos_error(:,end))*1000');
 
 fprintf('\nFinal Orientation Error');
-xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
-xi_orient_error
-fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
+%xi_orient_error=errorFromQuats(xi_des(4:7,:),xi(4:7,:));
+xi_orient_error(:,end)'
+fprintf('Orientation norm error: %f\n',norm(xi_orient_error(:,end))');
 
-% fprintf('\nDesired Final Transformation Matrix\n');
-% Tf
-% 
-% fprintf('Obtained Final Transformation Matrix\n');
-% TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
-% TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
-% TfObtained
+fprintf('\nDesired Final Transformation Matrix\n');
+Tf
+
+fprintf('Obtained Final Transformation Matrix\n');
+TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
+TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
+TfObtained
 
 if k < N
     MM_man_measure = MM_man_measure(1:k);
