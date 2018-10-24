@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=10;
+testN=15;
 TestPoints
 
 %Load the joints constraints
@@ -18,21 +18,11 @@ JointConstraints
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-%Use Fs=20Hz
-ts=1/20;   
-alpha=10;   %alpha=6 works for all cases except test 10
+ts=1/20;    %Sampling time
+alpha=5;    
 Kp_pos=10;
 Ki_pos=50;
-Kp_or=0.001;
-Ki_or=0.0001;
-
-% %Use Fs=100Hz
-% alpha=6;
-% ts=1/100;  %Overwrite ts
-% Kp=10;
-% Kd=0.1;
-% Ki=16;
-% linAngRel=1/40;
+Kp_or=20;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -97,7 +87,6 @@ Werror(4:6,4:6)=Kp_or*eye(3);
 
 Wierror=zeros(6,6);
 Wierror(1:3,1:3)=Ki_pos*eye(3);
-Wierror(4:6,4:6)=Ki_or*eye(3);
 
 %The Wjlim weight matrix
 maxAlpha=zeros(1,N);
@@ -154,6 +143,7 @@ trans=sigmoid(MotPlan.time,2*tf/3,2);
 errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 error_cont=zeros(6,1);
+Rk=zeros(3,3,N);
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -199,12 +189,14 @@ while(k<=N)
     
     %Orientation error
     quat_d=xi_des(4:7,k);    
-    eO=errorFromQuats(quat_d,quat_e);
+    %eO=errorFromQuats(quat_d,quat_e);
+    eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    ierror=ierror+errorRate*ts;
+    ierror(1:3)=ierror(1:3)+eP*ts;
+    ierror(4:6)=zeros(3,1);
     errorPrev=errorRate;
     error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
@@ -242,7 +234,7 @@ while(k<=N)
     eta(:,k)=cont_input+int_motion;    
     
     %Calculate the joints velocities
-    dq(:,k)=S*Wcol*Wjlim*invTq*eta(:,k);
+    dq(:,k)=S*Wmatrix*eta(:,k);
     
     %% update variables for next iteration       
     if k < N
@@ -255,6 +247,8 @@ while(k<=N)
         Re=T(1:3,1:3);
         quat_e=cartToQuat(Re);
         xi(4:7,k+1)=quat_e;
+        
+        Rk(:,:,k)=T(1:3,1:3);
     end
     %increment iteration step
     k=k+1;
@@ -300,19 +294,19 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-% %% Plot elbow collision distance
-% figure()
-% plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
-% xlabel('time(s)')
-% title('Distance elbow to mob plat')
-% grid on
-% 
-% %% Plot wrist collision distance
-% figure()
-% plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
-% xlabel('time(s)')
-% title('Distance wrist to front of mob plat')
-% grid on
+%% Plot elbow collision distance
+figure()
+plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
+xlabel('time(s)')
+title('Distance elbow to mob plat [m]')
+grid on
+
+%% Plot wrist collision distance
+figure()
+plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
+xlabel('time(s)')
+title('Distance wrist to front of mob plat [m]')
+grid on
 
 %% Plot all the variables
 % Adjust the manipulability measures
