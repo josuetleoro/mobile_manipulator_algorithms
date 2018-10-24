@@ -23,61 +23,61 @@ title('Manipulability measure')
 grid on
 
 %% End Effector Pose
-figure()
-subplot(1,3,1)
-plot(time,xi_des(1,:),'r','LineWidth',1.5); hold on;
-plot(time,xi(1,:),'b','LineWidth',1.5); grid on
-legend('x_{des}','x');
-xlabel('time(s)')
-ylabel('End effector pos x(m)')
-
-subplot(1,3,2)
-plot(time,xi_des(2,:),'r','LineWidth',1.5); hold on
-plot(time,xi(2,:),'b','LineWidth',1.5); grid on
-legend('y_{des}','y');
-xlabel('time(s)')
-ylabel('End effector pos y(m)')
-title('End effector position')
-
-subplot(1,3,3)
-plot(time,xi_des(3,:),'r','LineWidth',1.5); hold on
-plot(time,xi(3,:),'b','LineWidth',1.5); grid on
-legend('z_{des}','z');
-xlabel('time(s)')
-ylabel('End effector pos z(m)')
-
-figure()
-subplot(2,2,1)
-plot(time,xi_des(4,:),'r','LineWidth',1.5); hold on
-plot(time,xi(4,:),'b','LineWidth',1.5); grid on
-legend('q0_{des}','q0');
-xlabel('time(s)')
-ylabel('quat_w')
-
-subplot(2,2,2)
-plot(time,xi_des(5,:),'r','LineWidth',1.5); hold on
-plot(time,xi(5,:),'b','LineWidth',1.5); grid on
-legend('q1_{des}','q1');
-xlabel('time(s)')
-ylabel('quat_x')
-
-subplot(2,2,3)
-plot(time,xi_des(6,:),'r','LineWidth',1.5); hold on
-plot(time,xi(6,:),'b','LineWidth',1.5); grid on
-legend('q2_{des}','q2');
-xlabel('time(s)')
-ylabel('quat_y')
-
-subplot(2,2,4)
-plot(time,xi_des(6,:),'r','LineWidth',1.5); hold on
-plot(time,xi(6,:),'b','LineWidth',1.5); grid on
-legend('q3_{des}','q3');
-xlabel('time(s)')
-ylabel('quat_z')
+% figure()
+% subplot(1,3,1)
+% plot(time,xi_des(1,:),'r','LineWidth',1.5); hold on;
+% plot(time,xi(1,:),'b','LineWidth',1.5); grid on
+% legend('x_{des}','x');
+% xlabel('time(s)')
+% ylabel('End effector pos x(m)')
+% 
+% subplot(1,3,2)
+% plot(time,xi_des(2,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(2,:),'b','LineWidth',1.5); grid on
+% legend('y_{des}','y');
+% xlabel('time(s)')
+% ylabel('End effector pos y(m)')
+% title('End effector position')
+% 
+% subplot(1,3,3)
+% plot(time,xi_des(3,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(3,:),'b','LineWidth',1.5); grid on
+% legend('z_{des}','z');
+% xlabel('time(s)')
+% ylabel('End effector pos z(m)')
+% 
+% figure()
+% subplot(2,2,1)
+% plot(time,xi_des(4,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(4,:),'b','LineWidth',1.5); grid on
+% legend('q0_{des}','q0');
+% xlabel('time(s)')
+% ylabel('quat_w')
+% 
+% subplot(2,2,2)
+% plot(time,xi_des(5,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(5,:),'b','LineWidth',1.5); grid on
+% legend('q1_{des}','q1');
+% xlabel('time(s)')
+% ylabel('quat_x')
+% 
+% subplot(2,2,3)
+% plot(time,xi_des(6,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(6,:),'b','LineWidth',1.5); grid on
+% legend('q2_{des}','q2');
+% xlabel('time(s)')
+% ylabel('quat_y')
+% 
+% subplot(2,2,4)
+% plot(time,xi_des(6,:),'r','LineWidth',1.5); hold on
+% plot(time,xi(6,:),'b','LineWidth',1.5); grid on
+% legend('q3_{des}','q3');
+% xlabel('time(s)')
+% ylabel('quat_z')
 
 %% Position and orientation error
 figure()
-%subplot(2,1,1)
+subplot(2,1,1)
 plot(time,xi_pos_error(1,:),'LineWidth',1.5); hold on
 plot(time,xi_pos_error(2,:),'LineWidth',1.5); hold on
 plot(time,xi_pos_error(3,:),'LineWidth',1.5);
@@ -86,15 +86,14 @@ legend('e_{x}','e_{y}','e_{z}')
 title('Position error[m]')
 grid on
 
-% subplot(2,1,2)
-% plot(time,xi_orient_error(1,:),'LineWidth',1.5); hold on
-% plot(time,xi_orient_error(2,:),'LineWidth',1.5); hold on
-% plot(time,xi_orient_error(3,:),'LineWidth',1.5);
-% xlabel('time[s]')
-% legend('e_{wx}','e_{wy}','e_{wz}')
-% grid on
-% title('Orientation error[rad]')
-
+subplot(2,1,2)
+plot(time,xi_orient_error(1,:),'LineWidth',1.5); hold on
+plot(time,xi_orient_error(2,:),'LineWidth',1.5); hold on
+plot(time,xi_orient_error(3,:),'LineWidth',1.5);
+xlabel('time[s]')
+legend('e_{wx}','e_{wy}','e_{wz}')
+grid on
+title('Orientation error[rad]')
 
 %% Mobile platform movement
 figure()
@@ -259,9 +258,8 @@ plot(time,q(8,:),'LineWidth',1.5); hold on
 plot(time,q(9,:),'LineWidth',1.5); hold on
 plot(time,q(10,:),'LineWidth',1.5); hold on
 xlabel('time[s]')
-ylabel('q[rad]')
 legend('q_{1}','q_{2}','q_{3}','q_{4}','q_{5}','q_{6}')
-title('Arm joints'' positions')
+title('Arm joints'' positions [rad]')
 grid on
 
 %% UR5 joints velocities
@@ -312,9 +310,8 @@ plot(time,dq(8,:),'LineWidth',1.5); hold on
 plot(time,dq(9,:),'LineWidth',1.5); hold on
 plot(time,dq(10,:),'LineWidth',1.5); hold on
 xlabel('time[s]')
-ylabel('dq[rad/s]')
 legend('dq_{1}','dq_{2}','dq_{3}','dq_{4}','dq_{5}','dq_{6}')
-title('Arm joints'' velocities')
+title('Arm joints'' velocities [rad/s]')
 grid on
 
 %% Mobile Platform Trajectory
