@@ -45,7 +45,7 @@ UR5_w=abs(det(UR5_J));
 
 %Calculate each of the elements of the gradient 
 UR5_J_inv=inv(UR5_J);
-UR5_w_2=UR5_w/2; %We use -w because the internal motion is substracted
+UR5_w_2=UR5_w; %We use -w because the internal motion is substracted
 UR5_dP(1,1)=0;
 UR5_dP(2,1)=0;
 UR5_dP(3,1)=0;

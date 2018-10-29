@@ -19,11 +19,15 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=7; 
-kappa=0.95;
-% if kappa > 0.92
-%     error('The manipulability of the entire system should also be considered.');
-% end
+alpha=6; 
+
+kappa=0.5;
+
+Pos_f=[0.7221;8;0.7246];
+tf=20;
+
+%phi_mp=0;
+%qa=[-pi/2;-pi/4;pi/2;3*pi/4;-pi/2;0.0];
 
 Kp_pos=10;
 Ki_pos=50;
@@ -160,22 +164,31 @@ while(k<=N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));    
    
     %% Manipulability gradient
-    %[MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad3(q(:,k),JBar);
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
+    
+    MM_dP(3)
+    ur5_dP(3)
+    MM_dP(5)
+    ur5_dP(5)
+    pause()
+    
 
 %     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                   %Combined Mobile manipulator and robot arm
 %     W_measure(k)=MM_manip*ur5_manip;
     
 %     dP=(1-kappa)*ur5_manip*MM_dP+kappa*MM_manip*ur5_dP;                              %Combined Mobile manipulator and robot arm
 %     W_measure(k)=(1-kappa)*MM_manip*ur5_manip+(kappa)*ur5_manip;
+
+    dP=(1-kappa)*(ur5_manip*MM_dP+kappa*MM_manip*ur5_dP)+kappa*ur5_dP;                              %Combined Mobile manipulator and robot arm
+    W_measure(k)=(1-kappa)*MM_manip*ur5_manip+(kappa)*ur5_manip;
     
 %     dP=MM_dP+ur5_dP;                                   %Combined Mobile manipulator and robot arm
 %     W_measure(k)=MM_manip+ur5_manip;
     
-    dP=(1-kappa)*MM_dP+kappa*ur5_dP;                                   %Combined Mobile manipulator and robot arm
-    W_measure(k)=(1-kappa)*MM_manip+kappa*ur5_manip;    
+%     dP=(1-kappa)*MM_dP+kappa*ur5_dP;                                   %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-kappa)*MM_manip+kappa*ur5_manip;    
 
     %dP=MM_dP;                                                              %Mobile manipulator system alone
     %dP=ur5_dP;                                                             %Robot arm alone
@@ -225,8 +238,8 @@ while(k<=N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-       diag(Wcol)
        diag(Wjlim)
+       diag(Wcol)
        disp('Could not achieve task that complies with joint velocities limits')
        break
     end

@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=1;
 TestPoints
 
 %Load the joints constraints
@@ -29,6 +29,9 @@ lambda=0.1;   %Orientation error weigth
 % alpha=5;   %Best alpha=5
 % kappa=10;   %Position error weight
 % lambda=0.1;   %Orientation error weigth
+
+Pos_f=[8;-0.1091;0.18];
+tf=20;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -188,10 +191,12 @@ while(k<=N)
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
+    xi_pos_error(1:3,k)=eP;
     
     %Orientation error
     quat_d=xi_des(4:7,k);    
     eO=errorFromQuats(quat_d,quat_e);  
+    xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
@@ -272,8 +277,7 @@ xi_pos_error(:,end)'
 fprintf('Pos norm error: %fmm\n',norm(xi_pos_error(:,end))*1000');
 
 fprintf('\nFinal Orientation Error');
-xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
-xi_orient_error
+xi_orient_error(:,end)'
 fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
 
 % fprintf('\nDesired Final Transformation Matrix\n');
