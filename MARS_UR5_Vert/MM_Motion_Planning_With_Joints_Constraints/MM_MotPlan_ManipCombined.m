@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=9;
 TestPoints
 
 %Load the joints constraints
@@ -19,11 +19,11 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=12; 
-kappa=0.92;
-if kappa > 0.92
-    error('The manipulability of the entire system should also be considered.');
-end
+alpha=5; 
+kappa=0.0;
+% if kappa > 0.92
+%     error('The manipulability of the entire system should also be considered.');
+% end
 
 Kp_pos=10;
 Ki_pos=50;
@@ -160,22 +160,22 @@ while(k<=N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));    
    
     %% Manipulability gradient
-    %[MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradTaskDir(q(:,k),JBar,Wtaskdir);   
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
+    %[MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad3(q(:,k),JBar);
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
 
 %     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                   %Combined Mobile manipulator and robot arm
 %     W_measure(k)=MM_manip*ur5_manip;
     
-    dP=(1-kappa)*(ur5_manip*MM_dP+MM_manip*ur5_dP)+(kappa)*ur5_dP;                              %Combined Mobile manipulator and robot arm
-    W_measure(k)=(1-kappa)*MM_manip*ur5_manip+(kappa)*ur5_manip;
+%     dP=(1-kappa)*ur5_manip*MM_dP+kappa*MM_manip*ur5_dP;                              %Combined Mobile manipulator and robot arm
+%     W_measure(k)=(1-kappa)*MM_manip*ur5_manip+(kappa)*ur5_manip;
     
-%     dP=(min_mm+1-kappa)*MM_manip+(kappa-min_mm)*ur5_dP;                              %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(min_mm+1-kappa)*MM_manip+(kappa-min_mm)*ur5_manip;
+%     dP=MM_dP+ur5_dP;                                   %Combined Mobile manipulator and robot arm
+%     W_measure(k)=MM_manip+ur5_manip;
     
-%     dP=(1-trans(k))*MM_dP+trans(k)*ur5_dP;                                %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(1-trans(k))*MM_manip+trans(k)*ur5_manip;                %With transition
+    dP=(1-kappa)*MM_dP+kappa*ur5_dP;                                   %Combined Mobile manipulator and robot arm
+    W_measure(k)=(1-kappa)*MM_manip+kappa*ur5_manip;    
 
     %dP=MM_dP;                                                              %Mobile manipulator system alone
     %dP=ur5_dP;                                                             %Robot arm alone
