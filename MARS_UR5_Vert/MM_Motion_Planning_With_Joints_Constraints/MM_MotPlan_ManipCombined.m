@@ -8,7 +8,7 @@ addpath MARS_UR5
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=15;
 TestPoints
 
 %Load the joints constraints
@@ -19,8 +19,8 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=5; 
-kappa=0.0;
+alpha=7; 
+kappa=0.95;
 % if kappa > 0.92
 %     error('The manipulability of the entire system should also be considered.');
 % end

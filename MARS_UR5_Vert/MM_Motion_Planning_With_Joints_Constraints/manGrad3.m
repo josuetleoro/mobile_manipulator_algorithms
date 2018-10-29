@@ -19,8 +19,8 @@ JJt=J*J';
 w=prod(diag(S))^(1/9);
 
 %Calculate each of the elements of the gradient 
-%inv_JJt=inv(JJt);
-inv_JJt=V*inv(S)*U';
+inv_JJt=inv(JJt);
+%inv_JJt=V*inv(S)*U';
 w_m=w/9; %We use -w because the internal motion is substracted
 dP(1,1)=0;
 dP(2,1)=0;
@@ -47,8 +47,8 @@ UR5_w=prod(diag(S))^(1/6);
 [dJdq1,dJdq2,dJdq3,dJdq4,dJdq5]=evaluateUR5dJdq(q(5),q(6),q(7),q(8),q(9));
 
 %Calculate each of the elements of the gradient 
-%UR5_J_inv=inv(UR5_J);
-UR5_J_inv=V*inv(S)*U';
+UR5_J_inv=inv(UR5_J);
+%UR5_J_inv=V*inv(S)*U';
 UR5_w_m=UR5_w/6; %We use -w because the internal motion is substracted
 UR5_dP(1,1)=0;
 UR5_dP(2,1)=0;
