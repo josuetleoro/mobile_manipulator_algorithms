@@ -1,4 +1,4 @@
-function [dP,w,UR5_dP,UR5_w]=manGrad2(q,J)
+function [dP,w,UR5_dP,UR5_w]=manGrad4(q,J)
 %Calculates the manipulability of the system and the arm alone
 
 %The first element, second and fourth element are zero (x,y,z does not
@@ -16,9 +16,7 @@ JJt=J*J';
 %Calculate the manipulability measure
 % eigval=svd(J);
 % w=prod(eigval);
-
-det_JJt=det(JJt);
-w=sqrt(det_JJt);
+w=sqrt(det(JJt));
 
 %Calculate each of the elements of the gradient 
 inv_JJt=inv(JJt);
@@ -40,12 +38,13 @@ dP(10,1)=0;
 
 %Get the manipulability measure
 UR5_J=evaluateUR5J(q(5),q(6),q(7),q(8),q(9));
-UR5_w=abs(det(UR5_J));
+UR5_J=UR5_J*UR5_J';
+UR5_w=sqrt(det(UR5_J));
 [dJdq1,dJdq2,dJdq3,dJdq4,dJdq5]=evaluateUR5dJdq(q(5),q(6),q(7),q(8),q(9));
 
 %Calculate each of the elements of the gradient 
 UR5_J_inv=inv(UR5_J);
-UR5_w_2=UR5_w; %We use -w because the internal motion is substracted
+UR5_w_2=UR5_w/2; %We use -w because the internal motion is substracted
 UR5_dP(1,1)=0;
 UR5_dP(2,1)=0;
 UR5_dP(3,1)=0;
