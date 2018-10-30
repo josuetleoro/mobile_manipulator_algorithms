@@ -268,6 +268,11 @@ switch(testN)
         
         %Desired Pose
         Pos_f=[0.7221;3;0.7246];
+        
+        %Complicated case, where the trajectory takes link time
+%         Pos_f=[0.7221;8;0.7246];
+%         tf=20;
+        
 %         quat_f=axang2quat([-1 1 1 120*pi/180])';
 %         roll=-90*pi/180;
 %         pitch=90*pi/180;

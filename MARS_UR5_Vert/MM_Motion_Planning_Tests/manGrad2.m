@@ -1,4 +1,4 @@
-function [dP,w,UR5_dP,UR5_w]=manGrad2(q,J)
+function [dP,w,UR5_dP,UR5_w]=manGradJBar(q,J)
 %Calculates the manipulability of the system and the arm alone
 
 %The first element, second and fourth element are zero (x,y,z does not
@@ -6,12 +6,13 @@ function [dP,w,UR5_dP,UR5_w]=manGrad2(q,J)
 %to these is zero). The same happens with the last joint q10.
 %It is important to consider that the derivative is performed on JBar,
 %therefore dq2 (JBar), corresponds to dq3 (J)
-[dJJtdq3_ev,dJJtdq5_ev,dJJtdq6_ev,dJJtdq7_ev,dJJtdq8_ev,dJJtdq9_ev]=evaluatedJJtdq(q(3),q(5),q(6),q(7),q(8),q(9));
+[dJdq3,dJdq5,dJdq6,dJdq7,dJdq8,dJdq9]=evaluatedJdq(q(3),q(5),q(6),q(7),q(8),q(9));
 
 %% Mobile Manipulator
 
 %Calculate JJt
 JJt=J*J';
+Jt=J';
 
 %Calculate the manipulability measure
 % eigval=svd(J);
@@ -25,13 +26,13 @@ inv_JJt=inv(JJt);
 w_2=w/2; %We use -w because the internal motion is substracted
 dP(1,1)=0;
 dP(2,1)=0;
-dP(3,1)=w_2*trace(inv_JJt*dJJtdq3_ev);
+dP(3,1)=w_2*trace(inv_JJt*(dJdq3*Jt+J*dJdq3'));
 dP(4,1)=0;
-dP(5,1)=w_2*trace(inv_JJt*dJJtdq5_ev);
-dP(6,1)=w_2*trace(inv_JJt*dJJtdq6_ev);
-dP(7,1)=w_2*trace(inv_JJt*dJJtdq7_ev);
-dP(8,1)=w_2*trace(inv_JJt*dJJtdq8_ev);
-dP(9,1)=w_2*trace(inv_JJt*dJJtdq9_ev);
+dP(5,1)=w_2*trace(inv_JJt*(dJdq5*Jt+J*dJdq5'));
+dP(6,1)=w_2*trace(inv_JJt*(dJdq6*Jt+J*dJdq6'));
+dP(7,1)=w_2*trace(inv_JJt*(dJdq7*Jt+J*dJdq7'));
+dP(8,1)=w_2*trace(inv_JJt*(dJdq8*Jt+J*dJdq8'));
+dP(9,1)=w_2*trace(inv_JJt*(dJdq9*Jt+J*dJdq9'));
 dP(10,1)=0;
 % w_2
 % dP

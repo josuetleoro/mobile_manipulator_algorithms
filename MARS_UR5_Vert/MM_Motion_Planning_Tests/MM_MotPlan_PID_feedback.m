@@ -22,14 +22,13 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=5;    
+alpha=12;    %2 for small movement of the mp needed, otherwise 12
 Kp_pos=10;
 Ki_pos=50;
 Kp_or=20;
-
-
-Pos_f=[0.7221;8;0.7246];
-tf=20;
+% Kp_pos=1;
+% Ki_pos=0;
+% Kp_or=0.001;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -54,19 +53,19 @@ Tf(1:3,4)=Pos_f;
 T0
 Tf
 
-%%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
-% figure()
-%Mobile platform initial pos
-%plotFrame(eye(4),1,'mp_0'); hold on;
-plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
-plotFrame(T0,1,'T0'); hold on;
-plotFrame(Tf,1,'Tf'); 
-%plotFrame(Tf2,2,'Tf2');
-xlabel('x')
-ylabel('y')
-zlabel('z')
-view(-133,31)
-pause()
+% %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
+% % figure()
+% %Mobile platform initial pos
+% %plotFrame(eye(4),1,'mp_0'); hold on;
+% plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
+% plotFrame(T0,1,'T0'); hold on;
+% plotFrame(Tf,1,'Tf'); 
+% %plotFrame(Tf2,2,'Tf2');
+% xlabel('x')
+% ylabel('y')
+% zlabel('z')
+% view(-133,31)
+% pause()
 
 %% Trajectory planning
 tic
@@ -150,7 +149,6 @@ k=1;
 errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 error_cont=zeros(6,1);
-Rk=zeros(3,3,N);
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -160,24 +158,18 @@ while(k<=N)
     
     %Calculate the Jacobian
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
+    %JBar=J*S;
         
     %% Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBar2(q(:,k),JBar);   
+    %[MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJ2(q(:,k),J);
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
-
+    
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
     W_measure(k)=MM_manip*ur5_manip;
-    
-%     dP=(1-trans(k))*(ur5_manip*MM_dP+MM_manip*ur5_dP)+trans(k)*ur5_dP;    %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(1-trans(k))*MM_manip*ur5_manip+trans(k)*ur5_manip;      %Using product and transition
+    dP=S'*dP;
 
-%     dP=(1-trans(k))*MM_dP+trans(k)*ur5_dP;                                %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(1-trans(k))*MM_manip+trans(k)*ur5_manip;                %With transition
-
-    %dP=MM_dP;                                                              %Mobile manipulator system alone
-    %dP=ur5_dP;                                                             %Robot arm alone
-    dP=S'*dP;    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
     %Wjlim=eye(9,9);    
@@ -226,8 +218,7 @@ while(k<=N)
        diag(Wjlim)
        disp('Could not achieve task that complies with joint velocities limits')
        break
-    end
-    
+    end    
     %Saturate alpha in case is out of bounds
     if alpha > maxAlpha(k)
        alpha = maxAlpha(k);
@@ -235,13 +226,17 @@ while(k<=N)
     if alpha < minAlpha(k)
         alpha = minAlpha(k);
     end
-    int_motion = alpha*int_motion;    
+    alpha_plot(k)=alpha;
+    int_motion = alpha*int_motion;
         
     %Mobility control vector
     eta(:,k)=cont_input+int_motion;    
     
     %Calculate the joints velocities
     dq(:,k)=S*Wmatrix*eta(:,k);
+    
+    dq_int_motion(:,k)=int_motion;
+    dq_cont_input(:,k)=cont_input;
     
     %% update variables for next iteration       
     if k < N
@@ -255,7 +250,6 @@ while(k<=N)
         quat_e=cartToQuat(Re);
         xi(4:7,k+1)=quat_e;
         
-        Rk(:,:,k)=T(1:3,1:3);
     end
     %increment iteration step
     k=k+1;
@@ -301,21 +295,21 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-%% Plot elbow collision distance
-figure()
-plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5); hold on;
-xlabel('time(s)')
-title('Distance elbow to mob plat [m]')
-grid on
+% %% Plot elbow collision distance
+% figure()
+% plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5);
+% xlabel('time(s)')
+% title('Distance elbow to mob plat [m]')
+% grid on
+% 
+% %% Plot wrist collision distance
+% figure()
+% plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5);
+% xlabel('time(s)')
+% title('Distance wrist to front of mob plat [m]')
+% grid on
 
-%% Plot wrist collision distance
-figure()
-plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5); hold on;
-xlabel('time(s)')
-title('Distance wrist to front of mob plat [m]')
-grid on
 
-%% Plot all the variables
 % Adjust the manipulability measures
 MM_man_measure(1)=MM_man_measure(2);
 MM_man_measure(end)=MM_man_measure(end-1);
@@ -324,7 +318,92 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 % Store the mobile platform velocities
 mp_vel=eta(1:3,:);
 
-%Plot all the variables
+%% Plot variables to analyze manipulability
+
+% figure()
+% plot(time,maxAlpha,'b','LineWidth',1.5);
+% grid on
+% xlabel('time(s)')
+% title('Max step size')
+% 
+% 
+% figure()
+% subplot(3,1,1)
+% plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
+% plot(time,ur5_man_measure,'r','LineWidth',1.5);
+% plot(time,W_measure,'g','LineWidth',1.5); hold off
+% grid on
+% legend('MM_{manip}','UR5_{manip}','W_{manip}')
+% xlabel('time(s)')
+% title('Manipulability measure')
+% 
+% subplot(3,1,2)
+% plot(time(1:k),dq_int_motion(1,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(1,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(1,1:k)+dq_int_motion(1,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('mop plat lin vel[m/s]');
+% 
+% subplot(3,1,3)
+% plot(time(1:k),dq_int_motion(2,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(2,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(2,1:k)+dq_int_motion(2,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('mop plat rot vel[rad/s]');
+% 
+% figure()
+% subplot(3,2,1)
+% plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
+% plot(time,ur5_man_measure,'r','LineWidth',1.5);
+% plot(time,W_measure,'g','LineWidth',1.5); hold off
+% grid on
+% legend('MM_{manip}','UR5_{manip}','W_{manip}')
+% xlabel('time(s)')
+% title('Manipulability measure')
+% 
+% subplot(3,2,2)
+% plot(time(1:k),dq_int_motion(4,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(4,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(4,1:k)+dq_int_motion(4,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('dq1 [rad/s]');
+% 
+% subplot(3,2,3)
+% plot(time(1:k),dq_int_motion(5,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(5,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(5,1:k)+dq_int_motion(5,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('dq2 [rad/s]');
+% 
+% subplot(3,2,4)
+% plot(time(1:k),dq_int_motion(6,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(6,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(6,1:k)+dq_int_motion(6,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('dq3 [rad/s]');
+% 
+% subplot(3,2,5)
+% plot(time(1:k),dq_int_motion(7,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(7,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(7,1:k)+dq_int_motion(7,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('dq4 [rad/s]');
+% 
+% subplot(3,2,6)
+% plot(time(1:k),dq_int_motion(8,1:k),'b','LineWidth',1.5); hold on;
+% plot(time(1:k),dq_cont_input(8,1:k),'r','LineWidth',1.5);
+% plot(time(1:k),dq_cont_input(8,1:k)+dq_int_motion(8,1:k),'g','LineWidth',1.5); hold off
+% grid on;
+% legend('internal motion','control input','sum')
+% title('dq5 [rad/s]');
+
+%% Plot all the variables
 PlotEvolution
 
 %% Plot end effector path
@@ -335,10 +414,3 @@ PlotEvolution
 % zlabel('z[m]')
 % zlim([0,1.5])
 % grid on;
-
-%% Save the redundancy resolution position and velocities
-% JointMotion.q_des=q;
-% JointMotion.dq_des=dq;
-% JointMotion.ts=ts;
-% JointMotion.tf=tf;
-% uisave('JointMotion','JointMotion.mat');
