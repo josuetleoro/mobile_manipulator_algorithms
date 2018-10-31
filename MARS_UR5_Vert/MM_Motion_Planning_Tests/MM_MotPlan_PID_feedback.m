@@ -13,6 +13,8 @@ MARS=MARS_UR5();
 %Load the test point
 testN=15;
 TestPoints
+%Joints' angles with maximum manipulability for UR5
+%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
 
 %Load the joints constraints
 JointConstraints
@@ -22,9 +24,21 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=12;    %2 for small movement of the mp needed, otherwise 12
+%alpha=4;    %4 for small movement of the mp needed, otherwise 8
+%Decide step size based on mob plat rotation 
+mp_dir=[cos(phi_mp) sin(phi_mp)];
+Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
+theta=acos(dot(mp_dir,Pos_f_dir));
+if abs(theta) > (80*pi/180)
+    %alpha=5; %ParabBlend
+    alpha=8; %FifthOrder
+else
+    %alpha=2; %ParabBlend
+    alpha=4; %FifthOrder
+end
+
 Kp_pos=10;
-Ki_pos=50;
+Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
 Kp_or=20;
 % Kp_pos=1;
 % Ki_pos=0;
@@ -72,7 +86,8 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=TrajPlanQuatPolynomials(Pos_0,quat_0,Pos_f,quat_f,ts,tb,tf);
+%MotPlan=TrajPlanParabBlend(Pos_0,quat_0,Pos_f,quat_f,ts,0.2*tf,tf);
+MotPlan=TrajPlanPol(Pos_0,quat_0,Pos_f,quat_f,ts,tf);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
@@ -141,6 +156,10 @@ for i=1:6
       maxdxi(i)=1; 
    end
 end
+% %Task norm using trapezoidal shape
+% [~,taskNorm,~]=ParabBlend(Pos_0(1),Pos_f(1),ts,tb,tf);
+% maxTaskNorm=max(taskNorm);
+% taskNorm=taskNorm/norm(maxTaskNorm);
 
 %%
 disp('Calculating the inverse velocity kinematics solution')
@@ -157,8 +176,9 @@ while(k<=N)
     S(1,1)=cos(q(3,k)); S(2,1)=sin(q(3,k));
     
     %Calculate the Jacobian
-    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
+    %J=evaluateJ(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
     %JBar=J*S;
+    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));    
         
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBar2(q(:,k),JBar);   
@@ -167,12 +187,13 @@ while(k<=N)
     ur5_man_measure(k)=ur5_manip;
     
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
+    %dP=ur5_dP;
     W_measure(k)=MM_manip*ur5_manip;
     dP=S'*dP;
-
+    
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
-    %Wjlim=eye(9,9);    
+    %Wjlim=eye(9,9);
     
     %% Collision avoidance weighting matrices
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
@@ -205,8 +226,10 @@ while(k<=N)
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
-    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
-    dP=taskNorm*dP;    
+    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    dP=taskNorm*dP;
+    %dP=taskNorm(k)*dP;    
+    
     %Calculate the internal motion
     dP=Wcol*Wjlim*dP;
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;
@@ -267,7 +290,7 @@ time=MotPlan.time(1:k);
 
 %Error of the end effector position
 fprintf('\nDesired Final Pose');
-xi_des(:,k)'
+xi_des(:,end)'
 fprintf('\nObtained Final Pose');
 xi(:,k)'
 
@@ -285,9 +308,12 @@ fprintf('\nDesired Final Transformation Matrix\n');
 Tf
 
 fprintf('Obtained Final Transformation Matrix\n');
-TfObtained(:,4)=[xi(1,end);xi(2,end);xi(3,end);1];
-TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,end)');
+TfObtained(:,4)=[xi(1,k);xi(2,k);xi(3,k);1];
+TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,k)');
 TfObtained
+
+theta*180/pi
+alpha
 
 if k < N
     MM_man_measure = MM_man_measure(1:k);

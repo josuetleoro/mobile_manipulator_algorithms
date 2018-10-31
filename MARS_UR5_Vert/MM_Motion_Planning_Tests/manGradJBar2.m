@@ -22,13 +22,13 @@ inv_JJt=inv(JJt);
 w_2=w/2; %We use -w because the internal motion is substracted
 dP(1,1)=0;
 dP(2,1)=0;
-dP(3,1)=w_2*trace(inv_JJt*(dJdq3*Jt+J*dJdq3'));
+dP(3,1)=w_2*trace(inv_JJt*(dJdq3*Jt+J*(dJdq3')));
 dP(4,1)=0;
-dP(5,1)=w_2*trace(inv_JJt*(dJdq5*Jt+J*dJdq5'));
-dP(6,1)=w_2*trace(inv_JJt*(dJdq6*Jt+J*dJdq6'));
-dP(7,1)=w_2*trace(inv_JJt*(dJdq7*Jt+J*dJdq7'));
-dP(8,1)=w_2*trace(inv_JJt*(dJdq8*Jt+J*dJdq8'));
-dP(9,1)=w_2*trace(inv_JJt*(dJdq9*Jt+J*dJdq9'));
+dP(5,1)=w_2*trace(inv_JJt*(dJdq5*Jt+J*(dJdq5')));
+dP(6,1)=w_2*trace(inv_JJt*(dJdq6*Jt+J*(dJdq6')));
+dP(7,1)=w_2*trace(inv_JJt*(dJdq7*Jt+J*(dJdq7')));
+dP(8,1)=w_2*trace(inv_JJt*(dJdq8*Jt+J*(dJdq8')));
+dP(9,1)=w_2*trace(inv_JJt*(dJdq9*Jt+J*(dJdq9')));
 dP(10,1)=0;
 % w_2
 % dP

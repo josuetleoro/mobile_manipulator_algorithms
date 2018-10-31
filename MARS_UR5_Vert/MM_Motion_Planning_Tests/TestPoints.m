@@ -23,7 +23,6 @@ switch(testN)
         pitch=180*pi/180;
         yaw=0*pi/180;       
         tf=12;          %Desired final time
-        tb=3;           %Blending time
         
     case 2 
         % %Initial joints values
@@ -40,7 +39,6 @@ switch(testN)
         pitch=90*pi/180;
         yaw=0*pi/180;        
         tf=18;        
-        tb=3;           
         
     case 3 
         %Initial joints values
@@ -57,7 +55,6 @@ switch(testN)
         pitch=0*pi/180;
         yaw=-180*pi/180;
         tf=25;        
-        tb=4;           
         
     case 4 
         % %Initial joints values
@@ -74,7 +71,6 @@ switch(testN)
         pitch=90*pi/180;
         yaw=0*pi/180;
         tf=12;        
-        tb=3;           
         
     case 5 
         %Initial joints values
@@ -91,7 +87,6 @@ switch(testN)
         pitch=0*pi/180;
         yaw=0*pi/180;
         tf=15;       
-        tb=5;           
         
     case 6 
         %Initial joints values
@@ -110,7 +105,6 @@ switch(testN)
         pitch=0*pi/180;
         yaw=180*pi/180;
         tf=18;      
-        tb=3;          
         
     case 7 
         %Initial joints values
@@ -127,7 +121,6 @@ switch(testN)
         pitch=90*pi/180;
         yaw=0*pi/180;
         tf=6;     
-        tb=2;     
         
     case 8 
         %Initial joints values
@@ -144,7 +137,6 @@ switch(testN)
         pitch=90*pi/180;
         yaw=-90*pi/180;
         tf=8;       
-        tb=2;           
         
     case 9
         %Initial joints values
@@ -161,7 +153,6 @@ switch(testN)
         pitch=90*pi/180; %-90*pi/180 cannot be executed with high lambda
         yaw=-90*pi/180;
         tf=15;     
-        tb=3;        
         
      case 10
         % %Initial joints values
@@ -183,7 +174,6 @@ switch(testN)
 %         pitch=0*pi/180;
 %         yaw=180*pi/180;        
         tf=25;     
-        tb=5;           
         
     case 11
         % %Initial joints values
@@ -199,8 +189,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=30*pi/180;
         yaw=30*pi/180;
-        tf=12; 
-        tb=5;           
+        tf=12;         
         
     case 12 
         %Initial joints values
@@ -220,8 +209,7 @@ switch(testN)
         Rf2=eul2rotm([yaw pitch roll],'ZYX');
         rotm2axang(Rf2)        
         
-        tf=30;          %Desired final time (tf=40 has problems)
-        tb=5;           
+        tf=40;           
         
     case 13 
         %Initial joints values
@@ -238,7 +226,6 @@ switch(testN)
         pitch=0*pi/180;
         yaw=-180*pi/180;
         tf=13;     
-        tb=4;
         
     case 14 
         %Initial joints values
@@ -255,7 +242,6 @@ switch(testN)
         pitch=180*pi/180;
         yaw=0*pi/180;   
         tf=10;
-        tb=2;
         
      case 15
         %Initial joints values
@@ -272,7 +258,7 @@ switch(testN)
         %Dificult case, where the final position is far and the final
         %orientation puts the joint 5 in a singular position
 %         Pos_f=[0.7221;8;0.7246];
-%         tf=20;
+%         tf=30;
         
 %         quat_f=axang2quat([-1 1 1 120*pi/180])';
 %         roll=-90*pi/180;
@@ -284,7 +270,5 @@ switch(testN)
         pitch=0*pi/180;
         yaw=-90*pi/180;       
         
-        tf=12;
-        tb=3;
-        
+        tf=12;        
 end

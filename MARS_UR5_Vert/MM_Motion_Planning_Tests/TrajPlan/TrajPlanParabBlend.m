@@ -1,12 +1,9 @@
-function MotPlan=TrajPlanPol(pos0,q0,posf,qf,ts,tb,tf)
+function MotPlan=TrajPlanParabBlend(pos0,q0,posf,qf,ts,tb,tf)
 
 %% Motion planning for positon (x,y,z)
-% [x,dx,~]=ParabBlend(pos0(1),posf(1),ts,tb,tf);
-% [y,dy,~]=ParabBlend(pos0(2),posf(2),ts,tb,tf);
-% [z,dz,~]=ParabBlend(pos0(3),posf(3),ts,tb,tf);
-[x,dx,~]=Traj3(pos0(1),posf(1),ts,tf);
-[y,dy,~]=Traj3(pos0(2),posf(2),ts,tf);
-[z,dz,~]=Traj3(pos0(3),posf(3),ts,tf);
+[x,dx,~]=ParabBlend(pos0(1),posf(1),ts,tb,tf);
+[y,dy,~]=ParabBlend(pos0(2),posf(2),ts,tb,tf);
+[z,dz,~]=ParabBlend(pos0(3),posf(3),ts,tb,tf);
 
 %% Motion planning for orientation using quaternion polynomial
 %Create the quaternion objects
