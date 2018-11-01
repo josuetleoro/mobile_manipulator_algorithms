@@ -12,7 +12,7 @@ q_limit=[-Inf, Inf;
           -2*pi, 2*pi;
           -2*pi, 2*pi];
 
-dq_limit=[0.6;
+dq_limit=[0.8;
           pi/2;
           0.2;
           pi;

@@ -12,7 +12,7 @@ MARS=MARS_UR5();
 
 %Load the test point
 testN=15;
-TestPoints
+TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
 
@@ -169,6 +169,9 @@ errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
+trans=sigmoidTrapezoidal(MotPlan.time,0.1);
+% plot(MotPlan.time,trans);
+% pause()
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -228,15 +231,17 @@ while(k<=N)
     cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
-    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    
-%     if (k > N/2)
-%         taskNorm=1;
-%     end
-    
-    dP=taskNorm*dP;
-    %dP=taskNorm(k)*dP;    
-    
+    %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    %Use sigmoid trapezoidal for manipulability
+    %taskNorm=trans(k);
+    if (k> N/2)
+        taskNorm=trans(k);
+        %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    else
+        taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    end
+    dP=taskNorm*dP;    
+
     %Calculate the internal motion
     dP=Wcol*Wjlim*dP;
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;
@@ -318,9 +323,6 @@ fprintf('Obtained Final Transformation Matrix\n');
 TfObtained(:,4)=[xi(1,k);xi(2,k);xi(3,k);1];
 TfObtained(1:3,1:3)=quatToRotMat(xi(4:7,k)');
 TfObtained
-
-theta*180/pi
-alpha
 
 if k < N
     MM_man_measure = MM_man_measure(1:k);

@@ -270,5 +270,5 @@ switch(testN)
         pitch=0*pi/180;
         yaw=-90*pi/180;       
         
-        tf=12;        
+        tf=15;        
 end

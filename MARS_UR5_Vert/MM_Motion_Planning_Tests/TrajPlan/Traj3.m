@@ -1,9 +1,9 @@
-function [q,dq,ddq]=Traj3(q0,qf,ts,tf)
-[a3,a2,a1,a0] = createTraj3(q0,qf,0,0,0,tf);
+function [q,dq,ddq]=Traj3(q0,qf,ts,t0,tf)
+[a3,a2,a1,a0] = createTraj3(q0,qf,0,0,t0,tf);
 % make a polynomial
 p = [a3,a2,a1,a0];
 % Create time vector
-time=0:ts:tf;
+time=t0:ts:tf;
 % Evaluate the polynomial : Position
 q = polyval(p,time);
 % calculate the first derivative : Velocity

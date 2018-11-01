@@ -1,9 +1,9 @@
 function MotPlan=TrajPlanPol(pos0,q0,posf,qf,ts,tf)
 
 %% Motion planning for positon (x,y,z)
-[x,dx,~]=Traj5(pos0(1),posf(1),ts,tf);
-[y,dy,~]=Traj5(pos0(2),posf(2),ts,tf);
-[z,dz,~]=Traj5(pos0(3),posf(3),ts,tf);
+[x,dx,~]=Traj5(pos0(1),posf(1),ts,0,tf);
+[y,dy,~]=Traj5(pos0(2),posf(2),ts,0,tf);
+[z,dz,~]=Traj5(pos0(3),posf(3),ts,0,tf);
 
 %% Motion planning for orientation using quaternion polynomial
 %Create the quaternion objects
