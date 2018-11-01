@@ -167,6 +167,7 @@ k=1;
 %trans=sigmoid(MotPlan.time,2*tf/3,2);
 errorPrev=zeros(6,1);
 ierror=zeros(6,1);
+derror=zeros(6,1);
 error_cont=zeros(6,1);
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
@@ -217,6 +218,7 @@ while(k<=N)
     errorRate(4:6,1)=eO;
     ierror(1:3)=ierror(1:3)+eP*ts;
     ierror(4:6)=zeros(3,1);
+    derror(1:3)=(eP-errorPrev(1:3))/ts;
     errorPrev=errorRate;
     error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
@@ -227,6 +229,11 @@ while(k<=N)
     
     %Calculate the weighting by task velocity
     taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    
+%     if (k > N/2)
+%         taskNorm=1;
+%     end
+    
     dP=taskNorm*dP;
     %dP=taskNorm(k)*dP;    
     
@@ -239,7 +246,7 @@ while(k<=N)
     if maxAlpha(k) < minAlpha(k)
        diag(Wcol)
        diag(Wjlim)
-       disp('Could not achieve task that complies with joint velocities limits')
+       error('Could not achieve task that complies with joint velocities limits')
        break
     end    
     %Saturate alpha in case is out of bounds
@@ -249,7 +256,7 @@ while(k<=N)
     if alpha < minAlpha(k)
         alpha = minAlpha(k);
     end
-    alpha_plot(k)=alpha;
+    alpha_plot(k)=alpha*taskNorm;
     int_motion = alpha*int_motion;
         
     %Mobility control vector
