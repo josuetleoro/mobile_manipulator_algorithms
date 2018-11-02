@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=6;
 TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
@@ -40,9 +40,6 @@ end
 Kp_pos=10;
 Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
 Kp_or=20;
-% Kp_pos=1;
-% Ki_pos=0;
-% Kp_or=0.001;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -169,7 +166,7 @@ errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
-trans=sigmoidTrapezoidal(MotPlan.time,0.1);
+trans=sigmoidTrapezoidal(MotPlan.time,0.15);
 % plot(MotPlan.time,trans);
 % pause()
 while(k<=N)
