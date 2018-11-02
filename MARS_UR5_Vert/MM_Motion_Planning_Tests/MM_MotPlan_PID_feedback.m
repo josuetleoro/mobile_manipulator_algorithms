@@ -253,10 +253,16 @@ while(k<=N)
     end    
     %Saturate alpha in case is out of bounds
     if alpha > maxAlpha(k)
-       alpha = maxAlpha(k);
+        alpha = maxAlpha(k);
+        if alpha < 0
+            disp('alpha negative');
+        end
     end
     if alpha < minAlpha(k)
-        alpha = minAlpha(k);
+        alpha = minAlpha;
+        if alpha < 0
+            disp('alpha negative');
+        end
     end
     alpha_plot(k)=alpha*taskNorm;
     int_motion = alpha*int_motion;
