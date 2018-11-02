@@ -22,7 +22,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=180*pi/180;
         yaw=0*pi/180;       
-        tf=12;
+        tf=14;          %Desired final time
         
     case 2 
         % %Initial joints values
@@ -54,7 +54,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=18;        
+        tf=10;        
         
     case 4 
         % %Initial joints values
@@ -70,7 +70,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=9;        
+        tf=10;        
         
     case 5 
         %Initial joints values
@@ -86,7 +86,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=0*pi/180;
         yaw=0*pi/180;
-        tf=12;       
+        tf=15;       
         
     case 6 
         %Initial joints values
@@ -120,7 +120,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=6;     
+        tf=8;     
         
     case 8 
         %Initial joints values
@@ -173,7 +173,7 @@ switch(testN)
 %         roll=0*pi/180;
 %         pitch=0*pi/180;
 %         yaw=180*pi/180;        
-        tf=18;     
+        tf=25;     
         
     case 11
         % %Initial joints values
@@ -189,7 +189,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=30*pi/180;
         yaw=30*pi/180;
-        tf=10;         
+        tf=12;         
         
     case 12 
         %Initial joints values
@@ -209,7 +209,7 @@ switch(testN)
         Rf2=eul2rotm([yaw pitch roll],'ZYX');
         rotm2axang(Rf2)        
         
-        tf=64;       
+        tf=38;       
         
     case 13 
         %Initial joints values
@@ -225,7 +225,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=18;     
+        tf=13;     
         
     case 14 
         %Initial joints values
@@ -241,7 +241,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=180*pi/180;
         yaw=0*pi/180;   
-        tf=8;
+        tf=10;
         
      case 15
         %Initial joints values
@@ -270,5 +270,5 @@ switch(testN)
         pitch=0*pi/180;
         yaw=-90*pi/180;       
         
-        tf=14;        
+        tf=15;        
 end
