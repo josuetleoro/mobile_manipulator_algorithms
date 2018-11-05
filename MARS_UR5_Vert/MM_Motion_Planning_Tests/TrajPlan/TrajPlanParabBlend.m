@@ -33,25 +33,25 @@ time=0:ts:tf;
 % plotEndEffectorMotion(Rd,5)
 % pause()
 
-% %Plot the evolution of dx, dy and dz
+%Plot the evolution of dx, dy and dz
 % figure()
 % subplot(1,3,1)
 % plot(time,dx,'r','LineWidth',2); grid on
 % xlabel('time(s)')
-% ylabel('x')
-% title('x')
+% ylabel('dx')
+% title('dx')
 % 
 % subplot(1,3,2)
 % plot(time,dy,'r','LineWidth',2); grid on
 % xlabel('time(s)')
-% ylabel('y')
-% title('y')
+% ylabel('dy')
+% title('dy')
 % 
 % subplot(1,3,3)
 % plot(time,dz,'r','LineWidth',2); grid on
 % xlabel('time(s)')
-% ylabel('z')
-% title('z')
+% ylabel('dz')
+% title('dz')
 % 
 % %Plot the evolution of wx, wy and wz
 % figure()
