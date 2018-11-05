@@ -1,4 +1,4 @@
-%clear all
+clear all
 close all
 
 %Add the MMUR5 path to use the class MMUR5
@@ -92,6 +92,12 @@ xi_des(2,:)=[MotPlan.y];
 xi_des(3,:)=[MotPlan.z];
 xi_des(4:7,:)=[MotPlan.quat];
 
+Rf=quat2rotm(xi_des(4:7,end)');
+Tf=zeros(4,4);
+Tf(4,4)=1;
+Tf(1:3,1:3)=Rf;
+Tf(1:3,4)=xi_des(1:3,end);
+
 dxi_des=zeros(6,N);    
 dxi_des(1,:)=[MotPlan.dx];
 dxi_des(2,:)=[MotPlan.dy];
@@ -124,6 +130,10 @@ end
 %%
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
+errorPrev=zeros(6,1);
+ierror=zeros(6,1);
+derror=zeros(6,1);
+error_cont=zeros(6,1);
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -135,7 +145,7 @@ while(k<=N)
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
         
     %% Manipulability gradient
-    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGrad2(q(:,k),JBar);   
+    [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBar2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
 
@@ -248,15 +258,14 @@ xi_des(:,k)'
 fprintf('\nObtained Final Pose');
 xi(:,k)'
 
-xi_pos_error=xi_des(1:3,:)-xi(1:3,:);
 fprintf('\nFinal Position Error:');
 xi_pos_error(:,end)'
 fprintf('Pos norm error: %fmm\n',norm(xi_pos_error(:,end))*1000');
 
 fprintf('\nFinal Orientation Error');
-xi_orient_error=errorFromQuats(xi_des(4:7,end),xi(4:7,end))';
-xi_orient_error
-fprintf('Orientation norm error: %f\n',norm(xi_orient_error)');
+%xi_orient_error=errorFromQuats(xi_des(4:7,:),xi(4:7,:));
+xi_orient_error(:,end)'
+fprintf('Orientation norm error: %f\n',norm(xi_orient_error(:,end))');
 
 fprintf('\nDesired Final Transformation Matrix\n');
 Tf
