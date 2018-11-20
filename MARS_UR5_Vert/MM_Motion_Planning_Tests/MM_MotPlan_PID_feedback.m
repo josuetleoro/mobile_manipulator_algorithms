@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=5;
 TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
@@ -31,10 +31,10 @@ Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
 theta=acos(dot(mp_dir,Pos_f_dir));
 if abs(theta) > (80*pi/180)
     %alpha=5; %ParabBlend
-    alpha=8; %FifthOrder
+    alpha=5; %FifthOrder
 else
     %alpha=2; %ParabBlend
-    alpha=4; %FifthOrder
+    alpha=1.0; %FifthOrder
 end
 
 Kp_pos=10;
@@ -240,7 +240,7 @@ while(k<=N)
     dP=taskNorm*dP;    
 
     %Calculate the internal motion
-    dP=Wcol*Wjlim*dP;
+    dP=Wmatrix*dP;
     int_motion=(Id-inv_JBar*JBarWeighted)*dP;
    
     %Calculate the maximum and minimum step size
@@ -259,7 +259,7 @@ while(k<=N)
         end
     end
     if alpha < minAlpha(k)
-        alpha = minAlpha;
+        alpha = minAlpha(k);
         if alpha < 0
             disp('alpha negative');
         end
