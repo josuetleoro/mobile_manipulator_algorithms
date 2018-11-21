@@ -31,10 +31,10 @@ Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
 theta=acos(dot(mp_dir,Pos_f_dir));
 if abs(theta) > (80*pi/180)
     %alpha=5; %ParabBlend
-    alpha=5; %FifthOrder
+    alpha=3; %FifthOrder
 else
-    %alpha=2; %ParabBlend
-    alpha=1.0; %FifthOrder
+    %alpha=1; %ParabBlend
+    alpha=1; %FifthOrder
 end
 
 Kp_pos=10;
