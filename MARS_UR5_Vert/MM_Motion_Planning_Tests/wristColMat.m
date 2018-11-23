@@ -39,7 +39,6 @@ gradP = abs(deltaP_deltad*deltad_deltaq);
 gradPDif = gradP - prevGradPWrist;
 for i=3:9
     if gradPDif(i) >= 0
-        %Wcol(i,i) = 1 + gradP(i);
         Wcol(i,i) = 1/sqrt(1 + gradP(i));
     else
         Wcol(i,i) = 1;

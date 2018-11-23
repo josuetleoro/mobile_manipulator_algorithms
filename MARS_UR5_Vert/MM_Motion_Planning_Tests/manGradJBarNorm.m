@@ -13,7 +13,7 @@ function [dP,w,dPa,wa]=manGradJBarNorm(q,J,T)
 %Calculate the manipulability measure
 % eigval=svd(J);
 % w=prod(eigval);
-J=J;
+J=J*T;
 Jt=J';
 JJt=J*Jt;
 w=sqrt(det(JJt));

@@ -33,7 +33,6 @@ Wcol=eye(9,9);
 gradPDif = gradP - prevGradPElbow;
 for i=3:5
     if gradPDif(i) >= 0
-        %Wcol(i,i) = 1 + gradP(i);
         Wcol(i,i) = 1/sqrt(1 + gradP(i));
     else
         Wcol(i,i) = 1;

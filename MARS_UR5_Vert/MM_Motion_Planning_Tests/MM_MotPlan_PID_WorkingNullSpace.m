@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=12;
+testN=1;
 TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
@@ -29,15 +29,14 @@ ts=1/20;    %Sampling time
 mp_dir=[cos(phi_mp) sin(phi_mp)];
 Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
 theta=acos(dot(mp_dir,Pos_f_dir));
-% if abs(theta) > (80*pi/180)
-%     %alpha=5; %ParabBlend
-%     alpha=5; %FifthOrder
-% else
-%     %alpha=1; %ParabBlend
-%     alpha=3; %FifthOrder
-% end
-
-alpha=15;
+if abs(theta) > (80*pi/180)
+    %alpha=5; %ParabBlend
+    alpha=10; %FifthOrder
+else
+    %alpha=1; %ParabBlend
+    alpha=3; %FifthOrder
+end
+%alpha = 4;
 
 Kp_pos=10;
 Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
@@ -227,8 +226,9 @@ while(k<=N)
     %Wmatrix=Wcol*Wjlim*invTq;
     Wmatrix=Wcol*Wjlim;
     JBar_w=JBar*Wmatrix;
-    inv_JBar_w=pinv(JBar_w);
-    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);    
+    inv_JBar=pinv(JBar_w);
+    %inv_JBar=Wmatrix*JBar'*inv(JBar*Wmatrix*JBar');
+    cont_input=Wmatrix*inv_JBar*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
     %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
@@ -243,12 +243,12 @@ while(k<=N)
     dP=taskNorm*dP;    
 
     %Calculate the internal motion
-    %dP=Wmatrix*dP;
-    dP=Wcol*Wjlim*dP;
-    int_motion=(Id-inv_JBar_w*JBar_w)*dP;
+    %dP=Wcol*Wjlim*dP;
+    dP=Wmatrix*Wmatrix*dP;
+    int_motion=(Id-Wmatrix*inv_JBar*JBar)*dP;
     
-    cont_input=Wmatrix*cont_input;
-    int_motion=Wmatrix*int_motion;
+    %dP=Wmatrix*dP;
+    %int_motion=(Id-inv_JBar*JBar_w)*dP;    
    
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
@@ -272,15 +272,16 @@ while(k<=N)
         end
     end
     alpha_plot(k)=alpha*taskNorm;
-            
+    int_motion = alpha*int_motion;
+        
     %Mobility control vector
-    eta(:,k)=cont_input+alpha*int_motion;    
+    eta(:,k)=cont_input+int_motion;    
     
     %Calculate the joints velocities
     %dq(:,k)=S*Wmatrix*eta(:,k);
     dq(:,k)=S*eta(:,k);
     
-    dq_int_motion(:,k)=alpha*int_motion;
+    dq_int_motion(:,k)=int_motion;
     dq_cont_input(:,k)=cont_input;
     
     %% update variables for next iteration       
