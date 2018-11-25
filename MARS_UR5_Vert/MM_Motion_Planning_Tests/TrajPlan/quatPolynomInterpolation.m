@@ -61,8 +61,13 @@ for k=0:m-1
     dw(:,k+1)=dQwk_p_1.getV();
 
     %Compute quat(k+1)
-    qN=q(k+1)/norm(q(k+1));    
-    quat(:,k+1)=qN.vecRep();
+    quat(:,k+1)=q(k+1).vecRep();
+    % Since by convention the quaternion scalar part must be kept positive,
+    % multiply the quaternion by -1 when the scalar part is negative.
+    if quat(1,k+1) < 0
+        quat(:,k+1) = -1 * quat(:,k+1);
+    end
+    quat(:,k+1)=quat(:,k+1)/norm(quat(:,k+1));
 end
 %Add the initial condition
 quat=[Qi.vecRep(),quat];
