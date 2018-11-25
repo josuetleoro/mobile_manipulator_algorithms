@@ -36,6 +36,8 @@ Ki_or=0.0001;
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
+%Load the joints constraints
+JointConstraints
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -110,12 +112,9 @@ xi(:,1)=xi_des(:,1);
 quat_e=xi(4:7,1);
 
 %% Calculate the maximum velocity normalization matrix
-JointConstraints
 Tq=zeros(9,9);
-dqLimProd = 1;
 for i=1:9
-    Tq(i,i)=1/dq_limit(i);
-    dqLimProd=dqLimProd*dq_limit(i);
+    Tq(i,i)=1/sqrt(dq_limit(i));
 end
 invTq=inv(Tq);
 
@@ -150,17 +149,9 @@ while(k<=N)
     ur5_man_measure(k)=ur5_manip;
 
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
+    %dP=ur5_dP;
     W_measure(k)=MM_manip*ur5_manip;
-    
-%     dP=(1-trans(k))*(ur5_manip*MM_dP+MM_manip*ur5_dP)+trans(k)*ur5_dP;    %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(1-trans(k))*MM_manip*ur5_manip+trans(k)*ur5_manip;      %Using product and transition
-
-%     dP=(1-trans(k))*MM_dP+trans(k)*ur5_dP;                                %Combined Mobile manipulator and robot arm
-%     W_measure(k)=(1-trans(k))*MM_manip+trans(k)*ur5_manip;                %With transition
-
-    %dP=MM_dP;                                                              %Mobile manipulator system alone
-    %dP=ur5_dP;                                                             %Robot arm alone
-    dP=S'*dP;   
+    dP=S'*dP; 
     
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
@@ -181,49 +172,61 @@ while(k<=N)
     %Orientation error
     quat_d=xi_des(4:7,k);    
     eO=errorFromQuats(quat_d,quat_e);
+    %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    ierror=ierror+errorRate*ts;
+    ierror(1:3)=ierror(1:3)+eP*ts;
+    ierror(4:6)=zeros(3,1);
+    derror(1:3)=(eP-errorPrev(1:3))/ts;
     errorPrev=errorRate;
     error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
     Wmatrix=Wcol*Wjlim*invTq;
-    JBarWeighted=JBar*Wmatrix;
-    inv_JBar=pinv(JBarWeighted);
-    cont_input=inv_JBar*(dxi_des(:,k)+error_cont);    
+    JBar_w=JBar*Wmatrix;
+    inv_JBar_w=pinv(JBar_w);
+    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);    
     
     %Calculate the weighting by task velocity
     taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
-    dP=taskNorm*dP;    
+    dP=taskNorm*dP;      
+
     %Calculate the internal motion
-    dP=Wcol*Wjlim*dP;
-    int_motion=(Id-inv_JBar*JBarWeighted)*dP;
+    dP=Wmatrix*dP;
+    int_motion=(Id-inv_JBar_w*JBar_w)*dP;
+    
+    cont_input=Wmatrix*cont_input;
+    int_motion=Wmatrix*int_motion;
    
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
        diag(Wcol)
-       diag(invWjlim)
-       disp('Could not achieve task that complies with joint velocities limits')
+       diag(Wjlim)
+       error('Could not achieve task that complies with joint velocities limits')
        break
-    end
-    
+    end    
     %Saturate alpha in case is out of bounds
     if alpha > maxAlpha(k)
-       alpha = maxAlpha(k);
+        alpha = maxAlpha(k);
+        if alpha < 0
+            disp('alpha negative');
+        end
     end
     if alpha < minAlpha(k)
         alpha = minAlpha(k);
+        if alpha < 0
+            disp('alpha negative');
+        end
     end
-    int_motion = alpha*int_motion;    
-        
+    alpha_plot(k)=alpha*taskNorm;
+            
     %Mobility control vector
-    eta(:,k)=cont_input+int_motion;    
+    eta(:,k)=cont_input+alpha*int_motion;    
     
     %Calculate the joints velocities
-    dq(:,k)=S*Wcol*Wjlim*invTq*eta(:,k);
+    dq(:,k)=S*eta(:,k);   
     
     %% update variables for next iteration       
     if k < N
