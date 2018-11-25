@@ -49,7 +49,7 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
        
         %Desired Pose
-        Pos_f=[2;3;1.4];
+        Pos_f=[2;3;1.3];
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
