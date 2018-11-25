@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=12;
+testN=3;
 TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
@@ -24,20 +24,11 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-%alpha=4;    %4 for small movement of the mp needed, otherwise 8
 %Decide step size based on mob plat rotation 
 mp_dir=[cos(phi_mp) sin(phi_mp)];
 Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
 theta=acos(dot(mp_dir,Pos_f_dir));
-% if abs(theta) > (80*pi/180)
-%     %alpha=5; %ParabBlend
-%     alpha=5; %FifthOrder
-% else
-%     %alpha=1; %ParabBlend
-%     alpha=3; %FifthOrder
-% end
-
-alpha=15;
+alpha=8;
 
 Kp_pos=10;
 Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
@@ -144,7 +135,7 @@ quat_e=xi(4:7,1);
 %% Calculate the maximum velocity normalization matrix
 Tq=zeros(9,9);
 for i=1:9
-    Tq(i,i)=1/dq_limit(i);
+    Tq(i,i)=1/sqrt(dq_limit(i));
 end
 invTq=inv(Tq);
 
@@ -155,10 +146,6 @@ for i=1:6
       maxdxi(i)=1; 
    end
 end
-% %Task norm using trapezoidal shape
-% [~,taskNorm,~]=ParabBlend(Pos_0(1),Pos_f(1),ts,tb,tf);
-% maxTaskNorm=max(taskNorm);
-% taskNorm=taskNorm/norm(maxTaskNorm);
 
 %%
 disp('Calculating the inverse velocity kinematics solution')
@@ -179,8 +166,6 @@ while(k<=N)
     S(1,1)=cos(q(3,k)); S(2,1)=sin(q(3,k));
     
     %Calculate the Jacobian
-    %J=evaluateJ(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
-    %JBar=J*S;
     JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));    
         
     %% Manipulability gradient
@@ -212,8 +197,8 @@ while(k<=N)
     
     %Orientation error
     quat_d=xi_des(4:7,k);    
-    %eO=errorFromQuats(quat_d,quat_e);
-    eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
+    eO=errorFromQuats(quat_d,quat_e);
+    %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
@@ -224,8 +209,7 @@ while(k<=N)
     errorPrev=errorRate;
     error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
-    %Wmatrix=Wcol*Wjlim*invTq;
-    Wmatrix=Wcol*Wjlim;
+    Wmatrix=Wcol*Wjlim*invTq;
     JBar_w=JBar*Wmatrix;
     inv_JBar_w=pinv(JBar_w);
     cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);    
@@ -243,8 +227,7 @@ while(k<=N)
     dP=taskNorm*dP;    
 
     %Calculate the internal motion
-    %dP=Wmatrix*dP;
-    dP=Wcol*Wjlim*dP;
+    dP=Wmatrix*dP;
     int_motion=(Id-inv_JBar_w*JBar_w)*dP;
     
     cont_input=Wmatrix*cont_input;
@@ -277,11 +260,7 @@ while(k<=N)
     eta(:,k)=cont_input+alpha*int_motion;    
     
     %Calculate the joints velocities
-    %dq(:,k)=S*Wmatrix*eta(:,k);
-    dq(:,k)=S*eta(:,k);
-    
-    dq_int_motion(:,k)=alpha*int_motion;
-    dq_cont_input(:,k)=cont_input;
+    dq(:,k)=S*eta(:,k);   
     
     %% update variables for next iteration       
     if k < N
@@ -293,8 +272,7 @@ while(k<=N)
         xi(1:3,k+1)=T(1:3,4);
         Re=T(1:3,1:3);
         quat_e=cartToQuat(Re);
-        xi(4:7,k+1)=quat_e;
-        
+        xi(4:7,k+1)=quat_e;        
     end
     %increment iteration step
     k=k+1;
@@ -340,7 +318,7 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-% %% Plot elbow collision distance
+%% Plot elbow collision distance
 % figure()
 % plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5);
 % xlabel('time(s)')
@@ -363,7 +341,6 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 %% Plot variables to analyze manipulability
-
 % figure()
 % plot(time,maxAlpha,'b','LineWidth',1.5);
 % grid on
@@ -380,73 +357,6 @@ mp_vel=eta(1:3,:);
 % legend('MM_{manip}','UR5_{manip}','W_{manip}')
 % xlabel('time(s)')
 % title('Manipulability measure')
-% 
-% subplot(3,1,2)
-% plot(time(1:k),dq_int_motion(1,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(1,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(1,1:k)+dq_int_motion(1,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('mop plat lin vel[m/s]');
-% 
-% subplot(3,1,3)
-% plot(time(1:k),dq_int_motion(2,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(2,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(2,1:k)+dq_int_motion(2,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('mop plat rot vel[rad/s]');
-% 
-% figure()
-% subplot(3,2,1)
-% plot(time,MM_man_measure,'b','LineWidth',1.5); hold on;
-% plot(time,ur5_man_measure,'r','LineWidth',1.5);
-% plot(time,W_measure,'g','LineWidth',1.5); hold off
-% grid on
-% legend('MM_{manip}','UR5_{manip}','W_{manip}')
-% xlabel('time(s)')
-% title('Manipulability measure')
-% 
-% subplot(3,2,2)
-% plot(time(1:k),dq_int_motion(4,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(4,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(4,1:k)+dq_int_motion(4,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('dq1 [rad/s]');
-% 
-% subplot(3,2,3)
-% plot(time(1:k),dq_int_motion(5,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(5,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(5,1:k)+dq_int_motion(5,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('dq2 [rad/s]');
-% 
-% subplot(3,2,4)
-% plot(time(1:k),dq_int_motion(6,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(6,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(6,1:k)+dq_int_motion(6,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('dq3 [rad/s]');
-% 
-% subplot(3,2,5)
-% plot(time(1:k),dq_int_motion(7,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(7,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(7,1:k)+dq_int_motion(7,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('dq4 [rad/s]');
-% 
-% subplot(3,2,6)
-% plot(time(1:k),dq_int_motion(8,1:k),'b','LineWidth',1.5); hold on;
-% plot(time(1:k),dq_cont_input(8,1:k),'r','LineWidth',1.5);
-% plot(time(1:k),dq_cont_input(8,1:k)+dq_int_motion(8,1:k),'g','LineWidth',1.5); hold off
-% grid on;
-% legend('internal motion','control input','sum')
-% title('dq5 [rad/s]');
-
 %% Plot all the variables
 PlotEvolution
 
