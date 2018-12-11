@@ -147,17 +147,38 @@ for i=1:6
    end
 end
 
-%%
+%% Calculate the step size variation law
+trans=sigmoidTrapezoidal(MotPlan.time,0.15);
+tb=tf*(1-0.15);
+T=tf-tb;
+a0=1; a1=0; a2=0;
+a3=-10/(T^3);
+a4=15/(T^4);
+a5=-6/(T^5);
+t=0;
+k=1;
+while k<=N
+    if (k> N/2)
+        if k > N*(1-0.15)
+            trans(k)=a0+a1*(t-tb)+a2*(t-tb)^2+a3*(t-tb)^3+a4*(t-tb)^4+a5*(t-tb)^5; 
+        else
+            trans(k)=1;
+        end
+    else
+        trans(k)=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    end
+    k=k+1;    
+    t=t+ts;
+end
+
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
-%trans=sigmoid(MotPlan.time,2*tf/3,2);
 errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
-trans=sigmoidTrapezoidal(MotPlan.time,0.15);
-% plot(MotPlan.time,trans);
-% pause()
+plot(MotPlan.time,trans);
+pause()
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -218,13 +239,14 @@ while(k<=N)
     %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
     %Use sigmoid trapezoidal for manipulability
     %taskNorm=trans(k);
-    if (k> N/2)
-        taskNorm=trans(k);
-        %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    else
-        taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    end
-    dP=taskNorm*dP;    
+    %if (k> N/2)
+    %    taskNorm=trans(k);
+    %    %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    %else
+    %    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
+    %end
+    %dP=taskNorm*dP;    
+    dP=trans(k)*dP;
 
     %Calculate the internal motion
     dP=Wmatrix*dP;
@@ -254,7 +276,7 @@ while(k<=N)
             disp('alpha negative');
         end
     end
-    alpha_plot(k)=alpha*taskNorm;
+    alpha_plot(k)=alpha*trans(k);
             
     %Mobility control vector
     eta(:,k)=cont_input+alpha*int_motion;    

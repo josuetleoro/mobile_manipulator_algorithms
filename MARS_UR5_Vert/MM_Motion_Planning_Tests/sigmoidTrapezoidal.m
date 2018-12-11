@@ -28,7 +28,7 @@ y=[y(1:end-1) trans2];
 
 %Using 5th order polynomial
 [trans3,~,~]=Traj5(1,0,ts,0,t1);
-trans3=1-trans1;
+%trans3=1-trans1;
 y=[y trans3];
 % 
 % plot(trans3)
