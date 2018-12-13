@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=9;
 TestPointsMaxLinVel
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
@@ -177,8 +177,8 @@ errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
-plot(MotPlan.time,trans);
-pause()
+% plot(MotPlan.time,trans);
+% pause()
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -340,20 +340,6 @@ if k < N
     maxAlpha = maxAlpha(1:k);
 end
 
-%% Plot elbow collision distance
-% figure()
-% plot(time(1:k),dist_elbow(1:k),'b','LineWidth',1.5);
-% xlabel('time(s)')
-% title('Distance elbow to mob plat [m]')
-% grid on
-% 
-% %% Plot wrist collision distance
-% figure()
-% plot(time(1:k),dist_wrist(1:k),'b','LineWidth',1.5);
-% xlabel('time(s)')
-% title('Distance wrist to front of mob plat [m]')
-% grid on
-
 % Adjust the manipulability measures
 MM_man_measure(1)=MM_man_measure(2);
 MM_man_measure(end)=MM_man_measure(end-1);
@@ -380,7 +366,7 @@ mp_vel=eta(1:3,:);
 % xlabel('time(s)')
 % title('Manipulability measure')
 %% Plot all the variables
-PlotEvolution
+PlotEvolutionPretty
 
 %% Plot end effector path
 % figure()
