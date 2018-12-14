@@ -196,13 +196,15 @@ grid on
 
 %% Elbow and wrist collision distance
 figure()
-plot(time(1:k),dist_elbow(1:k),'LineWidth',lineWidth,'Color',blue); hold on
+plot(time,dist_elbow,'LineWidth',lineWidth); hold on
 %yline(0.0,'--','LineWidth',lineWidth,'Color',blue); 
 
-plot(time(1:k),dist_wrist(1:k),'LineWidth',lineWidth,'Color',red);
+plot(time,dist_wrist,'LineWidth',lineWidth);
 %yline(0.0,'--','LineWidth',lineWidth,'Color',red); 
 
-legend('$d_{elbow}$','$d_{wrist}$', ...
+plot(time,wrist_pos(3,:),'LineWidth',lineWidth);
+
+legend('$d_{elbow}$','$d_{wrist}$','$h_{wrist}$', ...
        'interpreter','latex','FontSize',labelFontSize)
 
 xlabel('time[s]')
