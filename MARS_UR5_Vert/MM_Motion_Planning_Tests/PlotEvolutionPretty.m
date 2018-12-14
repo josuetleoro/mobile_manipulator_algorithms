@@ -97,7 +97,7 @@ xlabel('time[s]')
 ylabel('[m/s]   /   [rad/s]')
 legend('$v$','$v^-$','$v^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
-       'interpreter','latex','FontSize',labelFontSize)
+       'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 %legend('dv[m/s]','dv_{max}','dv_{min}''w[rad/s]')
 %title('Mobile platform velocity commands')
 grid on
@@ -116,7 +116,7 @@ xlabel('time[s]')
 ylabel('[m]   /   [m/s]')
 legend('$z$','$z^-$','$z^+$', ...
        '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
-       'interpreter','latex','FontSize',labelFontSize)
+       'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 % legend('$z[m]$','$z^-$','$z^+$', ...
 %     '$\dot{z}[m/s]$','$\dot{z}^-$','$\dot{z}^+$', ...
 %     'interpreter','latex','FontSize',labelFontSize)
@@ -140,7 +140,7 @@ xlabel('time[s]')
 ylabel('[rad]')
 legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
     '$q_{a2}$','$q_{a2}^-$','$q_{a2}^+$', ...
-    'interpreter','latex','FontSize',labelFontSize)
+    'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 
 % Joint 3 and 4
@@ -157,7 +157,7 @@ xlabel('time[s]')
 ylabel('[rad]')
 legend('$q_{a3}$','$q_{a3}^-$','$q_{a3}^+$', ...
     '$q_{a4}$','$q_{a4}^-$','$q_{a4}^+$', ...
-    'interpreter','latex','FontSize',labelFontSize)
+    'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 
 % Joint 5 and 6
@@ -174,7 +174,7 @@ xlabel('time[s]')
 ylabel('[rad]')
 legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
     '$q_{a6}$','$q_{a6}^-$','$q_{a6}^+$', ...
-    'interpreter','latex','FontSize',labelFontSize)
+    'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 
 %% UR5 joints velocities
@@ -191,7 +191,7 @@ xlabel('time[s]')
 ylabel('[rad/s]')
 legend('$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...
     '$\dot{q}_{a4}$','$\dot{q}_{a5}$','$\dot{q}_{a6}$', ...
-    'interpreter','latex','FontSize',labelFontSize)
+    'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 
 %% Elbow and wrist collision distance

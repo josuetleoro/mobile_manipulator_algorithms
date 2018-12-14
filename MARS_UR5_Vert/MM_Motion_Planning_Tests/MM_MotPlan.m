@@ -11,12 +11,12 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=12;
-TestPointsMaxLinVel
+testN=3;
+TestPointsPaper
 
 %Same initial pos for all tests
 %qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
-qa=[0.0;-80*pi/180;135*pi/180;-90*pi/180;-pi/2;0.0];
+qa=[0.0;-70*pi/180;130*pi/180;-150*pi/180;-pi/2;0.0];
 
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
