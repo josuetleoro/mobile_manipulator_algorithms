@@ -33,12 +33,12 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos_f=[3;0.1091;0.23];
+        Pos_f=[3.0;0.0;0.21];
         quat_f=axang2quat([0 1 0 pi/2])';
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=7;        
+        tf=9;        
         
     case 3 
         %Initial joints values
@@ -56,7 +56,7 @@ switch(testN)
         yaw=-180*pi/180;
         tf=10;        
         
-    case 4 
+    case 4 % Problem with initial configuration: qa=[0.0;-80*pi/180;135*pi/180;-90*pi/180;-pi/2;0.0];
         % %Initial joints values
         tx=0;
         ty=0;
@@ -65,12 +65,12 @@ switch(testN)
         qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
         
         %Desired Pose
-        Pos_f=[1.0;-0.8;0.3];
+        Pos_f=[1.0;-0.8;0.4];
         quat_f=axang2quat([1 1 -1 120*pi/180])';
         roll=90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
-        tf=9;        
+        tf=18;        
         
     case 5 
         %Initial joints values
@@ -98,7 +98,8 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos_f=[-2;2;0.3];
+        %Pos_f=[-2.2;2.2;1.3];
+        Pos_f=[-2.2;2.2;1.5];
         quat_f=axang2quat([0 -1 -1 pi])';
         %Passes through singularity
         roll=90*pi/180;
@@ -200,7 +201,8 @@ switch(testN)
         qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
         
         %Desired Pose
-        Pos_f=[8;10;0.5];
+        %Pos_f=[8;10;0.5];
+        Pos_f=[5.5;6.5;0.4];
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
@@ -209,7 +211,7 @@ switch(testN)
         Rf2=eul2rotm([yaw pitch roll],'ZYX');
         rotm2axang(Rf2)        
         
-        tf=40;       
+        tf=25;       
         
     case 13 
         %Initial joints values

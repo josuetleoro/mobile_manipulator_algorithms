@@ -11,10 +11,16 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=12;
 TestPointsMaxLinVel
+
+%Same initial pos for all tests
+%qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
+qa=[0.0;-80*pi/180;135*pi/180;-90*pi/180;-pi/2;0.0];
+
 %Joints' angles with maximum manipulability for UR5
-%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; 
+%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
+
 
 %Load the joints constraints
 JointConstraints
@@ -38,6 +44,7 @@ Kp_or=20;
 q0=[tx;ty;phi_mp;tz;qa];
 %Find the initial position of the end effector
 T0=MARS.forwardKin(q0);
+%pause()
 Pos_0=T0(1:3,4);
 quat_0=cartToQuat(T0(1:3,1:3));
 
@@ -208,6 +215,7 @@ while(k<=N)
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     Wcol=Wcol_elbow*Wcol_wrist;
+    %Wcol_elbow
     %Wcol=eye(9,9);
     
     %% Inverse differential kinematics         
