@@ -21,7 +21,6 @@ qa=[0.0;-70*pi/180;130*pi/180;-150*pi/180;-pi/2;0.0];
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
 
-
 %Load the joints constraints
 JointConstraints
 
@@ -184,7 +183,10 @@ errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
-% plot(MotPlan.time,trans);
+% plot(MotPlan.time,trans,'LineWidth',1.8);
+% xlabel('time[s]')
+% ylabel('$\sigma$', 'interpreter','latex','FontSize',14)
+% grid on
 % pause()
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
