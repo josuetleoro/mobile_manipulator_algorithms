@@ -19,11 +19,12 @@ purple=[0.4940    0.1840    0.5560];
 green=[0.4660    0.6740    0.1880];
 cyan=[0.3010    0.7450    0.9330];
 brown=[0.6350    0.0780    0.1840];
-labelFontSize=12;
+labelFontSize=14;
 lineWidth=1.8;
 set(0,'defaulttextinterpreter','latex')
 set(0,'DefaultTextFontname', 'CMU Serif')
 set(0,'DefaultAxesFontName', 'CMU Serif')
+set(0,'defaultAxesFontSize',12)
 
 %% Manipulability plots
 figure()
@@ -111,6 +112,8 @@ yline(q_limit(3,2),'-.','LineWidth',lineWidth,'Color',yellow);
 plot(time,dq(4,:),'LineWidth',lineWidth,'Color',cyan); 
 yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
+
+ylim([-0.3 0.5])
 
 xlabel('time[s]')
 ylabel('[m]   /   [m/s]')
