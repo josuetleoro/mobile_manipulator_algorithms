@@ -23,11 +23,7 @@ switch(testN)
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
-        yaw=-180*pi/180;
-        
-        Rf2=eul2rotm([yaw pitch roll],'ZYX');
-        rotm2axang(Rf2)
-        
+        yaw=-180*pi/180;     
         tf=12;
         
     case 2
