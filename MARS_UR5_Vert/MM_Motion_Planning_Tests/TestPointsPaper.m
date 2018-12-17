@@ -19,7 +19,7 @@ switch(testN)
         
         %Desired Pose
         %Pos_f=[8;10;0.5];
-        Pos_f=[5.5;6.5;0.4];
+        Pos_f=[2.5;3.5;0.4];
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
@@ -28,7 +28,7 @@ switch(testN)
         Rf2=eul2rotm([yaw pitch roll],'ZYX');
         rotm2axang(Rf2)
         
-        tf=25;
+        tf=12;
         
     case 2
        %Initial joints values
