@@ -183,9 +183,10 @@ errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
+% set(0,'defaultAxesFontSize',16)
 % plot(MotPlan.time,trans,'LineWidth',1.8);
-% xlabel('time[s]')
-% ylabel('$\sigma$', 'interpreter','latex','FontSize',14)
+% xlabel('$t(s)$','interpreter','latex')
+% ylabel('$\sigma$', 'interpreter','latex','FontSize',16)
 % grid on
 % pause()
 while(k<=N)

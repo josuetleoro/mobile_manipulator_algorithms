@@ -1,4 +1,4 @@
-% close all
+close all
 % clear all
 % %Open a dialog box to look for the motion data
 % uiopen();
@@ -21,10 +21,15 @@ cyan=[0.3010    0.7450    0.9330];
 brown=[0.6350    0.0780    0.1840];
 labelFontSize=14;
 lineWidth=1.8;
+
 set(0,'defaulttextinterpreter','latex')
-set(0,'DefaultTextFontname', 'CMU Serif')
-set(0,'DefaultAxesFontName', 'CMU Serif')
-set(0,'defaultAxesFontSize',12)
+set(0,'defaulttextfontname', 'Times')
+set(0,'defaulttextfontsize',16)
+
+set(0, 'defaultAxesTickLabelInterpreter','latex');
+set(0, 'defaultLegendInterpreter','latex');
+set(0,'defaultaxesfontsize',16)
+set(0,'defaultaxesfontname', 'Times')
 
 %% Manipulability plots
 figure()
@@ -33,7 +38,7 @@ plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
 plot(time,W_measure,'g','LineWidth',1.5); hold off
 legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
 %legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
-xlabel('time[s]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 %title('Manipulability measure')
 grid on
 
@@ -42,23 +47,23 @@ figure()
 plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
 plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
 plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
-xlabel('time[s]','FontName','cmr12')
-ylabel('[m]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
 %legend('e_{Px}','e_{Py}','e_{Pz}')
-%title('Position error[m]')
+%title('Position error(m)')
 grid on
 
 figure()
 plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
 plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
 plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
-xlabel('time[s]')
-ylabel('[rad]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
 %legend('e_{Ox}','e_{Oy}','e_{Oz}')
 grid on
-%title('Orientation error[rad]')
+%title('Orientation error(rad)')
 
 %% Mobile Platform Trajectory
 %Draw the mobile manipulator in the current position
@@ -80,8 +85,8 @@ plot(q(1,end),q(2,end),'o', 'MarkerEdgeColor','k','MarkerFaceColor',[.49 1 .63],
 legend('Start Pos','Final Pos', ...       
        'interpreter','latex','FontSize',10)
 %title('Mobile Platform Trajectory')
-xlabel('x[m]');
-ylabel('y[m]');
+xlabel('$x(m)$','interpreter','latex','FontSize',labelFontSize);
+ylabel('$y(m)$','interpreter','latex','FontSize',labelFontSize);
 
 %% Mobile platform velocities
 figure()
@@ -93,13 +98,13 @@ plot(time,mp_vel(2,:),'LineWidth',lineWidth,'Color',red);
 yline(-dq_limit(2),'--','LineWidth',lineWidth,'Color',red);
 yline(dq_limit(2),'-.','LineWidth',lineWidth,'Color',red);
 
-xlabel('time[s]')
-%legend('$v[m/s]$','$v^-$','$v^+$','$\omega[rad/s]$','$\omega^-$','$\omega^+$','interpreter','latex','FontSize',labelFontSize)
-ylabel('[m/s]   /   [rad/s]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+%legend('$v(m/s)$','$v^-$','$v^+$','$\omega(rad/s)$','$\omega^-$','$\omega^+$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
 legend('$v$','$v^-$','$v^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-%legend('dv[m/s]','dv_{max}','dv_{min}''w[rad/s]')
+%legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
 %title('Mobile platform velocity commands')
 grid on
 
@@ -115,15 +120,15 @@ yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
 ylim([-0.3 0.5])
 
-xlabel('time[s]')
-ylabel('[m]   /   [m/s]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
 legend('$z$','$z^-$','$z^+$', ...
        '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-% legend('$z[m]$','$z^-$','$z^+$', ...
-%     '$\dot{z}[m/s]$','$\dot{z}^-$','$\dot{z}^+$', ...
+% legend('$z(m)$','$z^-$','$z^+$', ...
+%     '$\dot{z}(m/s)$','$\dot{z}^-$','$\dot{z}^+$', ...
 %     'interpreter','latex','FontSize',labelFontSize)
-%legend('z[m]','z_{max}','z_{min}','dz[m/s]','dz_{max}','dz_{min}')
+%legend('z(m)','z_{max}','z_{min}','dz(m/s)','dz_{max}','dz_{min}')
 %title('Prismatic joint')
 grid on
 
@@ -139,8 +144,8 @@ plot(time,q(6,:),'LineWidth',lineWidth,'Color',red);
 yline(q_limit(5,1),'--','LineWidth',lineWidth,'Color',red); 
 yline(q_limit(5,2),'-.','LineWidth',lineWidth,'Color',red);
 
-xlabel('time[s]')
-ylabel('[rad]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
     '$q_{a2}$','$q_{a2}^-$','$q_{a2}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
@@ -156,8 +161,8 @@ plot(time,q(8,:),'LineWidth',lineWidth,'Color',purple);
 yline(q_limit(7,1),'--','LineWidth',lineWidth,'Color',purple); 
 yline(q_limit(7,2),'-.','LineWidth',lineWidth,'Color',purple);
 
-xlabel('time[s]')
-ylabel('[rad]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$q_{a3}$','$q_{a3}^-$','$q_{a3}^+$', ...
     '$q_{a4}$','$q_{a4}^-$','$q_{a4}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
@@ -173,8 +178,8 @@ plot(time,q(10,:),'LineWidth',lineWidth,'Color',cyan);
 yline(q_limit(9,1),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(q_limit(9,2),'-.','LineWidth',lineWidth,'Color',cyan);
 
-xlabel('time[s]')
-ylabel('[rad]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
     '$q_{a6}$','$q_{a6}^-$','$q_{a6}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
@@ -190,8 +195,8 @@ plot(time,dq(7,:),'LineWidth',lineWidth); hold on
 plot(time,dq(8,:),'LineWidth',lineWidth); hold on
 plot(time,dq(9,:),'LineWidth',lineWidth); hold on
 plot(time,dq(10,:),'LineWidth',lineWidth); hold on
-xlabel('time[s]')
-ylabel('[rad/s]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 legend('$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...
     '$\dot{q}_{a4}$','$\dot{q}_{a5}$','$\dot{q}_{a6}$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
@@ -210,7 +215,7 @@ plot(time,wrist_pos(3,:),'LineWidth',lineWidth);
 legend('$d_{elbow}$','$d_{wrist}$','$h_{wrist}$', ...
        'interpreter','latex','FontSize',labelFontSize)
 
-xlabel('time[s]')
-ylabel('[m]')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 
