@@ -12,10 +12,17 @@ odom_trans.Header.FrameId = 'odom';
 
 [state_pub, state_msg] = rospublisher('/mars_joint_states','sensor_msgs/JointState');
 
-mob_plat_pos = [0.0;0.0;0.0]; %[x,y,phi]
-prism_pos = 0.0;
-%ur5_pos = [0.0;-0.061261057;-1.329242758;2.393719068;-2.646791811;-pi/2;pi];
-ur5_pos = [0.0;0.0;0.0;0.0;0.0;0.0];
+
+% %Test1
+% mob_plat_pos = [0.0;0.0;0.0]; %[x,y,phi]
+% prism_pos = 0.2;
+% ur5_pos = [0.0;0.0;0.0;0.0;0.0;0.0];
+
+
+% %Test2
+mob_plat_pos = [0.0;0.0;-0.26]; %[x,y,phi]
+prism_pos = 0.1234;
+ur5_pos = [-0.8597;-0.6589;0.6589;-0.1246;-0.5897;pi/2];
 
 %Joints values
 state_msg.Name = joints_names;
@@ -23,9 +30,9 @@ state_msg.Position = [0; 0; prism_pos; ur5_pos];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
 
-rate = rosrate(20);
+rate = rosrate(2);
 reset(rate);
-while (rate.TotalElapsedTime <= 5)
+while (rate.TotalElapsedTime <= 10)
     time = rate.TotalElapsedTime;
     fprintf('Time Elapsed: %f\n',time)
     now = rostime('now');
@@ -46,8 +53,22 @@ while (rate.TotalElapsedTime <= 5)
     odom_trans.Header.Stamp = now;
     send(state_pub,state_msg);
     sendTransform(tftree, odom_trans);
-    
     waitfor(rate);
+    
+    base_foot_print_To_ur5_tool0 = getTransform(tftree, 'odom', 'ur5_tool0');
+    translation = base_foot_print_To_ur5_tool0.Transform.Translation;
+    rotation = base_foot_print_To_ur5_tool0.Transform.Rotation;
+    
+    pos = [translation.X, translation.Y, translation.Z];
+    quat = [rotation.W,rotation.X,rotation.Y,rotation.Z];
+    rotm=quat2rotm(quat);
+    
+    T=zeros(4,4);
+    T(4,4)=1;
+    T(1:3,1:3)=rotm;
+    T(1:3,4)=pos
+    
+    
 end
 
 %rosshutdown

@@ -10,9 +10,9 @@ classdef MARS_UR5
         l5@double = double(0.09465);
         l6@double = double(0.0823);        
         %Position of the base of the UR5 robot with respect to the center of the wheels
-        a = -0.049; %The position is not defined yet, because the original mounting plate was 
+        a = 0.011; %The position is not defined yet, because the original mounting plate was 
         %rotated changing the x distance, which is not correct(just temporal)
-        b = 0.0762 + 0.480 + 0.0; %(wheels radius + center of wheels to prism joint + safety distance for ur5)
+        b = 0.0762 + 0.48296; %(wheels radius + center of wheels to prism joint)
         %Direction and Points of each joint
         p1
         p2
