@@ -40,7 +40,7 @@ switch(testN)
         
         %Desired Pose
         %Pos_f=[-2.2;2.2;1.3];
-        Pos_f=[-2.2;2.2;1.5];
+        Pos_f=[-2.2;2.2;1.3];
         quat_f=axang2quat([0 -1 -1 pi])';
         %Passes through singularity
         roll=90*pi/180;

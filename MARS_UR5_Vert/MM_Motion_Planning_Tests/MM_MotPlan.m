@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=3;
 TestPointsPaper
 
 %Same initial pos for all tests
