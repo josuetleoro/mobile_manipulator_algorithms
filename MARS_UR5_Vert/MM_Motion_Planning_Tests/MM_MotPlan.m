@@ -6,17 +6,14 @@ addpath MARS_UR5
 addpath TrajPlan
 addpath JacobiansFolder
 addpath 3DPlots
+addpath 'Experimental Results'
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
 %Load the test point
 testN=3;
-TestPointsPaper
-
-%Same initial pos for all tests
-%qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
-qa=[0.0;-70*pi/180;130*pi/180;-150*pi/180;-pi/2;0.0];
+TestPointsReal
 
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
@@ -28,11 +25,7 @@ JointConstraints
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-ts=1/20;    %Sampling time
-%Decide step size based on mob plat rotation 
-mp_dir=[cos(phi_mp) sin(phi_mp)];
-Pos_f_dir=Pos_f(1:2)/norm(Pos_f(1:2));
-theta=acos(dot(mp_dir,Pos_f_dir));
+ts=1/50;    %Sampling time
 alpha=8;
 
 Kp_pos=10;
@@ -63,19 +56,19 @@ Tf(1:3,4)=Pos_f;
 T0
 Tf
 
-% %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
-% % figure()
-% %Mobile platform initial pos
-% %plotFrame(eye(4),1,'mp_0'); hold on;
-% plotMobPlatArrow(tx,ty,phi_mp,2,'mp_0');
-% plotFrame(T0,1,'T0'); hold on;
-% plotFrame(Tf,1,'Tf'); 
-% %plotFrame(Tf2,2,'Tf2');
-% xlabel('x')
-% ylabel('y')
-% zlabel('z')
-% view(-133,31)
-% pause()
+%%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
+% figure()
+%Mobile platform initial pos
+%plotFrame(eye(4),1,'mp_0'); hold on;
+plotMobPlatArrow(tx,ty,phi_mp,2,'mp0');
+plotFrame(T0,1,'T0'); hold on;
+plotFrame(Tf,1,'Tf'); 
+%plotFrame(Tf2,2,'Tf2');
+xlabel('x')
+ylabel('y')
+zlabel('z')
+view(-133,31)
+pause()
 
 %% Trajectory planning
 tic

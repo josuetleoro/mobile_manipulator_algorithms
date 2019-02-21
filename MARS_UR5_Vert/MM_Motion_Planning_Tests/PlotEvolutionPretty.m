@@ -118,7 +118,7 @@ plot(time,dq(4,:),'LineWidth',lineWidth,'Color',cyan);
 yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
-ylim([-0.3 0.5])
+ylim([-0.3 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
