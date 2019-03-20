@@ -1,7 +1,7 @@
 clc
 clear all
-addpath '..\TrajPlan'
-addpath '..\MARS_UR5'
+addpath '../TrajPlan'
+addpath '../MARS_UR5'
 
 %% Read test results files
 [file, path]=uigetfile('*.csv');

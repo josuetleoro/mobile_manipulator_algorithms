@@ -12,7 +12,7 @@ addpath 'Experimental Results'
 MARS=MARS_UR5();
 
 %Load the test point
-testN=6;
+testN=9;
 TestPointsReal
 
 %Joints' angles with maximum manipulability for UR5

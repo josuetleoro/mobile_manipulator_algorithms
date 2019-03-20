@@ -23,13 +23,21 @@ dwf=[0;0;0];
 %[quat,w,~]=quatInterpolation(Q0,w0,dw0,Qf,wf,dwf,0,tf,ts);
 [quat,~,~]=quatPolynomInterpolation(Q0,w0,dw0,Qf,wf,dwf,time,ts,'fixed');
 
+
+% Eliminate the difference at the start of the trajectory due to sensor drift
+%posOff = ee_xi(1:3,1)-pos0(1:3,1);
+%ee_xi(1:3,:) = ee_xi(1:3,:) - repmat(posOff,1,length(ee_xi));
+%orienOff = quatmultiply(quatinv(ee_xi(4:7,1)'),quat(1:4,1)');
+
 %Return the trajectory errors
 pos(1,:) = x;
 pos(2,:) = y;
 pos(3,:) = z;
 pos_error = pos - ee_xi(1:3,:);
 or_error = zeros(3,length(ee_xi));
-for i=1:length(ee_xi)
+for i=1:length(ee_xi)    
+    %temp_quat=quatmultiply(ee_xi(4:7,i)',orienOff)';
+    %or_error(1:3,i)=errorFromQuats(quat(1:4,i),temp_quat);
     or_error(1:3,i)=errorFromQuats(quat(1:4,i),ee_xi(4:7,i));
 end
 
@@ -207,4 +215,13 @@ eO=qe(1)*qd(2:4)-qd(1)*qe(2:4)-cross(qd(2:4),qe(2:4));
 if sO < 0
     eO = -1*eO;
 end
+end
+
+function error=errorFromQuatsComplete(qd,qe)
+
+%Calculate the orientation error
+sO=qd(1)*qe(1)+qd(2:4)'*qe(2:4);
+eO=qe(1)*qd(2:4)-qd(1)*qe(2:4)-cross(qd(2:4),qe(2:4));
+error = [sO;eO];
+
 end

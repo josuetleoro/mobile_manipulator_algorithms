@@ -1,7 +1,7 @@
 function [Wcol, dist_signed] = elbowColMat(q,rho,alpha,beta)
 %% Returns the Weight matrix for elbow collision
 % Minimum height of the elbow
-elbow_safe_dist = 0.5;
+elbow_safe_dist = 0.6;
 x=q(1);
 y=q(2);
 phi=q(3);
