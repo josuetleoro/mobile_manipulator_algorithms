@@ -12,7 +12,7 @@ addpath 'Experimental Results'
 MARS=MARS_UR5();
 
 %Load the test point
-testN=9;
+testN=1;
 TestPointsReal
 
 %Joints' angles with maximum manipulability for UR5
@@ -194,7 +194,6 @@ while(k<=N)
         
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBar2(q(:,k),JBar);   
-    %[MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBarNorm(q(:,k),JBar,invTq);
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
@@ -371,12 +370,3 @@ mp_vel=eta(1:3,:);
 % title('Manipulability measure')
 %% Plot all the variables
 PlotEvolutionPretty
-
-%% Plot end effector path
-% figure()
-% plot3(xi(1,:),xi(2,:),xi(3,:));
-% xlabel('x[m]')
-% ylabel('y[m]')
-% zlabel('z[m]')
-% zlim([0,1.5])
-% grid on;
