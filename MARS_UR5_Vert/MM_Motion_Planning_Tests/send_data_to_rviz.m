@@ -1,3 +1,4 @@
+close all
 clear all
 clc
 
@@ -24,21 +25,31 @@ odom_trans.Header.FrameId = 'odom';
 [path_pub, path_msg] = rospublisher('/ur5_tool0_path','nav_msgs/Path');
 path_msg.Header.FrameId = 'odom';
 
-path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/10)-1));        
+path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/20)));        
 
 k=1;
-for i=1:n  
-    if(mod(i,10)==0)        
-    path_msg.Poses(k).Pose.Position.X = xi_des(1,i);    
-    path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
-    path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
-    path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
-    path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
-    path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
-    path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);    
-    k=k+1;
+for i=1:n
+    if(mod(i,20)==0)
+        path_msg.Poses(k).Pose.Position.X = xi(1,i);
+        path_msg.Poses(k).Pose.Position.Y = xi(2,i);
+        path_msg.Poses(k).Pose.Position.Z = xi(3,i);
+        path_msg.Poses(k).Pose.Orientation.W = xi(4,i);
+        path_msg.Poses(k).Pose.Orientation.X = xi(5,i);
+        path_msg.Poses(k).Pose.Orientation.Y = xi(6,i);
+        path_msg.Poses(k).Pose.Orientation.Z = xi(7,i);
+        k=k+1;
     end
 end
+%Make sure the last pose is also stored
+path_msg.Poses(k).Pose.Position.X = xi(1,end);
+path_msg.Poses(k).Pose.Position.Y = xi(2,end);
+path_msg.Poses(k).Pose.Position.Z = xi(3,end);
+path_msg.Poses(k).Pose.Orientation.W = xi(4,end);
+path_msg.Poses(k).Pose.Orientation.X = xi(5,end);
+path_msg.Poses(k).Pose.Orientation.Y = xi(6,end);
+path_msg.Poses(k).Pose.Orientation.Z = xi(7,end);
+path_msg.Poses(end).Pose.Orientation.Z = xi(7,end);
+
 
 %Create the transformation of the last pose to draw it
 desired_trans = rosmessage('geometry_msgs/TransformStamped');
@@ -122,5 +133,3 @@ for i=1:n
     sendTransform(tftree, desired_trans);    
     waitfor(rate);    
 end
-
-%rosshutdown

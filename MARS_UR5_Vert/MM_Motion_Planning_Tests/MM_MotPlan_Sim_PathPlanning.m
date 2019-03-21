@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=2;
+testN=15;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -24,15 +24,15 @@ JointConstraints
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-ts=1/50;    %Sampling time
-alpha=8;
-beta=0.02;
+ts=1/20;    %Sampling time
+alpha=13;
+beta=1;
+trans_step=0.005;
+epsilon=5e-4;
 
-epsilon=1e-3;
-
-Kp_pos=10;
+Kp_pos=2;
 Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
-Kp_or=20;
+Kp_or=5;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -119,7 +119,6 @@ error_cont=zeros(6,1);
 xi_pos_error(1:3,k)=xi_des(1:3)-xi(1:3,k);
 error = norm(xi_pos_error);
 time(1)=0;
-trans_step=0.002;
 trans=0;
 while(error>epsilon)
     %% Redundancy resolution using manipulability gradient
@@ -272,6 +271,10 @@ fprintf('\nFinal Orientation Error');
 %xi_orient_error=errorFromQuats(xi_des(4:7,:),xi(4:7,:));
 xi_orient_error(:,end)'
 fprintf('Orientation norm error: %f\n',norm(xi_orient_error(:,end))');
+
+%Trajectory time
+fprintf('\nTrajectory time');
+time(end)
 
 fprintf('\nDesired Final Transformation Matrix\n');
 Tf

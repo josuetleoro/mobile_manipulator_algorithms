@@ -148,7 +148,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos_f=[0.5;-3;0.1];
+        Pos_f=[0.5;-3;0.15];
         quat_f=axang2quat([-1 1 1 120*pi/180])';
         roll=-180*pi/180;
         pitch=90*pi/180; %-90*pi/180 cannot be executed with high lambda
@@ -202,7 +202,7 @@ switch(testN)
         
         %Desired Pose
         %Pos_f=[8;10;0.5];
-        Pos_f=[5.5;6.5;0.4];
+        Pos_f=[5.5;6.5;1.2];
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
@@ -222,7 +222,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
        
         %Desired Pose
-        Pos_f=[2;3;0.15];
+        Pos_f=[2;3;0.15];  %Lower limit that can be solved
         quat_f=axang2quat([0 1 0 pi])';
         roll=-180*pi/180;
         pitch=0*pi/180;
@@ -238,7 +238,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
     
         %Desired Pose
-        Pos_f=[-0.3;0;0.04];
+        Pos_f=[-0.3;0;0.13];
         quat_f=axang2quat([0 1 0 pi])';
         roll=0*pi/180;
         pitch=180*pi/180;
@@ -255,17 +255,17 @@ switch(testN)
         qa=[-pi/2;-pi/4;pi/2;3*pi/4;-pi/2;0.0];
         
         %Desired Pose
-        Pos_f=[0.7221;3;0.7246];
+        %Pos_f=[0.7221;3;0.7246];
         
         %Dificult case, where the final position is far and the final
         %orientation puts the joint 5 in a singular position
-%         Pos_f=[0.7221;8;0.7246];
-%         tf=30;
+        Pos_f=[0.7221;8;0.7246];
+        tf=30;
         
-%         quat_f=axang2quat([-1 1 1 120*pi/180])';
-%         roll=-90*pi/180;
-%         pitch=90*pi/180;
-%         yaw=0*pi/180;
+        quat_f=axang2quat([-1 1 1 120*pi/180])';
+        roll=-90*pi/180;
+        pitch=90*pi/180;
+        yaw=0*pi/180;
         %Orientation with a problem of mobile platform rotation        
         quat_f=axang2quat([-1 1 -1 120*pi/180])';
         roll=-90*pi/180;
