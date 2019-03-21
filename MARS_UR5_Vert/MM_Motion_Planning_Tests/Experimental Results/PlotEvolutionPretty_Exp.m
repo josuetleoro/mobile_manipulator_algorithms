@@ -109,7 +109,7 @@ ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
 legend('$v$','$v^-$','$v^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-title('Mobile platform velocity commands')
+title('Mobile platform velocities')
 grid on
 
 %% Prismatic joint

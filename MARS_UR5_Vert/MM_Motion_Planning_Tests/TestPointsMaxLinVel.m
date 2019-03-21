@@ -33,7 +33,7 @@ switch(testN)
         qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0]; %Joint angles with maximum manipulability
         
         %Desired Pose
-        Pos_f=[3.0;0.0;0.21];
+        Pos_f=[3.0;0.0;0.32];
         quat_f=axang2quat([0 1 0 pi/2])';
         roll=0*pi/180;
         pitch=90*pi/180;

@@ -9,10 +9,13 @@ while k < N
     
     if time_diff >= 0
         if ~start_time_found
-            fprintf('Starting time_diff:%f\n', time_diff);
-            fprintf('Index:%d\n', k);
+            time_diff_prev = duration_from_stamps([data_raw(k-1,1) data_raw(k-1,2)], stamp_start);
+            [start_time,idx] = min([time_diff_prev, time_diff]);
+            %Move the idx of the starting time
+            k = k + (idx-1);
+            fprintf('Starting time_diff:%f\n', start_time);
+            fprintf('Index:%d\n', k);            
             start_time_found = true;
-            k = k - 1;
             continue
         end
     end
@@ -23,7 +26,22 @@ while k < N
     end
     
     if (time_diff > duration)
-        fprintf('Final time_diff:%f\n', time_diff);
+        final_time = time_diff;
+        
+        time_diff_prev = duration_from_stamps([data_raw(k-1,1) data_raw(k-1,2)], stamp_start);
+        time_error = abs(time_diff-duration);
+        time_error_prev = abs(time_diff_prev-duration);
+        
+        %Remove the final element
+        if time_error_prev < time_error
+            k = k - 1;
+            temp = traj_data;
+            traj_data = [];
+            traj_data = temp(:,1:count-1);
+            final_time = time_error_prev;
+        end        
+        
+        fprintf('Final time_diff:%f\n', final_time);
         fprintf('Index:%d\n', k);
         break
     end
