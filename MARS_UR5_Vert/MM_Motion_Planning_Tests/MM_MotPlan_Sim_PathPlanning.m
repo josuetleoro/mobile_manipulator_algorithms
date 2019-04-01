@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=10;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -25,14 +25,14 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=13;
+alpha=8;
 beta=1;
 trans_step=0.005;
 epsilon=5e-4;
 
-Kp_pos=2;
+Kp_pos=1;
 Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
-Kp_or=5;
+Kp_or=2;
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -120,6 +120,7 @@ xi_pos_error(1:3,k)=xi_des(1:3)-xi(1:3,k);
 error = norm(xi_pos_error);
 time(1)=0;
 trans=0;
+trans2 = 1;
 while(error>epsilon)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d\n',k);
@@ -219,9 +220,18 @@ while(error>epsilon)
 %         end
 %     end
     alpha_plot(k)=alpha;
-            
+    
+    aux = JBar*JBar'*errorRate;
+    beta = dot(errorRate,aux)/(aux'*aux);    
+    
+    if error < 0.1
+       trans2 = trans2 - 0.01;
+    end
+    if trans2 < 0
+        trans2 = 0;
+    end            
     %Mobility control vector
-    eta(:,k)=trans*beta*(cont_input+alpha*int_motion);
+    eta(:,k)=trans*(beta*cont_input+trans2*alpha*int_motion);
     if trans < 1
         trans = trans + trans_step;
     end   
