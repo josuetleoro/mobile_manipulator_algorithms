@@ -8,15 +8,23 @@ addpath JacobiansFolder
 addpath 3DPlots
 addpath 'Experimental Results'
 
+%Joints' angles with maximum manipulability for UR5
+%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
+
+
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
-%Load the test point
-testN=1;
-TestPointsReal
+%Name the test number
+testN=3;
 
-%Joints' angles with maximum manipulability for UR5
-%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
+GetMarsCurrState        
+        
+%Desired Pose
+Pos_f=[3;0.384;0.35];
+quat_f=[0.7071;0;0.7071;0];
+quat_f=quat_f/norm(quat_f);
+tf=6.4;
 
 %Load the joints constraints
 JointConstraints

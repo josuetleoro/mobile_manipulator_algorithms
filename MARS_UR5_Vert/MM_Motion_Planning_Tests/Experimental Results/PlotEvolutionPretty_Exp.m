@@ -96,11 +96,11 @@ ylabel('$y(m)$','interpreter','latex','FontSize',labelFontSize);
 
 %% Mobile platform velocities
 figure()
-plot(time_mp_vel,mp_vel(1,:),'LineWidth',lineWidth,'Color',blue); hold on
+plot(time_mp_vel,mp_vel_exp(1,:),'LineWidth',lineWidth,'Color',blue); hold on
 yline(-dq_limit(1),'--','LineWidth',lineWidth,'Color',blue); 
 yline(dq_limit(1),'-.','LineWidth',lineWidth,'Color',blue);
 
-plot(time_mp_vel,mp_vel(2,:),'LineWidth',lineWidth,'Color',red);
+plot(time_mp_vel,mp_vel_exp(2,:),'LineWidth',lineWidth,'Color',red);
 yline(-dq_limit(2),'--','LineWidth',lineWidth,'Color',red);
 yline(dq_limit(2),'-.','LineWidth',lineWidth,'Color',red);
 
@@ -114,11 +114,11 @@ grid on
 
 %% Prismatic joint
 figure()
-plot(time_jstates,z_pj,'LineWidth',lineWidth,'Color',yellow); hold on
+plot(time_jstates,z_pj_exp,'LineWidth',lineWidth,'Color',yellow); hold on
 yline(q_limit(3,1),'--','LineWidth',lineWidth,'Color',yellow); 
 yline(q_limit(3,2),'-.','LineWidth',lineWidth,'Color',yellow); 
 
-plot(time_jstates,dz_pj,'LineWidth',lineWidth,'Color',cyan); 
+plot(time_jstates,dz_pj_exp,'LineWidth',lineWidth,'Color',cyan); 
 yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
@@ -136,11 +136,11 @@ grid on
 
 % Joint 1 and 2
 figure()
-plot(time_jstates,qa(1,:),'LineWidth',lineWidth,'Color',blue); hold on
+plot(time_jstates,qa_exp(1,:),'LineWidth',lineWidth,'Color',blue); hold on
 yline(q_limit(4,1),'--','LineWidth',lineWidth,'Color',blue); 
 yline(q_limit(4,2),'-.','LineWidth',lineWidth,'Color',blue); 
 
-plot(time_jstates,qa(2,:),'LineWidth',lineWidth,'Color',red); 
+plot(time_jstates,qa_exp(2,:),'LineWidth',lineWidth,'Color',red); 
 yline(q_limit(5,1),'--','LineWidth',lineWidth,'Color',red); 
 yline(q_limit(5,2),'-.','LineWidth',lineWidth,'Color',red);
 
@@ -153,11 +153,11 @@ grid on
 
 % Joint 3 and 4
 figure()
-plot(time_jstates,qa(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
+plot(time_jstates,qa_exp(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
 yline(q_limit(6,1),'--','LineWidth',lineWidth,'Color',yellow); 
 yline(q_limit(6,2),'-.','LineWidth',lineWidth,'Color',yellow); 
 
-plot(time_jstates,qa(4,:),'LineWidth',lineWidth,'Color',purple); 
+plot(time_jstates,qa_exp(4,:),'LineWidth',lineWidth,'Color',purple); 
 yline(q_limit(7,1),'--','LineWidth',lineWidth,'Color',purple); 
 yline(q_limit(7,2),'-.','LineWidth',lineWidth,'Color',purple);
 
@@ -170,11 +170,11 @@ grid on
 
 % Joint 5 and 6
 figure()
-plot(time_jstates,qa(5,:),'LineWidth',lineWidth,'Color',green); hold on
+plot(time_jstates,qa_exp(5,:),'LineWidth',lineWidth,'Color',green); hold on
 yline(q_limit(8,1),'--','LineWidth',lineWidth,'Color',green); 
 yline(q_limit(8,2),'-.','LineWidth',lineWidth,'Color',green); 
 
-plot(time_jstates,qa(6,:),'LineWidth',lineWidth,'Color',cyan); 
+plot(time_jstates,qa_exp(6,:),'LineWidth',lineWidth,'Color',cyan); 
 yline(q_limit(9,1),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(q_limit(9,2),'-.','LineWidth',lineWidth,'Color',cyan);
 
@@ -189,12 +189,12 @@ grid on
 
 %%Same plot for all the joints
 figure()
-plot(time_jstates,dqa(6,:),'LineWidth',lineWidth,'Color',cyan); hold on
-plot(time_jstates,dqa(5,:),'LineWidth',lineWidth,'Color',green); 
-plot(time_jstates,dqa(4,:),'LineWidth',lineWidth,'Color',purple); 
-plot(time_jstates,dqa(3,:),'LineWidth',lineWidth,'Color',yellow); 
-plot(time_jstates,dqa(2,:),'LineWidth',lineWidth,'Color',red);
-plot(time_jstates,dqa(1,:),'LineWidth',lineWidth,'Color',blue);
+plot(time_jstates,dqa_exp(6,:),'LineWidth',lineWidth,'Color',cyan); hold on
+plot(time_jstates,dqa_exp(5,:),'LineWidth',lineWidth,'Color',green); hold on
+plot(time_jstates,dqa_exp(4,:),'LineWidth',lineWidth,'Color',purple); hold on 
+plot(time_jstates,dqa_exp(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
+plot(time_jstates,dqa_exp(2,:),'LineWidth',lineWidth,'Color',red);  hold on
+plot(time_jstates,dqa_exp(1,:),'LineWidth',lineWidth,'Color',blue); hold off
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 legend('$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...

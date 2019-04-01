@@ -111,4 +111,14 @@ switch(testN)
         Pos_f=[0.46;-0.25;0.9];
         quat_f=[0.5;0.5;-0.5;-0.5];
         tf=20;
+    case 10
+        %Initial joints values from ROS
+        %Get initial state from ROS
+        GetMarsCurrState        
+        
+        %Desired Pose
+        Pos_f=[1.3;1.5;0.7];
+        quat_f=[0.7071;-0.7071;0;0];
+        tf=7;
+
 end
