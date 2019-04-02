@@ -29,6 +29,8 @@ set(0, 'defaultLegendInterpreter','latex');
 set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
+plots_end_time = time(end);
+
 %% Manipulability plots
 % figure()
 % plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
@@ -55,6 +57,7 @@ figure()
 plot(time_tf,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
 plot(time_tf,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
 plot(time_tf,xi_pos_error(3,:),'LineWidth',lineWidth);
+xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
@@ -68,6 +71,7 @@ figure()
 plot(time_tf,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
 plot(time_tf,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
 plot(time_tf,xi_orient_error(3,:),'LineWidth',lineWidth);
+xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
@@ -104,6 +108,8 @@ plot(time_mp_vel,mp_vel_exp(2,:),'LineWidth',lineWidth,'Color',red);
 yline(-dq_limit(2),'--','LineWidth',lineWidth,'Color',red);
 yline(dq_limit(2),'-.','LineWidth',lineWidth,'Color',red);
 
+xlim([0 plots_end_time])
+
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
 legend('$v$','$v^-$','$v^+$', ...
@@ -122,6 +128,7 @@ plot(time_jstates,dz_pj_exp,'LineWidth',lineWidth,'Color',cyan);
 yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
+xlim([0 plots_end_time])
 ylim([-0.3 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
@@ -144,6 +151,8 @@ plot(time_jstates,qa_exp(2,:),'LineWidth',lineWidth,'Color',red);
 yline(q_limit(5,1),'--','LineWidth',lineWidth,'Color',red); 
 yline(q_limit(5,2),'-.','LineWidth',lineWidth,'Color',red);
 
+xlim([0 plots_end_time])
+
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
@@ -160,6 +169,8 @@ yline(q_limit(6,2),'-.','LineWidth',lineWidth,'Color',yellow);
 plot(time_jstates,qa_exp(4,:),'LineWidth',lineWidth,'Color',purple); 
 yline(q_limit(7,1),'--','LineWidth',lineWidth,'Color',purple); 
 yline(q_limit(7,2),'-.','LineWidth',lineWidth,'Color',purple);
+
+xlim([0 plots_end_time])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
@@ -178,6 +189,8 @@ plot(time_jstates,qa_exp(6,:),'LineWidth',lineWidth,'Color',cyan);
 yline(q_limit(9,1),'--','LineWidth',lineWidth,'Color',cyan); 
 yline(q_limit(9,2),'-.','LineWidth',lineWidth,'Color',cyan);
 
+xlim([0 plots_end_time])
+
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
@@ -189,49 +202,22 @@ grid on
 
 %%Same plot for all the joints
 figure()
-plot(time_jstates,dqa_exp(6,:),'LineWidth',lineWidth,'Color',cyan); hold on
-plot(time_jstates,dqa_exp(5,:),'LineWidth',lineWidth,'Color',green); hold on
-plot(time_jstates,dqa_exp(4,:),'LineWidth',lineWidth,'Color',purple); hold on 
-plot(time_jstates,dqa_exp(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
-plot(time_jstates,dqa_exp(2,:),'LineWidth',lineWidth,'Color',red);  hold on
-plot(time_jstates,dqa_exp(1,:),'LineWidth',lineWidth,'Color',blue); hold off
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
-legend('$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...
+h1=plot(time_jstates,dqa_exp(1,:),'LineWidth',lineWidth,'Color',blue); hold on
+h2=plot(time_jstates,dqa_exp(2,:),'LineWidth',lineWidth,'Color',red);  hold on
+h3=plot(time_jstates,dqa_exp(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
+h4=plot(time_jstates,dqa_exp(4,:),'LineWidth',lineWidth,'Color',purple); hold on
+h5=plot(time_jstates,dqa_exp(5,:),'LineWidth',lineWidth,'Color',green); hold on
+h6=plot(time_jstates,dqa_exp(6,:),'LineWidth',lineWidth,'Color',cyan); hold off
+uistack(h5,'bottom')
+uistack(h6,'bottom')
+legend([h1 h2 h3 h4 h5 h6],'$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...
     '$\dot{q}_{a4}$','$\dot{q}_{a5}$','$\dot{q}_{a6}$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
+
+xlim([0 plots_end_time])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
-
-% % Joint 1 and 2
-% figure()
-% plot(time_jstates,dqa(1,:),'LineWidth',lineWidth,'Color',blue); hold on
-% plot(time_jstates,dqa(2,:),'LineWidth',lineWidth,'Color',red); hold on
-% xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-% ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
-% legend('$\dot{q}_{a1}$','$\dot{q}_{a2}$', ...
-%     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-% grid on
-% 
-% % Joint 3 and 4
-% figure()
-% plot(time_jstates,dqa(3,:),'LineWidth',lineWidth,'Color',yellow); hold on
-% plot(time_jstates,dqa(4,:),'LineWidth',lineWidth,'Color',purple); hold on
-% xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-% ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
-% legend('$\dot{q}_{a3}$', '$\dot{q}_{a4}$', ...
-%     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-% grid on
-% 
-% % Joint 5 and 6
-% figure()
-% plot(time_jstates,dqa(5,:),'LineWidth',lineWidth,'Color',green); hold on
-% plot(time_jstates,dqa(6,:),'LineWidth',lineWidth,'Color',cyan); hold on
-% xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-% ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
-% legend('$\dot{q}_{a5}$', '$\dot{q}_{a6}$', ...
-%     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-% grid on
-
 
 % %% Elbow and wrist collision distance
 % figure()
