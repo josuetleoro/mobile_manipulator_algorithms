@@ -43,16 +43,6 @@ plots_end_time = time(end);
 % grid on
 
 %% Position and orientation error
-% figure()
-% plot(time_tf,ee_xi(1,:),'LineWidth',lineWidth); hold on
-% plot(time_tf,ee_xi(2,:),'LineWidth',lineWidth); hold on
-% plot(time_tf,ee_xi(3,:),'LineWidth',lineWidth);
-% xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-% ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
-% legend('$x$','$y$','$z$','interpreter','latex','FontSize',labelFontSize)
-% title('Position')
-% grid on
-
 figure()
 plot(time_tf,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
 plot(time_tf,xi_pos_error(2,:),'LineWidth',lineWidth); hold on

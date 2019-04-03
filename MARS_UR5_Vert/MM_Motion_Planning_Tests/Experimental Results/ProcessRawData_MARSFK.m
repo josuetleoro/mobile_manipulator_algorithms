@@ -56,7 +56,7 @@ dqa_exp = data_jstates(10:15,1:N_all);
 MARS=MARS_UR5();
 
 % For vive position
-ee_xi = zeros(7,N_all);
+xi_exp = zeros(7,N_all);
 mp = zeros(3,N_all);
 mp(1,:)=data_tf(2,1:N_all); % x
 mp(2,:)=data_tf(3,1:N_all); % y
@@ -76,8 +76,8 @@ for i=1:N_all
     
     %Find the position of the end effector
     Tee=MARS.forwardKin(joints);
-    ee_xi(1:3,i) = Tee(1:3,4);
-    ee_xi(4:7,i) = cartToQuat(Tee(1:3,1:3));
+    xi_exp(1:3,i) = Tee(1:3,4);
+    xi_exp(4:7,i) = cartToQuat(Tee(1:3,1:3));
     
     %% Odom    
     if i > 1
@@ -94,15 +94,27 @@ for i=1:N_all
     ee_xi_odom(4:7,i) = cartToQuat(Tee(1:3,1:3));    
 end
 mp = mp_odom;
-ee_xi = ee_xi_odom;
+xi_exp = ee_xi_odom;
+
+%Create the joint positions matrix
+q_exp = zeros(10,N_all);
+q_exp(1:3,:)=mp_odom;
+q_exp(4,:)=z_pj_exp;
+q_exp(5:10,:)=qa_exp;
 
 %% Calculate original trajectory with the time_tf vector
 file_path_original_traj = strcat(path, test_name, ".mat");
-load(file_path_original_traj,'xi_des','time');
+load(file_path_original_traj,'q','xi_des','xi','time');
 ts = time(2)-time(1);
-[xi_pos_error,xi_orient_error]=CalcTrajError(ee_xi,xi_des,time_tf,ts);
+[xi_pos_error,xi_orient_error]=CalcTrajError(xi_exp,xi_des,time_tf,ts);
 PlotEvolutionPretty_Exp
 
 %% Compare original joint velocities with obtained joint velocities
 dq_exp = [dz_pj_exp; dqa_exp];
 PlotJointVelComp(strcat(path, test_name, ".mat"),time_mp_vel,mp_vel_exp,time_jstates,dq_exp)
+
+PlotEEComp
+
+
+
+
