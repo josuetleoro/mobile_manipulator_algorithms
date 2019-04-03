@@ -16,15 +16,15 @@ addpath 'Experimental Results'
 MARS=MARS_UR5();
 
 %Name the test number
-testN=3;
+testN=2;
 
 GetMarsCurrState        
         
 %Desired Pose
-Pos_f=[3;0.384;0.35];
-quat_f=[0.7071;0;0.7071;0];
+Pos_f=[0.3;0.8;1.3];
+quat_f=[0;-0.3828;-0.9238;0];
 quat_f=quat_f/norm(quat_f);
-tf=6.4;
+tf=20;
 
 %Load the joints constraints
 JointConstraints
