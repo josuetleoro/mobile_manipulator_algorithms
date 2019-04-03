@@ -104,4 +104,5 @@ ts = time(2)-time(1);
 PlotEvolutionPretty_Exp
 
 %% Compare original joint velocities with obtained joint velocities
-PlotJointVelComp(strcat(path, test_name, ".mat"),time_mp_vel,mp_vel_exp,time_jstates,dqa_exp)
+dq_exp = [dz_pj_exp; dqa_exp];
+PlotJointVelComp(strcat(path, test_name, ".mat"),time_mp_vel,mp_vel_exp,time_jstates,dq_exp)
