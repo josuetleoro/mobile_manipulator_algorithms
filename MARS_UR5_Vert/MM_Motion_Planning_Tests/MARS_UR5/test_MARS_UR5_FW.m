@@ -5,15 +5,16 @@ close all
 MARS=MARS_UR5();
 
 %Joints values
-tx=0.0;
-ty=0.0;
+tx=-0.8;
+ty=2.1;
 phi_mp=-0.26;
-tz=0.1234;
-%qa=[0.0; 0.0; 0.0; 0.0; 0.0; 0.0];
+tz=0.1;
+%qa=[0; 0; 0; 0; 0; 0];
+%qa=[0.1; 0.2; 0.3; 0.4; 0.5; 0.6];
 %qa=[pi;-pi/4;pi/4;0;pi/2;0];
-%qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
+qa=[0.0;-pi/2;3*pi/4;5*pi/4;-pi/2;0.0];
 %qa=[0.0; -pi; 3*pi/4; -3*pi/4; -pi/2; 0.0];
-qa=[-0.8597;-0.6589;0.6589;-0.1246;-0.5897;pi/2];
+%qa=[-0.8597;-0.6589;0.6589;-0.1246;-0.5897;pi/2];
 
 %initial values of the generalized coordinates of the MM
 q=[tx;ty;phi_mp;tz;qa];

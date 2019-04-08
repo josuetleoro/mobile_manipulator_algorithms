@@ -127,7 +127,7 @@ classdef Quat
         %Quaternion norm
         function n=norm(this)
             q=this*this.conj();
-            n=q.s;
+            n=sqrt(q.s);
         end
         
         %Quaternion inverse
