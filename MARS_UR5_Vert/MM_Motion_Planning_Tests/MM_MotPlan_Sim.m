@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=4;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -56,18 +56,18 @@ T0
 Tf
 
 %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
-% figure()
-%Mobile platform initial pos
-%plotFrame(eye(4),1,'mp_0'); hold on;
-plotMobPlatArrow(tx,ty,phi_mp,2,'mp0');
-plotFrame(T0,1,'T0'); hold on;
-plotFrame(Tf,1,'Tf'); 
-%plotFrame(Tf2,2,'Tf2');
-xlabel('x')
-ylabel('y')
-zlabel('z')
-view(-133,31)
-pause()
+% % figure()
+% %Mobile platform initial pos
+% %plotFrame(eye(4),1,'mp_0'); hold on;
+% plotMobPlatArrow(tx,ty,phi_mp,2,'mp0');
+% plotFrame(T0,1,'T0'); hold on;
+% plotFrame(Tf,1,'Tf'); 
+% %plotFrame(Tf2,2,'Tf2');
+% xlabel('x')
+% ylabel('y')
+% zlabel('z')
+% view(-133,31)
+% pause()
 
 %% Trajectory planning
 tic
@@ -146,7 +146,8 @@ for i=1:6
 end
 
 %% Calculate the step size variation law
-trans=sigmoidTrapezoidal(MotPlan.time,0.15);
+%trans=sigmoidTrapezoidal(MotPlan.time,0.15);
+trans=zeros(N);
 tb=tf*(1-0.15);
 T=tf-tb;
 a0=1; a1=0; a2=0;
@@ -223,7 +224,7 @@ while(k<=N)
     eO=errorFromQuats(quat_d,quat_e);
     %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
-        
+    
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
     ierror(1:3)=ierror(1:3)+eP*ts;
