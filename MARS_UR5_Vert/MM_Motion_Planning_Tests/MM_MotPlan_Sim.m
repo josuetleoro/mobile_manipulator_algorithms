@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=4;
+testN=1;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -172,6 +172,7 @@ end
 
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
+alphak = alpha;
 errorPrev=zeros(6,1);
 ierror=zeros(6,1);
 derror=zeros(6,1);
@@ -197,6 +198,9 @@ while(k<=N)
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
+%     MM_manip
+%     ur5_manip
+    
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
     %dP=ur5_dP;
     W_measure(k)=MM_manip*ur5_manip;
@@ -210,8 +214,15 @@ while(k<=N)
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     Wcol=Wcol_elbow*Wcol_wrist;
-    %Wcol_elbow
     %Wcol=eye(9,9);
+    
+%     Wjlim
+%     pause()
+%     Wcol_elbow
+%     Wcol_wrist
+    %dist_elbow(k)
+    %dist_wrist(k)
+    %wrist_pos(:,k)    
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
@@ -219,8 +230,13 @@ while(k<=N)
     eP=xi_des(1:3,k)-xi(1:3,k);
     xi_pos_error(1:3,k)=eP;
     
+%       disp('pose1')
+%       xi_des(:,k)'
+%       disp('pose2')
+%       xi(:,k)'
+    
     %Orientation error
-    quat_d=xi_des(4:7,k);    
+    quat_d=xi_des(4:7,k);
     eO=errorFromQuats(quat_d,quat_e);
     %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
@@ -233,10 +249,12 @@ while(k<=N)
     errorPrev=errorRate;
     error_cont=Werror*errorRate+Wierror*ierror;
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
+    
+%     pose_des = xi_des(:,k)'
     Wmatrix=Wcol*Wjlim*invTq;
     JBar_w=JBar*Wmatrix;
     inv_JBar_w=pinv(JBar_w);
-    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);    
+    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);
     
     %Calculate the weighting by task velocity
     %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
@@ -249,14 +267,21 @@ while(k<=N)
     %    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
     %end
     %dP=taskNorm*dP;    
-    dP=trans(k)*dP;
-
+    
     %Calculate the internal motion
+    dP=trans(k)*dP;
     dP=Wmatrix*dP;
     int_motion=(Id-inv_JBar_w*JBar_w)*dP;
+    %pause()
     
+    %eP
+    %eO
     cont_input=Wmatrix*cont_input;
     int_motion=Wmatrix*int_motion;
+    
+%     poseError = [eP; eO]'
+%     partSol = cont_input'
+%     homSol = int_motion'
    
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
@@ -267,30 +292,38 @@ while(k<=N)
        break
     end    
     %Saturate alpha in case is out of bounds
-    if alpha > maxAlpha(k)
-        alpha = maxAlpha(k);
-        if alpha < 0
+    alphak = alpha;
+    if alphak > maxAlpha(k)
+        alphak = maxAlpha(k);
+        if alphak < 0
             disp('alpha negative');
         end
     end
-    if alpha < minAlpha(k)
-        alpha = minAlpha(k);
-        if alpha < 0
+    if alphak < minAlpha(k)
+        alphak = minAlpha(k);
+        if alphak < 0
             disp('alpha negative');
         end
     end
-    alpha_plot(k)=alpha*trans(k);
+    alpha_plot(k)=alphak*trans(k);
+    
+    Wjlim
+    alphak
+    maxAlpha(k)
+    minAlpha(k)
+    pause()
             
     %Mobility control vector
-    eta(:,k)=cont_input+alpha*int_motion;    
+    eta(:,k)=cont_input+alphak*int_motion;
     
     %Calculate the joints velocities
-    dq(:,k)=S*eta(:,k);   
-    
+    dq(:,k)=S*eta(:,k);
+
     %% update variables for next iteration       
     if k < N
         %Calculate the joint values
         q(:,k+1)=q(:,k)+dq(:,k)*ts;
+%         q_ = q(:,k+1)'
         
         %Calculate the position of the end effector
         T=MARS.forwardKin(q(:,k+1));
@@ -299,6 +332,9 @@ while(k<=N)
         quat_e=cartToQuat(Re);
         xi(4:7,k+1)=quat_e;        
     end
+%   eta_ = eta(:,k)'
+%   dq_ = dq(:,k)'
+    %pause()
     %increment iteration step
     k=k+1;
 end
