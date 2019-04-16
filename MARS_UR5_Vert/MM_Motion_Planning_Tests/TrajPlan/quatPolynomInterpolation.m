@@ -67,7 +67,8 @@ for k=0:m-1
     if quat(1,k+1) < 0
         quat(:,k+1) = -1 * quat(:,k+1);
     end
-    quat(:,k+1)=quat(:,k+1)/(norm(quat(:,k+1))^2);    
+    %quat(:,k+1)=quat(:,k+1)/(norm(quat(:,k+1))^2);
+    quat(:,k+1)=quat(:,k+1)/(norm(quat(:,k+1)));
     % fprintf('k=%d, quat= %f+%fi+%fj+%fk\n',k,quat(1,k+1),quat(2,k+1),quat(3,k+1),quat(4,k+1))
     % pause()
     
