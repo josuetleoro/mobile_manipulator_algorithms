@@ -36,26 +36,32 @@ grid on
 
 %% Position and orientation error
 figure()
-plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
-plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
-plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
+h1=plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
+h2=plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
+h3=plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
 xlim([0 plots_end_time])
+ylim([-0.002 0.002])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
-legend('$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
-%legend('e_{Px}','e_{Py}','e_{Pz}')
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
 %title('Position error(m)')
 grid on
 
 figure()
-plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
-plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
-plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
+h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
+h2=plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
+h3=plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
 xlim([0 plots_end_time])
+ylim([-0.002 0.002])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
-legend('$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
-%legend('e_{Ox}','e_{Oy}','e_{Oz}')
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
 grid on
 %title('Orientation error(rad)')
 
@@ -198,8 +204,12 @@ h3=plot(time,dq(7,:),'LineWidth',lineWidth,'Color',yellow); hold on
 h4=plot(time,dq(8,:),'LineWidth',lineWidth,'Color',purple); hold on
 h5=plot(time,dq(9,:),'LineWidth',lineWidth,'Color',green); hold on
 h6=plot(time,dq(10,:),'LineWidth',lineWidth,'Color',cyan); hold off
-uistack(h5,'bottom')
-uistack(h6,'bottom')
+uistack(h6,'top')
+uistack(h5,'top')
+uistack(h4,'top')
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
 legend([h1 h2 h3 h4 h5 h6],'$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', ...
     '$\dot{q}_{a4}$','$\dot{q}_{a5}$','$\dot{q}_{a6}$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
