@@ -36,13 +36,14 @@ xlim([0 plots_end_time])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 %legend('$v(m/s)$','$v^-$','$v^+$','$\omega(rad/s)$','$\omega^-$','$\omega^+$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
-legend('$v$','$v^-$','$v^+$', ...
+ylabel('$\mbox{v}(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
+legend('$\mbox{v}$','$\mbox{v}^-$','$\mbox{v}^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-%legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
-%title('Mobile platform velocity commands')
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
+%title('Mobile platform velocity commands')
+
 
 %% Prismatic joint
 figure()
@@ -55,7 +56,7 @@ yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan);
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
 xlim([0 plots_end_time])
-ylim([-0.3 0.3])
+ylim([-0.2 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
@@ -66,8 +67,9 @@ legend('$z$','$z^-$','$z^+$', ...
 %     '$\dot{z}(m/s)$','$\dot{z}^-$','$\dot{z}^+$', ...
 %     'interpreter','latex','FontSize',labelFontSize)
 %legend('z(m)','z_{max}','z_{min}','dz(m/s)','dz_{max}','dz_{min}')
-%title('Prismatic joint')
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
+%title('Prismatic joint')
 
 %% UR5 joints position
 
@@ -89,6 +91,7 @@ legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
     '$q_{a2}$','$q_{a2}^-$','$q_{a2}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 % Joint 3 and 4
 figure()
@@ -108,6 +111,7 @@ legend('$q_{a3}$','$q_{a3}^-$','$q_{a3}^+$', ...
     '$q_{a4}$','$q_{a4}^-$','$q_{a4}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 % Joint 5 and 6
 figure()
@@ -127,6 +131,7 @@ legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
     '$q_{a6}$','$q_{a6}^-$','$q_{a6}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 %% UR5 joints velocities
  
@@ -152,3 +157,4 @@ xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])

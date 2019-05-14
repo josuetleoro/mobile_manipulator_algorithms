@@ -31,6 +31,7 @@ xlim([0 plots_end_time])
 legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
 %legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+set(gcf, 'Position',  [500, 500, 490, 310])
 %title('Manipulability measure')
 grid on
 
@@ -47,8 +48,9 @@ uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
-%title('Position error(m)')
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
+%title('Position error(m)')
 
 figure()
 h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
@@ -63,6 +65,7 @@ uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 %title('Orientation error(rad)')
 
 %% Mobile Platform Trajectory
@@ -87,6 +90,7 @@ legend('Start Pos','Final Pos', ...
 %title('Mobile Platform Trajectory')
 xlabel('$x(m)$','interpreter','latex','FontSize',labelFontSize);
 ylabel('$y(m)$','interpreter','latex','FontSize',labelFontSize);
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 %% Mobile platform velocities
 figure()
@@ -106,9 +110,11 @@ ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
 legend('$v$','$v^-$','$v^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-%legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
-%title('Mobile platform velocity commands')
 grid on
+   %legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
+set(gcf, 'Position',  [500, 500, 490, 310])
+%title('Mobile platform velocity commands')
+
 
 %% Prismatic joint
 figure()
@@ -121,7 +127,7 @@ yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan);
 yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
 
 xlim([0 plots_end_time])
-ylim([-0.3 0.3])
+ylim([-0.2 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
@@ -134,6 +140,7 @@ legend('$z$','$z^-$','$z^+$', ...
 %legend('z(m)','z_{max}','z_{min}','dz(m/s)','dz_{max}','dz_{min}')
 %title('Prismatic joint')
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 %% UR5 joints position
 
@@ -155,6 +162,7 @@ legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
     '$q_{a2}$','$q_{a2}^-$','$q_{a2}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 % Joint 3 and 4
 figure()
@@ -174,6 +182,7 @@ legend('$q_{a3}$','$q_{a3}^-$','$q_{a3}^+$', ...
     '$q_{a4}$','$q_{a4}^-$','$q_{a4}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 % Joint 5 and 6
 figure()
@@ -193,6 +202,7 @@ legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
     '$q_{a6}$','$q_{a6}^-$','$q_{a6}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 %% UR5 joints velocities
  
@@ -218,6 +228,7 @@ xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
+set(gcf, 'Position',  [500, 500, 490, 310])
 
 %% Elbow and wrist collision distance
 figure()
@@ -227,14 +238,14 @@ plot(time,dist_elbow,'LineWidth',lineWidth); hold on
 plot(time,dist_wrist,'LineWidth',lineWidth);
 %yline(0.0,'--','LineWidth',lineWidth,'Color',red); 
 
-plot(time,height_wrist,'LineWidth',lineWidth);
+%plot(time,height_wrist,'LineWidth',lineWidth);
 
 xlim([0 plots_end_time])
 
-legend('$d_{elbow}$','$d_{wrist}$','$h_{wrist}$', ...
+legend('$d_{elbow}$','$d_{wrist}$', ...
        'interpreter','latex','FontSize',labelFontSize)
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
-
+set(gcf, 'Position',  [500, 500, 490, 310])
