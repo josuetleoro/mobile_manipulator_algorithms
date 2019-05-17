@@ -305,14 +305,8 @@ while(k<=N)
             disp('alpha negative');
         end
     end
-    alpha_plot(k)=alphak*trans(k);
-    
-    Wjlim
-    alphak
-    maxAlpha(k)
-    minAlpha(k)
-    pause()
-            
+    alpha_plot(k)=alphak*trans(k);    
+   
     %Mobility control vector
     eta(:,k)=cont_input+alphak*int_motion;
     
