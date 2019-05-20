@@ -17,6 +17,4 @@ for i=3:9
         Wjlim(i,i) = 1;
     end
 end
-% Wjlim(3,3)
-% pause()
 end

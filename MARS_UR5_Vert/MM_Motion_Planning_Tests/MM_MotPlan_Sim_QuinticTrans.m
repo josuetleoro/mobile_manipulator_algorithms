@@ -28,7 +28,6 @@ ts=1/50;    %Sampling time
 alpha=3.6;    % For cubic + linear + quintic manip trans
 
 Kp_pos=10;
-Ki_pos=0;   %Ki=50 for traj plan parabolic blending Ki=0 for FifthOrder
 Kp_or=20;
 
 %% Initial values of the generalized coordinates of the MM
@@ -45,16 +44,8 @@ Tf=zeros(4,4);
 Tf(4,4)=1;
 Tf(1:3,1:3)=Rf;
 Tf(1:3,4)=Pos_f;
-
-% Tf2=zeros(4,4);
-% Tf2(4,4)=1;
-% Tf2(1:3,1:3)=Rf2;
-% Tf2(1:3,4)=Pos_f;
-% Tf2(2,4)=Tf2(2,4)+2;
-% Tf2
 T0
 Tf
-
 %%%%%%%%%% Show the MM frames in 3D %%%%%%%%%%
 % % figure()
 % %Mobile platform initial pos
@@ -62,7 +53,6 @@ Tf
 % plotMobPlatArrow(tx,ty,phi_mp,2,'mp0');
 % plotFrame(T0,1,'T0'); hold on;
 % plotFrame(Tf,1,'Tf'); 
-% %plotFrame(Tf2,2,'Tf2');
 % xlabel('x')
 % ylabel('y')
 % zlabel('z')
@@ -93,9 +83,6 @@ ur5_man_measure=zeros(1,N);
 Werror=zeros(6,6);
 Werror(1:3,1:3)=Kp_pos*eye(3);
 Werror(4:6,4:6)=Kp_or*eye(3);
-
-Wierror=zeros(6,6);
-Wierror(1:3,1:3)=Ki_pos*eye(3);
 
 %The Wjlim weight matrix
 maxAlpha=zeros(1,N);
@@ -147,22 +134,12 @@ end
 
 %% Calculate the step size variation law
 blend_perc = 0.2;
-trans=dCubicTrans(N,tf,blend_perc,ts);
-
+trans=manipQuinticTrans(N,tf,blend_perc,ts);
 
 disp('Calculating the inverse velocity kinematics solution')
 k=1;
 alphak = alpha;
-errorPrev=zeros(6,1);
-ierror=zeros(6,1);
-derror=zeros(6,1);
 error_cont=zeros(6,1);
-% set(0,'defaultAxesFontSize',16)
-% plot(MotPlan.time,trans,'LineWidth',1.8);
-% xlabel('$t(s)$','interpreter','latex')
-% ylabel('$\sigma$', 'interpreter','latex','FontSize',16)
-% grid on
-% pause()
 while(k<=N)
     %% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
@@ -190,75 +167,38 @@ while(k<=N)
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     Wcol=Wcol_elbow*Wcol_wrist;
-    %Wcol=eye(9,9);
-    
-%     Wjlim
-%     pause()
-%     Wcol_elbow
-%     Wcol_wrist
-    %dist_elbow(k)
-    %dist_wrist(k)
-    %wrist_pos(:,k)    
+    %Wcol=eye(9,9);   
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
-    xi_pos_error(1:3,k)=eP;
-    
-%       disp('pose1')
-%       xi_des(:,k)'
-%       disp('pose2')
-%       xi(:,k)'
-    
+    xi_pos_error(1:3,k)=eP;    
+   
     %Orientation error
     quat_d=xi_des(4:7,k);
     eO=errorFromQuats(quat_d,quat_e);
-    %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
     
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    ierror(1:3)=ierror(1:3)+eP*ts;
-    ierror(4:6)=zeros(3,1);
-    derror(1:3)=(eP-errorPrev(1:3))/ts;
-    errorPrev=errorRate;
-    error_cont=Werror*errorRate+Wierror*ierror;
-    %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
     
-%     pose_des = xi_des(:,k)'
+    %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
+
+    % Control input
     Wmatrix=Wcol*Wjlim*invTq;
     JBar_w=JBar*Wmatrix;
     inv_JBar_w=pinv(JBar_w);
-    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);
+    cont_input=inv_JBar_w*(dxi_des(:,k)+Werror*errorRate);
     
-    %Calculate the weighting by task velocity
-    %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    %Use sigmoid trapezoidal for manipulability
-    %taskNorm=trans(k);
-    %if (k> N/2)
-    %    taskNorm=trans(k);
-    %    %taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    %else
-    %    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));
-    %end
-    %dP=taskNorm*dP;    
-    
-    %Calculate the internal motion
+    % Internal motion
     dP=trans(k)*dP;
     dP=Wmatrix*dP;
     int_motion=(Id-inv_JBar_w*JBar_w)*dP;
-    %pause()
-    
-    %eP
-    %eO
+
     cont_input=Wmatrix*cont_input;
     int_motion=Wmatrix*int_motion;
     
-%     poseError = [eP; eO]'
-%     partSol = cont_input'
-%     homSol = int_motion'
-   
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
@@ -282,13 +222,7 @@ while(k<=N)
         end
     end
     alpha_plot(k)=alphak*trans(k);
-    
-%     Wjlim
-%     alphak
-%     maxAlpha(k)
-%     minAlpha(k)
-%     pause()
-            
+
     %Mobility control vector
     eta(:,k)=cont_input+alphak*int_motion;
     
@@ -297,21 +231,18 @@ while(k<=N)
 
     %% update variables for next iteration       
     if k < N
-        %Calculate the joint values
+        % Calculate the joint values
         q(:,k+1)=q(:,k)+dq(:,k)*ts;
-%         q_ = q(:,k+1)'
         
-        %Calculate the position of the end effector
+        % Calculate the position of the end effector
         T=MARS.forwardKin(q(:,k+1));
         xi(1:3,k+1)=T(1:3,4);
         Re=T(1:3,1:3);
         quat_e=cartToQuat(Re);
         xi(4:7,k+1)=quat_e;        
     end
-%   eta_ = eta(:,k)'
-%   dq_ = dq(:,k)'
-    %pause()
-    %increment iteration step
+
+    % increment iteration step
     k=k+1;
 end
 toc

@@ -54,7 +54,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=10;        
+        tf=16;        
         
     case 4 % Problem with initial configuration: qa=[0.0;-80*pi/180;135*pi/180;-90*pi/180;-pi/2;0.0];
         % %Initial joints values
