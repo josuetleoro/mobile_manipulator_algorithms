@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=10;
+testN=12;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -25,7 +25,7 @@ JointConstraints
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=8;
+alpha=12;
 beta=1;
 trans_step=0.005;
 epsilon=5e-4;
@@ -197,32 +197,9 @@ while(error>epsilon)
     
     cont_input=Wmatrix*cont_input;
     int_motion=Wmatrix*int_motion;
-   
-    %Calculate the maximum and minimum step size
-%     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
-%     if maxAlpha(k) < minAlpha(k)
-%        diag(Wcol)
-%        diag(Wjlim)
-%        error('Could not achieve task that complies with joint velocities limits')
-%        break
-%     end    
-%     %Saturate alpha in case is out of bounds
-%     if alpha > maxAlpha(k)
-%         alpha = maxAlpha(k);
-%         if alpha < 0
-%             disp('alpha negative');
-%         end
-%     end
-%     if alpha < minAlpha(k)
-%         alpha = minAlpha(k);
-%         if alpha < 0
-%             disp('alpha negative');
-%         end
-%     end
-    alpha_plot(k)=alpha;
     
     aux = JBar*JBar'*errorRate;
-    beta = dot(errorRate,aux)/(aux'*aux);    
+    beta = dot(errorRate,aux)/(aux'*aux);
     
     if error < 0.1
        trans2 = trans2 - 0.01;
@@ -230,8 +207,13 @@ while(error>epsilon)
     if trans2 < 0
         trans2 = 0;
     end            
+    
     %Mobility control vector
-    eta(:,k)=trans*(beta*cont_input+trans2*alpha*int_motion);
+    eta(:,k)=trans*(beta*cont_input+trans2*alpha*int_motion);    
+    % Find scale factor to avoid exceeding maximum velocities
+    velScale = jointVelLimScale(eta(:,k), dq_limit);
+    eta(:,k)= velScale * eta(:,k);    
+    
     if trans < 1
         trans = trans + trans_step;
     end   
