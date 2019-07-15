@@ -9,6 +9,9 @@ x=Traj5(pos0(1),posf(1),time);
 y=Traj5(pos0(2),posf(2),time);
 z=Traj5(pos0(3),posf(3),time);
 
+% plot(x)
+% pause()
+
 %% Motion planning for orientation using quaternion polynomial
 %Create the quaternion objects
 Q0=Quat(q0');
@@ -20,14 +23,7 @@ dw0=[0;0;0];
 wf=[0;0;0];
 dwf=[0;0;0];
 %Do the interpolation
-%[quat,w,~]=quatInterpolation(Q0,w0,dw0,Qf,wf,dwf,0,tf,ts);
 [quat,~,~]=quatPolynomInterpolation(Q0,w0,dw0,Qf,wf,dwf,time,ts,'fixed');
-
-
-% Eliminate the difference at the start of the trajectory due to sensor drift
-%posOff = ee_xi(1:3,1)-pos0(1:3,1);
-%ee_xi(1:3,:) = ee_xi(1:3,:) - repmat(posOff,1,length(ee_xi));
-%orienOff = quatmultiply(quatinv(ee_xi(4:7,1)'),quat(1:4,1)');
 
 %Return the trajectory errors
 pos(1,:) = x;
@@ -40,6 +36,20 @@ for i=1:length(ee_xi)
     %or_error(1:3,i)=errorFromQuats(quat(1:4,i),temp_quat);
     or_error(1:3,i)=errorFromQuats(quat(1:4,i),ee_xi(4:7,i));
 end
+
+% %Eliminate the difference at the start of the trajectory due to sensor drift
+% posOff = ee_xi(1:3,1)-pos0(1:3,1);
+% ee_xi(1:3,:) = ee_xi(1:3,:) - repmat(posOff,1,length(ee_xi));
+% orienOff = quatmultiply(quatinv(ee_xi(4:7,1)'),quat(1:4,1)');
+% pos(1,:) = x;
+% pos(2,:) = y;
+% pos(3,:) = z;
+% pos_error = pos - ee_xi(1:3,:);
+% or_error = zeros(3,length(ee_xi));
+% for i=1:length(ee_xi)    
+%     temp_quat=quatmultiply(ee_xi(4:7,i)',orienOff)';
+%     or_error(1:3,i)=errorFromQuats(quat(1:4,i),temp_quat);
+% end
 
 end
 
