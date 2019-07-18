@@ -8,7 +8,7 @@ path = uigetdir;
 
 file_path_stamps = fullfile(path,'traj_stamps.csv');
 file_path_tf = fullfile(path,'tf_record.csv');
-file_path_traj_param = fullfile(path,'traj_parameters.csv');
+file_path_traj_param = fullfile(path,'traj_param.csv');
 
 %Read the files
 data_stamps = csvread(file_path_stamps);
@@ -55,7 +55,7 @@ set(0, 'defaultLegendInterpreter','latex');
 set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
-plots_end_time = time(end);
+plots_end_time = tf;
 
 figure()
 plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
