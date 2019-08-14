@@ -1,0 +1,20 @@
+Test max velocities
+desPose x must be 3.35 meters from starting pose to final pose
+
+trajTime: 12
+desPose: 
+  position: 
+    x: 1.8
+    y: -1.44
+    z: 0.36
+  orientation: 
+    x: 0.242514
+    y: 0.676999
+    z: -0.234338
+    w: 0.654175
+
+platform0:
+-1.125, 0.740, 0.000 (x,y,z)
+-35.329 deg (theta)
+
+mob plat max lin vel: 0.5

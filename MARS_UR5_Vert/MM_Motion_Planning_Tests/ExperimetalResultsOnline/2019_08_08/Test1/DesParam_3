@@ -1,0 +1,14 @@
+trajTime: 20.0
+desPose: 
+  position: 
+    x: 1.6
+    y: -1.3
+    z: 1.2
+  orientation: 
+    x: 0.0
+    y: 1.0
+    z: 0.0
+    w: 0.0
+
+
+
