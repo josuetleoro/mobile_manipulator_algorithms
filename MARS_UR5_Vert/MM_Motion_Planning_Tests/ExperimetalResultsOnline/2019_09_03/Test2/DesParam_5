@@ -1,0 +1,23 @@
+Test max velocities
+desPose x must be 3.35 meters from starting pose to final pose
+
+trajTime: 18
+desPose: 
+  position: 
+    x: 1.6
+    y: -0.3
+    z: 0.37
+  orientation: 
+    x: 0.0
+    y: 0.707106781
+    z: 0.0
+    w: 0.707106781
+
+platform0:
+-1.679, -0.408, 0.000 (x,y,z)
+-0.056 deg (theta)
+z: 0.24
+
+vmax: 0.3
+dthetamax: PI/4
+dzmax: 0.025

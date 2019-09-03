@@ -41,7 +41,7 @@ h1=plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
 h2=plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
 h3=plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
 xlim([0 plots_end_time])
-ylim([-0.002 0.002])
+%ylim([-0.002 0.002])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 uistack(h3,'top')
@@ -57,7 +57,7 @@ h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
 h2=plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
 h3=plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
 xlim([0 plots_end_time])
-ylim([-0.002 0.002])
+%ylim([-0.002 0.002])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 uistack(h3,'top')
