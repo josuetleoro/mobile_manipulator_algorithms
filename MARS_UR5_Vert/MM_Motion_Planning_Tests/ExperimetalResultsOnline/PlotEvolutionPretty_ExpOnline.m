@@ -22,55 +22,7 @@ set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = time(end);
 
-%% Manipulability plots
-figure()
-plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
-plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
-plot(time,W_measure,'g','LineWidth',1.5); hold off
-xlim([0 plots_end_time])
-legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
-%legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-set(gcf, 'Position',  [500, 500, 490, 310])
-%title('Manipulability measure')
-grid on
-
-%% Position and orientation error
-figure()
-h1=plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
-h2=plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
-h3=plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
-xlim([0 plots_end_time])
-%ylim([-0.002 0.002])
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
-uistack(h3,'top')
-uistack(h2,'top')
-uistack(h1,'top')
-legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
-grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
-%title('Position error(m)')
-
-figure()
-h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
-h2=plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
-h3=plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
-xlim([0 plots_end_time])
-%ylim([-0.002 0.002])
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
-uistack(h3,'top')
-uistack(h2,'top')
-uistack(h1,'top')
-legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
-grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
-%title('Orientation error(rad)')
-
 %% Mobile Platform Trajectory
-%Draw the mobile manipulator in the current position
-%drawMobilePlatform(q(1,1),q(2,1),q(3,1),xi(1,1),xi(2,1))
 figure()
 clear PosNF
 q1=q(1,:);
@@ -90,7 +42,51 @@ legend('Start Pos','Final Pos', ...
 %title('Mobile Platform Trajectory')
 xlabel('$x(m)$','interpreter','latex','FontSize',labelFontSize);
 ylabel('$y(m)$','interpreter','latex','FontSize',labelFontSize);
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
+
+%% Manipulability plots
+figure()
+plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
+plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
+plot(time,W_measure,'g','LineWidth',1.5); hold off
+xlim([0 plots_end_time])
+legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
+%legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+set(gcf, 'Position',  [200, 500, 490, 310])
+%title('Manipulability measure')
+grid on
+
+%% Position and orientation error
+figure()
+h1=plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
+h2=plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
+h3=plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
+xlim([0 plots_end_time])
+%ylim([-0.002 0.002])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
+grid on
+set(gcf, 'Position',  [200, 500, 490, 310])
+
+figure()
+h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
+h2=plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
+h3=plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
+xlim([0 plots_end_time])
+%ylim([-0.002 0.002])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
+grid on
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Mobile platform velocities
 figure()
@@ -112,7 +108,7 @@ legend('$v$','$v^-$','$v^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
    %legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 %title('Mobile platform velocity commands')
 
 
@@ -134,13 +130,9 @@ ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
 legend('$z$','$z^-$','$z^+$', ...
        '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-% legend('$z(m)$','$z^-$','$z^+$', ...
-%     '$\dot{z}(m/s)$','$\dot{z}^-$','$\dot{z}^+$', ...
-%     'interpreter','latex','FontSize',labelFontSize)
-%legend('z(m)','z_{max}','z_{min}','dz(m/s)','dz_{max}','dz_{min}')
-%title('Prismatic joint')
+
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% UR5 joints position
 
@@ -162,7 +154,7 @@ legend('$q_{a1}$','$q_{a1}^-$','$q_{a1}^+$', ...
     '$q_{a2}$','$q_{a2}^-$','$q_{a2}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 % Joint 3 and 4
 figure()
@@ -182,7 +174,7 @@ legend('$q_{a3}$','$q_{a3}^-$','$q_{a3}^+$', ...
     '$q_{a4}$','$q_{a4}^-$','$q_{a4}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 % Joint 5 and 6
 figure()
@@ -202,7 +194,7 @@ legend('$q_{a5}$','$q_{a5}^-$','$q_{a5}^+$', ...
     '$q_{a6}$','$q_{a6}^-$','$q_{a6}^+$', ...
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% UR5 joints velocities
  
@@ -228,7 +220,7 @@ xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Elbow and wrist collision distance
 figure()
@@ -248,4 +240,4 @@ legend('$d_{elbow}$','$d_{wrist}$', ...
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
-set(gcf, 'Position',  [500, 500, 490, 310])
+set(gcf, 'Position',  [200, 500, 490, 310])

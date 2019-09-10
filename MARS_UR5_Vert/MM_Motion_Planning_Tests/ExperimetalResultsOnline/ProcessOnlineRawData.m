@@ -60,5 +60,5 @@ height_wrist = col_dist_raw(3,:);
 
 
 %% Plot the results
-PlotEvolutionPretty_ExpOnline
+PlotEvolutionStylesAndColors
 
