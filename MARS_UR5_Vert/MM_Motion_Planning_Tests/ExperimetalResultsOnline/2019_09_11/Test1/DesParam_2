@@ -1,0 +1,22 @@
+trajTime: 30.0
+desPose: 
+  position: 
+    x: 1.6
+    y: -1.3
+    z: 1.2
+  orientation: 
+    x: 0.0
+    y: 1.0
+    z: 0.0
+    w: 0.0
+platform0:
+-1.102, 0.758, 0.000 (x,y,z)
+179.829 degrees (theta)
+z: 0.1
+
+vmax: 0.3
+dthetamax: PI/4
+dzmax: 0.025
+
+
+

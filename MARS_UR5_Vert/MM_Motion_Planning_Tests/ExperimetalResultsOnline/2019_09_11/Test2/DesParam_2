@@ -1,0 +1,22 @@
+Test max velocities
+
+trajTime: 18
+desPose: 
+  position: 
+    x: 1.75
+    y: -0.4
+    z: 0.26
+  orientation: 
+    x: -1.13449e-07
+    y: 0.93982
+    z: 1.69735e-11
+    w: 0.34167
+
+platform0:
+-1.653, -0.347, 0.000 (x,y,z)
+-0.455 deg (theta)
+z: 0.24
+
+vmax: 0.3
+dthetamax: PI/4
+dzmax: 0.025
