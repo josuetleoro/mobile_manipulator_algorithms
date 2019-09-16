@@ -22,7 +22,7 @@ set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = time(end);
-spc = 80;
+spc = 60;
 markerIdx = 20:spc:(length(time)-1);
 markerSize = 8;
 
@@ -53,8 +53,8 @@ set(get(get(triEndH(1),'Annotation'),'LegendInformation'),'IconDisplayStyle','of
 plot(q(1,1),q(2,1),'o', 'MarkerEdgeColor','k', 'MarkerFaceColor', green, 'MarkerSize',8);
 plot(q(1,end),q(2,end),'s', 'MarkerEdgeColor','k','MarkerFaceColor', red, 'MarkerSize',8);
 
-xlim([-2.5 2.5])
-ylim([-2.5 2.5])
+xlim([-2 2])
+ylim([-2 2])
 
 % set(gca,'xtick',-2.5:0.5:2.5)
 % set(gca,'ytick',-2.5:0.5:2.5)
@@ -68,6 +68,12 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Manipulability plots
 figure()
+MM_man_max = 2.6141267;
+ur5_man_max = 0.1192;
+W_measure_max = 0.2626694;
+MM_man_measure = MM_man_measure / MM_man_max;
+ur5_man_measure = ur5_man_measure / ur5_man_max;
+W_measure = W_measure / W_measure_max;
 plot(time,MM_man_measure,'b','LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
 plot(time,W_measure,'g','LineWidth',lineWidth,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
