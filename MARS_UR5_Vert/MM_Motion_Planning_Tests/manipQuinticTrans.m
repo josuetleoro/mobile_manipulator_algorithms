@@ -26,9 +26,22 @@ while k <= N
     t=t+ts;    
 end
 trans(end) = 0;
-% size(trans)
-% time = 0:ts:tf;
-% size(time)
-% plot(time, trans)
+time = 0:ts:tf;
+% %Plot transition profile
+% blue=[0    0.4470    0.7410];
+% labelFontSize=14;
+% lineWidth=1.8;
+% set(0,'defaulttextinterpreter','latex')
+% set(0,'defaulttextfontname', 'Times')
+% set(0,'defaulttextfontsize',16)
+% set(0, 'defaultAxesTickLabelInterpreter','latex');
+% set(0, 'defaultLegendInterpreter','latex');
+% set(0,'defaultaxesfontsize',16)
+% set(0,'defaultaxesfontname', 'Times')
+% plot(time, trans,'LineWidth',lineWidth,'Color',blue)
+% grid on
+% xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize);
+% ylabel('$\beta$','interpreter','latex','FontSize',labelFontSize);
+% set(gcf, 'Position',  [200, 500, 490, 310])
 % pause()
 end
