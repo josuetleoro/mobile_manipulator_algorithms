@@ -35,9 +35,7 @@ set(0,'defaultaxesfontname', 'Times')
 figure()
 plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
-plot(time,W_measure,'g','LineWidth',1.5); hold off
-legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
-%legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
+legend('$\Omega_{p+a}$','$\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 %title('Manipulability measure')
 grid on
@@ -50,7 +48,6 @@ plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
-%legend('e_{Px}','e_{Py}','e_{Pz}')
 %title('Position error(m)')
 grid on
 
@@ -61,7 +58,6 @@ plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 legend('$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
-%legend('e_{Ox}','e_{Oy}','e_{Oz}')
 grid on
 %title('Orientation error(rad)')
 

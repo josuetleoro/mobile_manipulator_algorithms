@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=15;
+testN=1;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -156,16 +156,16 @@ while(k<=N)
     ur5_man_measure(k)=ur5_manip;
     
     % Combined Mobile manipulator and robot arm using multiplication
-%     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     
-%     W_measure(k)=MM_manip*ur5_manip;    
+    dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     
+    W_measure(k)=MM_manip*ur5_manip;    
 
     % Combined Mobile manipulator and robot arm using addition
 %     dP=MM_dP+ur5_dP;
 %     W_measure(k)=MM_manip+ur5_manip;
     
     % Robot arm manipulability alone
-    dP=ur5_dP;
-    W_measure(k)=ur5_manip;   
+%     dP=ur5_dP;
+%     W_measure(k)=ur5_manip;   
     
     dP=S'*dP;
     
