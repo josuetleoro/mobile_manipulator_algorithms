@@ -25,11 +25,18 @@ odom_trans.Header.FrameId = 'odom';
 [path_pub, path_msg] = rospublisher('/ur5_tool0_path','nav_msgs/Path');
 path_msg.Header.FrameId = 'odom';
 
-path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/20)));        
+% Find the dividend to use so that at least 100 points are always used for the path
+pathDiv = 2;
+pathNPoints = 100;
+if n > pathNPoints
+    pathDiv = floor(n/pathNPoints);
+end
+
+path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/pathDiv)));        
 
 k=1;
 for i=1:n
-    if(mod(i,20)==0)
+    if(mod(i,pathDiv)==0)
         path_msg.Poses(k).Pose.Position.X = xi(1,i);
         path_msg.Poses(k).Pose.Position.Y = xi(2,i);
         path_msg.Poses(k).Pose.Position.Z = xi(3,i);
@@ -73,7 +80,7 @@ state_msg.Name = joints_names;
 state_msg.Position = [0.0; 0.0; q(4,1); q(5,1); q(6,1); q(7,1); q(8,1); q(9,1); q(10,1)];
 state_msg.Velocity = zeros(9,1);
 state_msg.Effort = zeros(9,1);
-rate = rosrate(10);
+rate = rosrate(20);
 reset(rate);
 %Initial odom transformation
 odom_trans.Transform.Translation.X = q(1,1);

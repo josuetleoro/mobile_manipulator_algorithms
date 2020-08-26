@@ -3,6 +3,9 @@ close all
 
 %Add the MMUR5 path to use the class MMUR5
 addpath MARS_UR5
+addpath TrajPlan
+addpath JacobiansFolder
+addpath 3DPlots
 
 %Create a MMUR5 object
 MARS=MARS_UR5();
@@ -294,21 +297,4 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 %Plot all the variables
-PlotEvolution
-
-%% Plot end effector path
-figure()
-plot3(xi(1,:),xi(2,:),xi(3,:));
-xlabel('x[m]')
-ylabel('y[m]')
-zlabel('z[m]')
-zlim([0,1.5])
-grid on;
-
-%% Save the redundancy resolution position and velocities
-% JointMotion.q_des=q;
-% JointMotion.dq_des=dq;
-% JointMotion.ts=ts;
-% JointMotion.tf=tf;
-% uisave('JointMotion','JointMotion.mat');
-
+PlotEvolutionPretty

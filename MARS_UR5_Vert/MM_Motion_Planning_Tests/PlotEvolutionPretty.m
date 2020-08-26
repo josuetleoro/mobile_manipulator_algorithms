@@ -1,7 +1,4 @@
 close all
-% clear all
-% %Open a dialog box to look for the motion data
-% uiopen();
 % % Show the final position
 % xi(:,end)
 
