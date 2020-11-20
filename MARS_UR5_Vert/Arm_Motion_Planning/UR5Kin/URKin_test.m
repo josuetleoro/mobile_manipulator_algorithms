@@ -30,19 +30,24 @@
 % quat: 0.7071; 0.0; 0.0; 0.7071
 
 % P6 (More precision)
-q = [0.5818229;4.2901589;1.6468228;-1.3006193;-1.7442122; 0];
+% q = [0.5818229;4.2901589;1.6468228;-1.3006193;-1.7442122; 0];
 % RES
 % pos: -0.195; -0.242; 0.536
 % quat: 0.475; 0.875; 0.008; -0.094
 
+% Painting task test
+q=deg2rad([-80;-45;90;150;-100;0.0]);
+
 robot = UR5Robot();
 
 T0e = robot.forwardKin(q);
+
 pos = T0e(1:3,4)'
 quat = rotmat2quatROS(T0e(1:3,1:3))
 
 % Calculate the inverse kinematics
-sols = robot.inverseKin(T0e)
+% sols = robot.inverseKin(T0e) % Using dual quat
+sols = robot.inverseKinQuat(T0e) % Using quat
 
 posD = T0e(1:3,4);
 AdD = T0e(1:3,3);
