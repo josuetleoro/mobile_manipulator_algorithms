@@ -21,9 +21,9 @@ odom_trans = rosmessage('geometry_msgs/TransformStamped');
 odom_trans.ChildFrameId = 'base_footprint';
 odom_trans.Header.FrameId = 'odom';
 
-%% Create the mob_plat path message
-[mob_plat_path_pub, mob_plat_path_msg] = rospublisher('/mob_plat_path','nav_msgs/Path');
-mob_plat_path_msg.Header.FrameId = 'odom';
+%% Create the arm path message
+[arm_path_pub, arm_path_msg] = rospublisher('/arm_path','nav_msgs/Path');
+arm_path_msg.Header.FrameId = 'ur5_base';
 
 % Find the dividend to use so that at least 100 points are always used for the path
 pathDiv = 2;
@@ -32,43 +32,43 @@ if n > pathNPoints
     pathDiv = floor(n/pathNPoints);
 end
 
-mob_plat_path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/pathDiv)));        
+arm_path_msg.Poses = arrayfun(@(~) rosmessage('geometry_msgs/PoseStamped'),zeros(1,ceil(n/pathDiv)));        
 
 k=1;
 for i=1:n
     if(mod(i,pathDiv)==0)
-        mob_plat_path_msg.Poses(k).Pose.Position.X = q(1,i);
-        mob_plat_path_msg.Poses(k).Pose.Position.Y = q(2,i);
-        mob_plat_path_msg.Poses(k).Pose.Position.Z = 0;
-        quatrot = eul2quat([q(3,i) 0 0],'ZYZ');
-        mob_plat_path_msg.Poses(k).Pose.Orientation.W = quatrot(1);
-        mob_plat_path_msg.Poses(k).Pose.Orientation.X = quatrot(2);
-        mob_plat_path_msg.Poses(k).Pose.Orientation.Y = quatrot(3);
-        mob_plat_path_msg.Poses(k).Pose.Orientation.Z = quatrot(4);
+        arm_path_msg.Poses(k).Pose.Position.X = xi_des(1,i);
+        arm_path_msg.Poses(k).Pose.Position.Y = xi_des(2,i);
+        arm_path_msg.Poses(k).Pose.Position.Z = xi_des(3,i);
+        arm_path_msg.Poses(k).Pose.Orientation.W = xi_des(4,i);
+        arm_path_msg.Poses(k).Pose.Orientation.X = xi_des(5,i);
+        arm_path_msg.Poses(k).Pose.Orientation.Y = xi_des(6,i);
+        arm_path_msg.Poses(k).Pose.Orientation.Z = xi_des(7,i);
+        arm_path_msg.Poses(k).Header.FrameId = 'ur5_base';
         k=k+1;
     end
 end
 %Make sure the last pose is also stored
-mob_plat_path_msg.Poses(end).Pose.Position.X = q(1,end);
-mob_plat_path_msg.Poses(end).Pose.Position.Y = q(2,end);
-mob_plat_path_msg.Poses(end).Pose.Position.Z = 0;
-quatrot = eul2quat([q(3,i) 0 0],'ZYZ');
-mob_plat_path_msg.Poses(end).Pose.Orientation.W = quatrot(1);
-mob_plat_path_msg.Poses(end).Pose.Orientation.X = quatrot(2);
-mob_plat_path_msg.Poses(end).Pose.Orientation.Y = quatrot(3);
-mob_plat_path_msg.Poses(end).Pose.Orientation.Z = quatrot(4);
+arm_path_msg.Poses(end).Pose.Position.X = xi_des(1,end);
+arm_path_msg.Poses(end).Pose.Position.Y = xi_des(2,end);
+arm_path_msg.Poses(end).Pose.Position.Z = xi_des(3,end);
+arm_path_msg.Poses(end).Pose.Orientation.W = xi_des(4,end);
+arm_path_msg.Poses(end).Pose.Orientation.X = xi_des(5,end);
+arm_path_msg.Poses(end).Pose.Orientation.Y = xi_des(6,end);
+arm_path_msg.Poses(end).Pose.Orientation.Z = xi_des(7,end);
+rm_path_msg.Poses(k).Header.FrameId = 'ur5_base';
 
-%% Create the transformation of the last mob_plat pose to draw it
+%% Create the transformation of the last arm tool0 pose to draw it
 desired_trans = rosmessage('geometry_msgs/TransformStamped');
 desired_trans.ChildFrameId = 'Desired_pos';
-desired_trans.Header.FrameId = 'odom';
-desired_trans.Transform.Translation.X = q(1,end);
-desired_trans.Transform.Translation.Y = q(2,end);
-desired_trans.Transform.Translation.Z = 0;
-desired_trans.Transform.Rotation.W = quatrot(1);
-desired_trans.Transform.Rotation.X = quatrot(2);
-desired_trans.Transform.Rotation.Y = quatrot(3);
-desired_trans.Transform.Rotation.Z = quatrot(4);
+desired_trans.Header.FrameId = 'ur5_base';
+desired_trans.Transform.Translation.X = xi_des(1,end);
+desired_trans.Transform.Translation.Y = xi_des(2,end);
+desired_trans.Transform.Translation.Z = xi_des(3,end);
+desired_trans.Transform.Rotation.W = xi_des(4,end);
+desired_trans.Transform.Rotation.X = xi_des(5,end);
+desired_trans.Transform.Rotation.Y = xi_des(6,end);
+desired_trans.Transform.Rotation.Z = xi_des(7,end);
 
 [state_pub, state_msg] = rospublisher('/mars_joint_states','sensor_msgs/JointState');
 
@@ -97,9 +97,9 @@ while (~FS.Stop())
     state_msg.Header.Stamp = now;
     odom_trans.Header.Stamp = now;
     desired_trans.Header.Stamp = now;
-    mob_plat_path_msg.Header.Stamp = now;   
+    arm_path_msg.Header.Stamp = now;   
     send(state_pub,state_msg);
-    send(mob_plat_path_pub,mob_plat_path_msg);
+    send(arm_path_pub,arm_path_msg);
     sendTransform(tftree, odom_trans);
     sendTransform(tftree, desired_trans);    
     waitfor(rate);    
