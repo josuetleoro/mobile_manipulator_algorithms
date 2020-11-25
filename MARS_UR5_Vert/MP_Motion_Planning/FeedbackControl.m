@@ -44,11 +44,11 @@ q_des=[tx_d;ty_d;phi_mp_d]
 
 JointConstraints
 
-tf=12;
+tf=8;
 ts=1/20;
 
 %% Path planning
-[x,y,phi,v,w]=path_planning(tx,ty,phi_mp,tx_d,ty_d,phi_mp_d,5,0,tf,ts);
+[x,y,phi,v,w]=path_planning(tx,ty,phi_mp,tx_d,ty_d,phi_mp_d,2,0,tf,ts);
 time=0:ts:tf;
 N = length(time);
 
