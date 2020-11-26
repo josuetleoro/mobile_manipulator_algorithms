@@ -28,7 +28,7 @@ set(0,'defaultaxesfontname', 'Times')
 tx=0;
 ty=0;
 phi_mp=0;
-tz=0.0;
+tz=0.2;
 % Arm joint values
 qa=deg2rad([0;-80;110;-120;-90;0.0]);
 % Show platform initial pose
