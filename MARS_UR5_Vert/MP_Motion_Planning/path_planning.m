@@ -37,10 +37,10 @@ for i=1:N
     theta_des(i)= mod((theta_des(i) + pi),2*pi)-pi;    
     
     if k_dir == 0
-        v_des(i)=1/tf*sqrt(xp_des(i)^2+yp_des(i)^2);
+        v_des(i)=sqrt(xp_des(i)^2+yp_des(i)^2)*(1/tf);
     else
-        v_des(i)=-1/tf*sqrt(xp_des(i)^2+yp_des(i)^2);
+        v_des(i)=-sqrt(xp_des(i)^2+yp_des(i)^2)*(1/tf);
     end
-    w_des(i)=1/tf*(ypp_des(i)*xp_des(i)-xpp_des(i)*yp_des(i))/(xp_des(i)^2+(yp_des(i)^2));
+    w_des(i)=(ypp_des(i)*xp_des(i)-xpp_des(i)*yp_des(i))/(xp_des(i)^2+(yp_des(i)^2))*(1/tf);
 end
 end

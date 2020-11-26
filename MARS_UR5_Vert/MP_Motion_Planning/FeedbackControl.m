@@ -33,7 +33,7 @@ tz=0.0;
 qa=deg2rad([0;-80;110;-120;-90;0.0]);
 % Show platform initial pose
 disp('Desired Pose')
-q_des=[tx;ty;phi_mp]
+q_i=[tx;ty;phi_mp]
 
 tx_d=0.779;
 ty_d=-1.345;
@@ -44,11 +44,12 @@ q_des=[tx_d;ty_d;phi_mp_d]
 
 JointConstraints
 
-tf=12;
+tf=20;
 ts=1/20;
+tb=4;
 
 %% Path planning
-[x,y,phi,v,w]=path_planning(tx,ty,phi_mp,tx_d,ty_d,phi_mp_d,5,0,tf,ts);
+[x,y,phi,v,w]=path_planning_parabolic(tx,ty,phi_mp,tx_d,ty_d,phi_mp_d,2,1,tf,ts,tb);
 time=0:ts:tf;
 N = length(time);
 
