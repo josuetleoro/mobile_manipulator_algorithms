@@ -11,21 +11,21 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=1;
+testN=16;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
 
 %Load the joints constraints
-JointConstraints
+JointConstraintsPaper
 
 %% Set the step size for the gradient descent method and error weight.
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-ts=1/50;    %Sampling time
-alpha=3.6;    % For cubic + linear + quintic manip trans
+ts=1/20;    %Sampling time
+alpha=8;    % For cubic + linear + quintic manip trans
 
 Kp_pos=10;
 Kp_or=20;
@@ -312,4 +312,4 @@ mp_vel=eta(1:3,:);
 % xlabel('time(s)')
 % title('Manipulability measure')
 %% Plot all the variables
-PlotEvolutionPretty
+PlotEvolutionStylesAndColors

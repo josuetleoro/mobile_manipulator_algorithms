@@ -251,26 +251,35 @@ switch(testN)
         ty=0;
         phi_mp=pi/2;
         tz=0.05;
-        %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
         qa=[-pi/2;-pi/4;pi/2;3*pi/4;-pi/2;0.0];
         
-        %Desired Pose
-        %Pos_f=[0.7221;3;0.7246];
-        
+        %Desired Pose       
         %Dificult case, where the final position is far and the final
         %orientation puts the joint 5 in a singular position
         Pos_f=[0.7221;8;0.7246];
-        tf=30;
-        
+
         quat_f=axang2quat([-1 1 1 120*pi/180])';
         roll=-90*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;
         %Orientation with a problem of mobile platform rotation        
         quat_f=axang2quat([-1 1 -1 120*pi/180])';
-        roll=-90*pi/180;
-        pitch=0*pi/180;
-        yaw=-90*pi/180;       
         
-        tf=14;        
+        tf=14;
+        
+    case 16
+        %Initial joints values
+        tx=-1.64;
+        ty=-0.35;
+        phi_mp=0;
+        tz=0.24;
+        %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
+        qa=[0;-80;110;-120;-90;0]*pi/180;
+        
+        %Desired Pose
+        Pos_f=[1.75;-0.4;0.26];
+        quat_f=[0.342;0;0.939;0];
+        
+        tf=18;
+        
 end
