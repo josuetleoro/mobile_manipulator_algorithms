@@ -25,12 +25,11 @@ qa=[0.0;-pi/2;pi/2;-pi/2;-pi/2;0.0];
 %influence on the motion.
 
 %With Fs=20Hz
-ts=1/20;   
-alpha=10;   %alpha=6 works for all cases except test 10
+ts=1/20;
+tf=60;
+alpha=8;   %alpha=6 works for all cases except test 10
 Kp_pos=10;
-Ki_pos=50;
-Kp_or=0.001;
-Ki_or=0.0001;
+Kp_or=20;
 
 % % %With Fs=100Hz
 % ts=0.005;  %Overwrite ts
@@ -40,7 +39,7 @@ Ki_or=0.0001;
 % %For individual manipulabilities
 % MM_manip_sel = 1;
 %Load the joints constraints
-JointConstraints
+JointConstraintsPaper
 
 %% Initial values of the generalized coordinates of the MM
 q0=[tx;ty;phi_mp;tz;qa];
@@ -55,7 +54,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=LissajousPath2(T0,60,ts,10);
+MotPlan=LissajousPath2(T0,tf,ts,10);
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
@@ -74,9 +73,6 @@ Werror=zeros(6,6);
 Werror(1:3,1:3)=Kp_pos*eye(3);
 Werror(4:6,4:6)=Kp_or*eye(3);
 
-Wierror=zeros(6,6);
-Wierror(1:3,1:3)=Ki_pos*eye(3);
-Wierror(4:6,4:6)=Ki_or*eye(3);
 %The Wjlim weight matrix
 Wjlim=zeros(9,9);
 Wmatrix=zeros(9,9);
@@ -128,6 +124,9 @@ for i=1:6
       maxdxi(i)=1; 
    end
 end
+%% Calculate the step size variation law
+blend_perc = 0.2;
+trans=manipQuinticTrans(N,tf,blend_perc,ts);
 
 %%
 disp('Calculating the inverse velocity kinematics solution')
@@ -137,71 +136,64 @@ ierror=zeros(6,1);
 derror=zeros(6,1);
 error_cont=zeros(6,1);
 while(k<=N)
-    %% Redundancy resolution using manipulability gradient
+%% Redundancy resolution using manipulability gradient
     fprintf('Step %d of %d\n',k,N);
     
     %Replace the elements cos(phi) and sin (phi)
     S(1,1)=cos(q(3,k)); S(2,1)=sin(q(3,k));
     
     %Calculate the Jacobian
-    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));
+    JBar=evaluateJBar(q(3,k),q(5,k),q(6,k),q(7,k),q(8,k),q(9,k));    
         
     %% Manipulability gradient
     [MM_dP,MM_manip, ur5_dP, ur5_manip]=manGradJBar2(q(:,k),JBar);   
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
-
+    
     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     %Combined Mobile manipulator and robot arm
-    %dP=ur5_dP;
-    W_measure(k)=MM_manip*ur5_manip;
-    dP=S'*dP; 
+    W_measure(k)=MM_manip*ur5_manip;    
+    dP=S'*dP;
     
     %% Joint limit cost function gradient
     Wjlim=jLimitGrad(q(:,k),q_limit);
-    %Wjlim=eye(9,9);    
+    %Wjlim=eye(9,9);
     
     %% Collision avoidance weighting matrices
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
     Wcol=Wcol_elbow*Wcol_wrist;
-    %Wcol=eye(9,9);
+    %Wcol=eye(9,9);   
     
     %% Inverse differential kinematics         
     %%%%%%%%%%%%%Calculate the position and orientation error%%%%%%%%%%%%
     %Position error
     eP=xi_des(1:3,k)-xi(1:3,k);
-    xi_pos_error(1:3,k)=eP;
-    
+    xi_pos_error(1:3,k)=eP;    
+   
     %Orientation error
-    quat_d=xi_des(4:7,k);    
+    quat_d=xi_des(4:7,k);
     eO=errorFromQuats(quat_d,quat_e);
-    %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
-        
+    
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
-    ierror(1:3)=ierror(1:3)+eP*ts;
-    ierror(4:6)=zeros(3,1);
-    derror(1:3)=(eP-errorPrev(1:3))/ts;
-    errorPrev=errorRate;
-    error_cont=Werror*errorRate+Wierror*ierror;
+    
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
+
+    % Control input
     Wmatrix=Wcol*Wjlim*invTq;
     JBar_w=JBar*Wmatrix;
     inv_JBar_w=pinv(JBar_w);
-    cont_input=inv_JBar_w*(dxi_des(:,k)+error_cont);    
+    cont_input=inv_JBar_w*(dxi_des(:,k)+Werror*errorRate);
     
-    %Calculate the weighting by task velocity
-    taskNorm=abs(max(dxi_des(1:3,k)./maxdxi(1:3)));   
-    dP=taskNorm*dP;      
-
-    %Calculate the internal motion
+    % Internal motion
+    dP=trans(k)*dP;
     dP=Wmatrix*dP;
     int_motion=(Id-inv_JBar_w*JBar_w)*dP;
-    
+
     cont_input=Wmatrix*cont_input;
     int_motion=Wmatrix*int_motion;
-   
+    
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
@@ -211,41 +203,42 @@ while(k<=N)
        break
     end    
     %Saturate alpha in case is out of bounds
-    if alpha > maxAlpha(k)
-        alpha = maxAlpha(k);
-        if alpha < 0
+    alphak = alpha;
+    if alphak > maxAlpha(k)
+        alphak = maxAlpha(k);
+        if alphak < 0
             disp('alpha negative');
         end
     end
-    if alpha < minAlpha(k)
-        alpha = minAlpha(k);
-        if alpha < 0
+    if alphak < minAlpha(k)
+        alphak = minAlpha(k);
+        if alphak < 0
             disp('alpha negative');
         end
     end
-    alpha_plot(k)=alpha*taskNorm;
-            
+    alpha_plot(k)=alphak*trans(k);
+
     %Mobility control vector
-    eta(:,k)=cont_input+alpha*int_motion;    
+    eta(:,k)=cont_input+alphak*int_motion;
     
     %Calculate the joints velocities
-    dq(:,k)=S*eta(:,k);   
-    
+    dq(:,k)=S*eta(:,k);
+
     %% update variables for next iteration       
     if k < N
-        %Calculate the joint values
+        % Calculate the joint values
         q(:,k+1)=q(:,k)+dq(:,k)*ts;
         
-        %Calculate the position of the end effector
+        % Calculate the position of the end effector
         T=MARS.forwardKin(q(:,k+1));
         xi(1:3,k+1)=T(1:3,4);
         Re=T(1:3,1:3);
         quat_e=cartToQuat(Re);
-        xi(4:7,k+1)=quat_e;
+        xi(4:7,k+1)=quat_e;        
     end
-    
-    %increment iteration step
-    k=k+1;  
+
+    % increment iteration step
+    k=k+1; 
 end
 toc
 k=k-1;

@@ -3,7 +3,7 @@ pos0=T0(1:3,4);
 
 A = 0.8;
 B = 0.8;
-C = pos0(3)/4;
+C = 0;
 deltax = pi/2;
 deltay = 0.0;
 wa = 2;
