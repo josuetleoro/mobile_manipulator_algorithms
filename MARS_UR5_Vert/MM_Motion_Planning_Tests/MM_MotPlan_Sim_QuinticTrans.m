@@ -13,6 +13,7 @@ MARS=MARS_UR5();
 %Load the test point
 testN=16;
 TestPointsMaxLinVel
+% TestPointsReal
 
 %Joints' angles with maximum manipulability for UR5
 %qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];

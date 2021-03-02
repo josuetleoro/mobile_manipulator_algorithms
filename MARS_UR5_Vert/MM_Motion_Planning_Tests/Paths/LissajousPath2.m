@@ -1,9 +1,9 @@
 function MotPlan=LissajousPath2(T0,tf,ts,tb)
 pos0=T0(1:3,4);
 
-A = 0.8;
-B = 0.8;
-C = 0;
+A = 1.5;
+B = 1.5;
+C = 0.25;
 deltax = pi/2;
 deltay = 0.0;
 wa = 2;
@@ -28,7 +28,7 @@ for t=0:ts:tb
     z(i) = pos0(3) + C*cos(2*s(i))-C;    
     dx(i) = -A*sin(wa*(s(i)+pi/2) + deltax)*wa*ds(i);
     dy(i) = -B*sin(wb*(s(i)+pi/2) + deltay)*wb*ds(i);
-    dz(i) = -4*C*sin(2*s(i))*ds(i);
+    dz(i) = -2*C*sin(2*s(i))*ds(i);
     
     time(i)=t;
     i=i+1;
@@ -47,7 +47,7 @@ for t=time(i-1)+ts:ts:tf-tb
     z(i) = pos0(3) + C*cos(2*s(i))-C;    
     dx(i) = -A*sin(wa*(s(i)+pi/2) + deltax)*wa*ds(i);
     dy(i) = -B*sin(wb*(s(i)+pi/2) + deltay)*wb*ds(i);
-    dz(i) = -4*C*sin(2*s(i))*ds(i);
+    dz(i) = -2*C*sin(2*s(i))*ds(i);
     
     time(i)=t;
     i=i+1;
@@ -65,24 +65,13 @@ for t=time(i-1)+ts:ts:tf
     
     dx(i) = -A*sin(wa*(s(i)+pi/2) + deltax)*wa*ds(i);
     dy(i) = -B*sin(wb*(s(i)+pi/2) + deltay)*wb*ds(i);
-    dz(i) = -4*C*sin(2*s(i))*ds(i);
+    dz(i) = -2*C*sin(2*s(i))*ds(i);
     
     time(i)=t;
     i=i+1;
 end
 
-% %% Lissajous path using parameter s
-% for k=1:size(s,2)
-%     x(k) = pos0(1) + A*cos(wa*(s(k)+pi/2) + deltax);
-%     y(k) = pos0(2) + B*cos(wb*(s(k)+pi/2) + deltay);
-%     z(k) = pos0(3) + C*cos(2*s(k))-C;
-%     dx(k) = -A*wa*sin(wa*(s(k)+pi/2) + deltax);
-%     dy(k) = -B*wb*sin(wb*(s(k)+pi/2) + deltay);
-%     dz(k) = -2*C*sin(s(k));
-% end
-
 q0=cartToQuat(T0(1:3,1:3));
-
 k=1;
 for t=0:ts:tf
     quat(1:4,k)=q0;

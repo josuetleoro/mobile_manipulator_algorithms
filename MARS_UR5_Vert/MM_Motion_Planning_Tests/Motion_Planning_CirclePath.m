@@ -11,30 +11,26 @@ addpath Paths
 %Create a MMUR5 object
 MARS=MARS_UR5();
 
-testN='_Lissajous';
+testN='_Circle';
 
 %Initial joints values
 tx=-0.5191;
 ty=-0.1092;
 phi_mp=0;
-tz=0.2116;
+tz=0.1;
 qa=[0;-80;110;-120;-90;0]*pi/180;
 
 %Set the step size for the gradient descent method and error weight. A
 %higher error weight might decrease the manipulability because of its
 %influence on the motion.
-
+ 
 %With Fs=20Hz
 ts=1/20;
-tf=80;
+tf=50;
+tb=5;
 alpha=8;   %alpha=6 works for all cases except test 10
-Kp_pos=20;
+Kp_pos=10;
 Kp_or=20;
-
-% % %With Fs=100Hz
-% ts=0.005;  %Overwrite ts
-% alpha=20;   %Best alpha=20
-% lambda=20.0; %Overwrite lambda best=2.0
 
 % %For individual manipulabilities
 % MM_manip_sel = 1;
@@ -54,7 +50,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=LissajousPath2(T0,tf,ts,10);
+MotPlan=CirclePath(T0,tf,ts,tb,2);
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
@@ -180,6 +176,9 @@ while(k<=N)
     errorRate(1:3,1)=eP;
     errorRate(4:6,1)=eO;
     
+%     dxi_des(:,k)
+%     pause()
+%     
     %%%%%%%%%%Calculate the control input and internal motion%%%%%%%%%%%%%
 
     % Control input
@@ -199,9 +198,11 @@ while(k<=N)
     %Calculate the maximum and minimum step size
     [maxAlpha(k),minAlpha(k)] = calcMaxMinAlpha(cont_input,int_motion,dq_limit);
     if maxAlpha(k) < minAlpha(k)
-       diag(Wcol)
-       diag(Wjlim)
-       error('Could not achieve task that complies with joint velocities limits')
+        disp('Diag Wcol')
+        diag(Wcol)
+        disp('Diag Wjlim')
+        diag(Wjlim)
+%        error('Could not achieve task that complies with joint velocities limits')
        break
     end    
     %Saturate alpha in case is out of bounds
@@ -250,6 +251,17 @@ else
     disp('Task cannot be executed')
     k
     N
+    
+    % Adjust the manipulability measures
+    MM_man_measure(1)=MM_man_measure(2);
+    MM_man_measure(end)=MM_man_measure(end-1);
+    ur5_man_measure(1)=ur5_man_measure(2);
+    ur5_man_measure(end)=ur5_man_measure(end-1);
+    % Store the mobile platform velocities
+    mp_vel=eta(1:3,:);
+    time=MotPlan.time(1:k);
+    PlotFailedMotionPlanning
+    error('Could not complete the task')
 end
 time=MotPlan.time(1:k);
 

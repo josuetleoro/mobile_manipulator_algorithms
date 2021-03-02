@@ -266,8 +266,23 @@ switch(testN)
         quat_f=axang2quat([-1 1 -1 120*pi/180])';
         
         tf=14;
+    
+    case 16 %Case1 paper
+        %Initial joints values
+        tx=-1.2;
+        ty=0.6;
+        phi_mp=pi;
+        tz=0.1;
+        %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
+        qa=[0;-80;110;-120;-90;0]*pi/180;
         
-    case 16
+        %Desired Pose
+        Pos_f=[1.6;-1.3;1.2];
+        quat_f=[0;1;0;0];
+        
+        tf=30;
+    
+    case 17 %Case2 paper
         %Initial joints values
         tx=-1.64;
         ty=-0.35;
