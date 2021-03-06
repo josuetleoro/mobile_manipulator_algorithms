@@ -277,10 +277,10 @@ switch(testN)
         qa=[0;-80;110;-120;-90;0]*pi/180;
         
         %Desired Pose
-        Pos_f=[1.6;-1.3;1.2];
+        Pos_f=[1.3;-1.3;1.2];
         quat_f=[0;1;0;0];
         
-        tf=30;
+        tf=25;
     
     case 17 %Case2 paper
         %Initial joints values
@@ -292,9 +292,9 @@ switch(testN)
         qa=[0;-80;110;-120;-90;0]*pi/180;
         
         %Desired Pose
-        Pos_f=[1.75;-0.6;0.26];
+        Pos_f=[1.5;-0.4;0.26];
         quat_f=[0.342;0;0.939;0];
         
-        tf=23;
+        tf=20;
         
 end

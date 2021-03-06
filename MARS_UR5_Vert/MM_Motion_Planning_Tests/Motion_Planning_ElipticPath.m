@@ -11,13 +11,8 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=16;
+testN=17;
 TestPointsEliptic
-% TestPointsReal
-
-%Joints' angles with maximum manipulability for UR5
-%qa=[0.0;-0.40;1.06;5*pi/4;-pi/2;0.0];
-
 %Load the joints constraints
 JointConstraintsPaper
 
@@ -26,7 +21,7 @@ JointConstraintsPaper
 %influence on the motion.
 
 ts=1/20;    %Sampling time
-alpha=8;    % For cubic + linear + quintic manip trans
+alpha=10;    % For cubic + linear + quintic manip trans
 
 Kp_pos=10;
 Kp_or=20;
@@ -68,7 +63,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=ElipticPath(T0,Tf,tf,ts,tb);
+MotPlan=EllipticPath(T0,Tf,tf,ts,tb);
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);
 
