@@ -7,41 +7,29 @@ assume(u, 'real')
 height = 0.25;
 freq = 4;
 
-%% Curve definition
+%% Curve definition (Circle path)
 
-% %%%%%%%%%%%%% Circle path %%%%%%%%%%%%%%
+% Define the path function
 d = 2*pi;
-Z = [r*cos(u)-r;
-     r*sin(u);
-	 height*sin(freq*u)];
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+F = [r*cos(u)-r+pos0(1);
+     r*sin(u)+pos0(2);
+	 height*sin(freq*u)+pos0(3)];
+ 
+% Derivative of the path
+dF = [-r*sin(u);
+       r*cos(u);
+       height*freq*sin(freq*u)];
 
-sf=d;
-max_vel=sf/(tf-tb);
-max_a=max_vel/tb;
-
-%% Make sure there is no problem with independent coordinates
-% Position
-Z_f_unfixed = matlabFunction(Z);
-if numel( symvar(Z) ) > 0
-    Z_f_fixed = @(x) Z_f_unfixed(x);
-else
-    Z_f_fixed = @(x) Z_f_unfixed();
-end
-Z_f = Z_f_fixed;
-
-% Velocity
-dZ_du = diff(Z, u);
-dZ_du_f_unfixed = matlabFunction(dZ_du);
-if numel( symvar(dZ_du) ) > 0
-    dZ_du_f_fixed = @(x) dZ_du_f_unfixed(x);
-else
-    dZ_du_f_fixed = @(x) dZ_du_f_unfixed();
-end
-dZ_du_f = dZ_du_f_fixed;
+%% Transform to matlab function
+F_mat = matlabFunction(F);
+dF_mat = matlabFunction(dF);
 
 %% Define the evolution of parameter s
 
+% Using parabolic blending
+sf=d;
+max_vel=sf/(tf-tb);
+max_a=max_vel/tb;
 i=1;    %Element position
 %Initial parabolic segment
 for t=0:ts:tb
@@ -59,7 +47,6 @@ for t=time(i-1)+ts:ts:tf-tb
     time(i)=t;
     i=i+1;
 end
-
 %Final parabolic segment
 for t=time(i-1)+ts:ts:tf
     %Initial parabolic segment
@@ -72,13 +59,13 @@ end
 %% Use the evolution of parameter s to generate the trajectory in each of the coordinates
 for i=1:length(time)
     %Position
-    pos = Z_f(s(i));
-    x(i) = pos0(1) + pos(1);
-    y(i) = pos0(2) + pos(2);
-    z(i) = pos0(3) + pos(3);
+    pos = F_mat(s(i));
+    x(i) = pos(1);
+    y(i) = pos(2);
+    z(i) = pos(3);
     
     %Velocity
-    vel = dZ_du_f(s(i))*ds(i);
+    vel = dF_mat(s(i))*ds(i);
     dx(i) = vel(1);
     dy(i) = vel(2);
     dz(i) = vel(3);    
@@ -107,17 +94,14 @@ for k=1:length(x)
         w(1:3,k)=[0;0;0];
     else
         p = quat(:,k);
-        q = quat(:,k-1);        
-
+        q = quat(:,k-1);
         w(1:3,k)=velFromQuats(quat(:,k-1),quat(:,k),ts);
-        
-%         w(1:3,k)=av;
     end    
 end
 w(1:3,end)=[0;0;0];
 
 %% Plots (Comment if not needed)
-%Show the end effector motion in 3D
+% %Show the end effector motion in 3D
 % figure()
 % Rd=zeros(4,4,length(time));
 % %Form the T6Traj matrix
@@ -219,6 +203,4 @@ MotPlan.dz=dz;
 MotPlan.quat=quat;
 MotPlan.w=w;
 MotPlan.time=time;
-
-
 end

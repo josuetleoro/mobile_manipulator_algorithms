@@ -30,6 +30,10 @@ set(0,'defaultaxesfontname', 'Times')
 
 %% Manipulability plots
 figure()
+MM_man_max = max(MM_man_measure);
+ur5_man_max = max(ur5_man_measure);
+MM_man_measure = MM_man_measure / MM_man_max;
+ur5_man_measure = ur5_man_measure / ur5_man_max;
 plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
 plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
 legend('$\Omega_{p+a}$','$\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
