@@ -18,7 +18,7 @@ F = [r*cos(u)-r+pos0(1);
 % Derivative of the path
 dF = [-r*sin(u);
        r*cos(u);
-       height*freq*sin(freq*u)];
+       height*freq*cos(freq*u)];
 
 %% Transform to matlab function
 F_mat = matlabFunction(F);
