@@ -13,20 +13,27 @@ MARS=MARS_UR5();
 
 testN='_Circle';
 
-%Initial joints values
-tx=-0.5191;
-ty=-0.1092;
-phi_mp=0;
+% %Initial joints values
+% tx=-0.5191+1.6;
+% ty=-0.1092;
+% phi_mp=0;
+
+tx = 1.317;
+ty = -0.661;
+phi_mp = pi/2;
+tz = 0.1;
+
 tz=0.1;
 qa=[0;-80;110;-120;-90;0]*pi/180;
 
 %Set the step size for the gradient descent method and error weight. A
 %higher error weight might decrease the manipulability because of its
 %influence on the motion.
+
  
 %With Fs=20Hz
 ts=1/20;
-tf=50;
+tf=45;
 tb=5;
 alpha=8;   %alpha=6 works for all cases except test 10
 Kp_pos=10;
@@ -50,7 +57,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=CirclePath(T0,tf,ts,tb,2);
+MotPlan=CirclePath2(T0,tf,ts,tb,tx);
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);

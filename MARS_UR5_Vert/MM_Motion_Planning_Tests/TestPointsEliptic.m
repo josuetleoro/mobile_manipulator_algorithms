@@ -283,18 +283,29 @@ switch(testN)
         tf=25;
     
     case 17 %Case2 paper
-        %Initial joints values
-        tx=-1.64;
-        ty=-0.35;
+%         %Initial joints values
+%         tx=-1.64;
+%         ty=-0.35;
+%         phi_mp=0;
+%         tz=0.24;
+%         %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
+%         qa=[0;-80;110;-120;-90;0]*pi/180;
+%         
+%         %Desired Pose
+%         Pos_f=[1.5;-0.4;0.26];
+%         quat_f=[0.342;0;0.939;0];        
+%         tf=20;
+
+        % Manip norm
+        qa=[0;-80;110;-120;-90;0]*pi/180;        
+        tx=-1.4;
+        ty=0.6;
         phi_mp=0;
         tz=0.24;
-        %qa=[-pi/2;-0.40;1.06;5*pi/4;-pi/2;0.0];
-        qa=[0;-80;110;-120;-90;0]*pi/180;
         
         %Desired Pose
-        Pos_f=[1.5;-0.4;0.26];
-        quat_f=[0.342;0;0.939;0];
+        Pos_f=[1.6;-0.6;0.26];
+        quat_f=[0.2706;0.6533;0.6533;-0.2706];
         
-        tf=20;
-        
+        tf=24;
 end

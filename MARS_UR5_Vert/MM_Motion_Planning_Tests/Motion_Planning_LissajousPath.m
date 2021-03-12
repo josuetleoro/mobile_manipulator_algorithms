@@ -14,10 +14,10 @@ MARS=MARS_UR5();
 testN='_Lissajous';
 
 %Initial joints values
-tx=-0.5191;
-ty=-0.1092;
-phi_mp=0;
-tz=0.2116;
+tx=-0.1092;
+ty=0.5191;
+phi_mp=-pi/2;
+tz=0.2;
 qa=[0;-80;110;-120;-90;0]*pi/180;
 
 %Set the step size for the gradient descent method and error weight. A
@@ -26,7 +26,7 @@ qa=[0;-80;110;-120;-90;0]*pi/180;
 
 %With Fs=20Hz
 ts=1/20;
-tf=78;
+tf=58;
 alpha=10;
 Kp_pos=20;
 Kp_or=20;
@@ -54,7 +54,7 @@ tic
 disp('Calculating the trajectory...')
 %Use the trajectory planning function
 MotPlan = struct([]);
-MotPlan=LissajousPath2(T0,tf,ts,10);
+MotPlan=LissajousPath2(T0,tf,ts,0.125*tf);
 
 %Set the number of iterations from the motion planning data
 N=size(MotPlan.x,2);

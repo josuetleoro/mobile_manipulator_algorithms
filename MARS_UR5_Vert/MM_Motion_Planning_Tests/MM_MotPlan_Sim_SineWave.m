@@ -15,29 +15,30 @@ MARS=MARS_UR5();
 testN='SineWave';
 
 %Trajectory times
-tf = 50;
-ts = 1/20; % sampling time
+tf = 35;
+ts = 1/50; % sampling time
 tb = 5;
 % Sine wave parameters
-d = 4;
-h = 0.5;
-Nwaves = 2;
+d = 3.5;
+h = 0.4;
+Nwaves = 3;
 
 %Initial joints values
-tx=0.779;
-ty=-1.345;
+tx=-1.425;
+ty=0.043;
 phi_mp=0;
 tz=0.2;
-qa=deg2rad([-80;-45;90;150;-100;0.0]);
+qa=deg2rad([-80;-45;90;-210;-100;0.0]);
 
 %Load the joints constraints
-JointConstraints
+JointConstraintsPaper
 
 %% Set the step size for the gradient descent method and error weight.
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-alpha=2.0;    % For cubic + linear + quintic manip trans
+alpha=8.0;    % For combined manipulability
+alpha=2.0;    % For arm manipulability alone
 
 Kp_pos=10;
 Kp_or=20;
@@ -155,16 +156,16 @@ while(k<=N)
     ur5_man_measure(k)=ur5_manip;
     
     % Combined Mobile manipulator and robot arm using multiplication
-    dP=ur5_manip*MM_dP+MM_manip*ur5_dP;
-    W_measure(k)=MM_manip*ur5_manip;
+%     dP=ur5_manip*MM_dP+MM_manip*ur5_dP;
+%     W_measure(k)=MM_manip*ur5_manip;
 
     % Combined Mobile manipulator and robot arm using addition
 %     dP=MM_dP+ur5_dP;
 %     W_measure(k)=MM_manip+ur5_manip;
     
     % Robot arm manipulability alone
-%     dP=ur5_dP;
-%     W_measure(k)=ur5_manip;
+    dP=ur5_dP;
+    W_measure(k)=ur5_manip;
 
     dP=S'*dP;
     

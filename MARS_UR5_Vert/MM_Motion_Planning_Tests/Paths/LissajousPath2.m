@@ -1,13 +1,13 @@
 function MotPlan=LissajousPath2(T0,tf,ts,tb)
 pos0=T0(1:3,4);
 
-A = 1.5;
-B = 1.5;
-C = 0.27;
-deltax = pi/2;
-deltay = 0.0;
-wa = 2;
-wb = 1;
+A = 1.2;
+B = 1.2;
+C = 0.25;
+deltax = 0;
+deltay = pi/2;
+wa = 1;
+wb = 2;
 %x = A*cos(wa*t + dx);
 %y = B*cos(wb*t + dy);
 
@@ -79,15 +79,31 @@ for t=0:ts:tf
     k=k+1;
 end
 
-% %% Plots
+%% Plots
 % figure()
 % plot3(x, y, z);
 % title('Trajectory 3D plot')
+% grid on;
+% xlabel('x(m)')
+% ylabel('y(m)')
+% zlabel('z(m)')
 % 
+% %Show the XY motion of the end-effector
 % figure()
-% plot(y, z);
-% title('Trajectory YZ plane')
-% 
+% plot(x,y);
+% title('xy')
+% grid on;
+% xlabel('x(m)')
+% ylabel('y(m)')
+% %Show the Z motion of the end-effector
+% figure()
+% plot(time,z);
+% title('z')
+% grid on;
+% xlabel('time(s)')
+% ylabel('z(m)')
+% pause()
+
 % figure()
 % subplot(3,1,1)
 % plot(time,s)

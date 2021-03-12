@@ -28,6 +28,7 @@ v1 = p1(1:2)-center;
 v2 = p2(1:2)-center;
 u1 = atan2(v1(2),v1(1));
 u2 = atan2(v2(2),v2(1));
+
 % Make sure the shortest distance is being used
 diff = mod(u2-u1+pi,2*pi)-pi;
 u2 = u1 + diff;
@@ -61,7 +62,7 @@ F = [a*cos(u)+cx;
 dF = [-a*sin(u);
        b*cos(u);
        m]; 
-
+   
 %% Transform to matlab function
 F_mat = matlabFunction(F);
 dF_mat = matlabFunction(dF);
@@ -137,29 +138,35 @@ dwf=[0;0;0];
 %Do the interpolation
 [quat,w,~]=quatPolynomInterpolation(Q0,w0,dw0,Qf,wf,dwf,0,tf,ts,'fixed');
 
-% %% Plots (Comment if not needed)
-% % %Show the end effector motion in 3D
-% % figure()
-% % Rd=zeros(4,4,length(time));
-% % %Form the T6Traj matrix
-% % for i=1:length(x)
-% %    Rd(:,4,i)=[x(i);y(i);z(i);1];
-% %    Rd(1:3,1:3,i)=quatToRotMat(quat(:,i));
-% % end
-% % plotEndEffectorMotion2(Rd,0.02)
-% % pause()
+%% Plots (Comment if not needed)
+% %Show the end effector motion in 3D
+% figure()
+% Rd=zeros(4,4,length(time));
+% %Form the T6Traj matrix
+% for i=1:length(x)
+%    Rd(:,4,i)=[x(i);y(i);z(i);1];
+%    Rd(1:3,1:3,i)=quatToRotMat(quat(:,i));
+% end
+% plotEndEffectorMotion2(Rd,0.02)
+% pause()
 % 
 % %Show the XY motion of the end-effector
 % figure()
 % plot(x,y); hold on
 % plot(center(1),center(2),'r*'); hold on
-% 
 % %Plot P1 and P2
 % plot(p1(1),p1(2),'b*');
 % plot(p2(1),p2(2),'b*');
 % % axis equal
 % text(p1(1),p1(2),'P1d')
 % text(p2(1),p2(2),'P2d')
+% title('xy')
+% %Show the Z motion of the end-effector
+% figure()
+% plot(time,z);
+% title('z')
+% pause()
+
 %
 % % figure()
 % % subplot(2,1,1)

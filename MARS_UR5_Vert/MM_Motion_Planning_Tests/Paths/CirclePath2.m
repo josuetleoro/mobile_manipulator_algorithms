@@ -1,4 +1,4 @@
-function MotPlan=CirclePath(T0,tf,ts,tb,r)
+function MotPlan=CirclePath2(T0,tf,ts,tb,r)
 pos0=T0(1:3,4);
 
 syms u
@@ -83,9 +83,9 @@ end
 target = [pos0(1)-r; pos0(2); 0];
 approach = T0(1:3,3);
 for k=1:length(x)
-    orient = target - [x(k);y(k);0];
-    orient = orient / norm(orient);
-    normal = cross(orient, approach);
+    normal = [x(k);y(k);0] - target;
+    normal = normal / norm(normal);
+    orient = cross(approach, normal);
     R = [normal,orient,approach];
     quat(:,k)=cartToQuat(R);
     if k==1
