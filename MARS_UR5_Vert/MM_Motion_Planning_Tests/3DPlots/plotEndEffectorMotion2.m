@@ -1,4 +1,4 @@
-function plotEndEffectorMotion2(T6Traj,frame_size)
+function plotEndEffectorMotion2(T6Traj,frame_size, step)
 
 set(0,'defaulttextinterpreter','latex')
 set(0,'defaulttextfontname', 'Times')
@@ -14,14 +14,15 @@ labelFontSize=14;
 % plot the position
 pos=reshape(T6Traj(1:3,4,:),3,[]);
 n=length(pos); 
-for i=1:n
+step_points = floor(step/8);
+for i=1:step_points:n
     P1=pos(:,i);
     %Plot the position of the end effector
     scatter3(P1(1),P1(2),P1(3),5,'filled','k'); hold on
 end
 
 % plot the orientation
-for i=1:10:n
+for i=1:step:n
     %Plot the position of the end effector
     plotFrame(T6Traj(:,:,i),1,0.6); hold on
 end

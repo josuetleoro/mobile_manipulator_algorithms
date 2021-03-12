@@ -269,3 +269,15 @@ xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
+
+% %% End effector motion
+% disp('Creating 3D plot')
+% %Show the end effector motion in 3D
+% figure()
+% Rd=zeros(4,4,length(time));
+% %Form the T6Traj matrix
+% for i=1:length(xi)
+%    Rd(:,4,i)=[xi(1,i);xi(2,i);xi(3,i);1];
+%    Rd(1:3,1:3,i)=quatToRotMat(xi(4:7,i));
+% end
+% plotEndEffectorMotion2(Rd,0.02, 50)
