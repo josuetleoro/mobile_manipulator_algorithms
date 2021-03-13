@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=17;
+testN=2;
 TestPointsEliptic
 %Load the joints constraints
 JointConstraintsPaper

@@ -1,7 +1,13 @@
 function [Wcol, dist_signed, wrist_pos] = wristColMat(q,rho,alpha,beta)
+persistent prevGradPWrist;
+
+if isempty(prevGradPWrist)
+   prevGradPWrist=zeros(9,1) ;
+end
+
 %% Returns the Weight matrix for wrist collision
 % Minimum distance in x 
-wrist_safe_dist = 0.37;
+wrist_safe_dist = 0.35;
 x=q(1);
 y=q(2);
 phi=q(3);
@@ -9,10 +15,6 @@ zmp=q(4);
 q1=q(5);
 q2=q(6);
 q3=q(7);
-persistent prevGradPWrist;
-if isempty(prevGradPWrist)
-   prevGradPWrist=zeros(9,1) ;
-end
 
 %% Calculate the wrist position and Jacobian
 % The Jacobian is with respect to a point on the center of the wheels

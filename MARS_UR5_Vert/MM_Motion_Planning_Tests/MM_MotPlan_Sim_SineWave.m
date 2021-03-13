@@ -16,16 +16,16 @@ testN='SineWave';
 
 %Trajectory times
 tf = 35;
-ts = 1/50; % sampling time
-tb = 5;
+ts = 1/20; % sampling time
+tb = tf*0.125;
 % Sine wave parameters
 d = 3.5;
 h = 0.4;
 Nwaves = 3;
 
 %Initial joints values
-tx=-1.425;
-ty=0.043;
+tx=-1.4052;
+ty=0.0323;
 phi_mp=0;
 tz=0.2;
 qa=deg2rad([-80;-45;90;-210;-100;0.0]);
@@ -37,7 +37,7 @@ JointConstraintsPaper
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-alpha=8.0;    % For combined manipulability
+% alpha=8.0;    % For combined manipulability
 alpha=2.0;    % For arm manipulability alone
 
 Kp_pos=10;

@@ -1,17 +1,19 @@
 function [Wcol, dist_signed] = elbowColMat(q,rho,alpha,beta)
 %% Returns the Weight matrix for elbow collision
+persistent prevGradPElbow;
+
+if isempty(prevGradPElbow)
+   prevGradPElbow=zeros(9,1) ;
+end
+
 % Minimum height of the elbow
-elbow_safe_dist = 0.6;
+elbow_safe_dist = 0.61;
 x=q(1);
 y=q(2);
 phi=q(3);
 zmp=q(4);
 q1=q(5);
 q2=q(6);
-persistent prevGradPElbow;
-if isempty(prevGradPElbow)
-   prevGradPElbow=zeros(9,1) ;
-end
 
 %% Calculate the elbow position and Jacobian
 % The Jacobian is with respect to a point on the center of the wheels
