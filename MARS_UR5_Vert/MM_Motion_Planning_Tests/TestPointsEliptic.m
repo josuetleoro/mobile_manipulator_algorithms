@@ -23,9 +23,14 @@ switch(testN)
         
     case 2 
         % %Initial joints values
-        tx=-1.2997;
-        ty=0.5585;
-        phi_mp=-0.0108;
+        % tx=-1.2997;
+        % ty=0.5585;
+        % phi_mp=-0.0108;
+        % Rounding the values
+        tx=-1.3;
+        ty=0.56;
+        phi_mp=0;
+        
         tz=0.24;
         qa=[0;-80;110;-120;-90;0]*pi/180;
         

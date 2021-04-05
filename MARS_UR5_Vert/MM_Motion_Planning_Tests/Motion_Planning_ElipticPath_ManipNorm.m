@@ -20,7 +20,7 @@ JointConstraintsPaper
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-ts=1/20;    %Sampling time
+ts=1/50;    %Sampling time
 alpha=2;
 
 Kp_pos=10;
