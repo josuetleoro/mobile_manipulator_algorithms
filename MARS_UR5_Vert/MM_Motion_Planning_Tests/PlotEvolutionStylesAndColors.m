@@ -22,10 +22,9 @@ set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = time(end);
-spc = 24;
-markerIdx = 8:spc:(length(time)-1);
+spc = floor(N/15);
+markerIdx = 8:spc:(N-1);
 markerSize = 8;
-
 %% Mobile Platform Trajectory
 figure()
 clear PosNF
@@ -95,32 +94,32 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 %% Position and orientation error
 figure()
 markerIdxError = 20:20:(length(time)-1);
-h1=plot(time,xi_pos_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold on
-h2=plot(time,xi_pos_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdxError,'MarkerSize',markerSize);
-h3=plot(time,xi_pos_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold off
+h1=plot(time,xi_pos_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time,xi_pos_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
+h3=plot(time,xi_pos_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
-ylim([-0.0015 0.0015])
+ylim([-2e-3 2e-3])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
 figure()
-h1=plot(time,xi_orient_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold on
-h2=plot(time,xi_orient_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdxError,'MarkerSize',markerSize); 
-h3=plot(time,xi_orient_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold off
+h1=plot(time,xi_orient_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time,xi_orient_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); 
+h3=plot(time,xi_orient_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
-ylim([-0.001 0.001])
+ylim([-2e-3 2e-3])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
+% ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
@@ -137,9 +136,9 @@ yline(dq_limit(2),'-.','LineWidth',limLineWidth,'Color',red);
 xlim([0 plots_end_time])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
-legend('$v$','$v^-$','$v^+$', ...
-       '$\omega$','$\omega^-$','$\omega^+$', ...
+ylabel('$v_p(m/s)$   ,  $\omega_p$(rad/s)','Interpreter','latex')
+legend('$v_p$','$v_p^-$','$v_p^+$', ...
+       '$\omega_p$','$\omega_p^-$','$\omega_p^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
@@ -158,9 +157,9 @@ xlim([0 plots_end_time])
 ylim([-0.1 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
-legend('$z$','$z^-$','$z^+$', ...
-       '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
+ylabel('$z_{pj}$(m)   ,   $\dot{z}_{pj}$(m/s)', 'interpreter','latex')
+legend('$z_{pj}$','$z_{pj}^-$','$z_{pj}^+$', ...
+       '$\dot{z}_{pj}$','$\dot{z}_{pj}^-$','$\dot{z}_{pj}^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])

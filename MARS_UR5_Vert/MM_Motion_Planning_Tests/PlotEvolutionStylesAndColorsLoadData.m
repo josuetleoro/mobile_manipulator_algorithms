@@ -127,7 +127,6 @@ legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSi
 xlim([0 plots_end_time])
 ylim([-0.0005 0.0005])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
@@ -144,9 +143,9 @@ yline(dq_limit(2),'-.','LineWidth',limLineWidth,'Color',red);
 xlim([0 plots_end_time])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
-legend('$v$','$v^-$','$v^+$', ...
-       '$\omega$','$\omega^-$','$\omega^+$', ...
+ylabel('$v_p(m/s)$   ,  $\omega_p$(rad/s)','Interpreter','latex')
+legend('$v_p$','$v_p^-$','$v_p^+$', ...
+       '$\omega_p$','$\omega_p^-$','$\omega_p^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
@@ -165,9 +164,9 @@ xlim([0 plots_end_time])
 ylim([-0.1 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
-legend('$z$','$z^-$','$z^+$', ...
-       '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
+ylabel('$z_{pj}$(m)   ,   $\dot{z}_{pj}$(m/s)', 'interpreter','latex')
+legend('$z_{pj}$','$z_{pj}^-$','$z_{pj}^+$', ...
+       '$\dot{z}_{pj}$','$\dot{z}_{pj}^-$','$\dot{z}_{pj}^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
@@ -277,15 +276,15 @@ ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
-% %% End effector motion
-disp('Creating 3D plot')
-%Show the end effector motion in 3D
-figure()
-Rd=zeros(4,4,length(time));
-%Form the T6Traj matrix
-for i=1:length(xi)
-   Rd(:,4,i)=[xi(1,i);xi(2,i);xi(3,i);1];
-   Rd(1:3,1:3,i)=quatToRotMat(xi(4:7,i));
-end
-plotEndEffectorMotion2(Rd,0.4,600,8)
-set(gcf, 'Position',  [200, 500, 490, 310])
+%% End effector motion
+% disp('Creating 3D plot')
+% %Show the end effector motion in 3D
+% figure()
+% Rd=zeros(4,4,length(time));
+% %Form the T6Traj matrix
+% for i=1:length(xi)
+%    Rd(:,4,i)=[xi(1,i);xi(2,i);xi(3,i);1];
+%    Rd(1:3,1:3,i)=quatToRotMat(xi(4:7,i));
+% end
+% plotEndEffectorMotion2(Rd,0.4,600,8)
+% set(gcf, 'Position',  [200, 500, 490, 310])
