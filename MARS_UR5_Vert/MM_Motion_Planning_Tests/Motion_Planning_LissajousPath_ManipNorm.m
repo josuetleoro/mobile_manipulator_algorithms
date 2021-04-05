@@ -25,7 +25,7 @@ qa=[0;-80;110;-120;-90;0]*pi/180;
 %influence on the motion.
 
 %With Fs=20Hz
-ts=1/20;
+ts=1/50;
 tf=64;
 alpha=3;
 Kp_pos=20;
