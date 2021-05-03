@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=17;
+testN=2;
 TestPointsEliptic
 %Load the joints constraints
 JointConstraintsPaper
@@ -20,7 +20,7 @@ JointConstraintsPaper
 %A higher error weight might decrease the manipulability because of its
 %influence on the motion.
 
-ts=1/20;    %Sampling time
+ts=1/50;    %Sampling time
 alpha=10;    % For cubic + linear + quintic manip trans
 
 Kp_pos=10;

@@ -1,4 +1,5 @@
 close all
+addpath '../3DPlots'
 
 %Plots properties
 blue=[0    0.4470    0.7410];
@@ -8,8 +9,11 @@ purple=[0.4940    0.1840    0.5560];
 green=[0.4660    0.6740    0.1880];
 cyan=[0.3010    0.7450    0.9330];
 brown=[0.6350    0.0780    0.1840];
+black=[0.0 0.0 0.0];
+pink=[1 0.6 1];
 labelFontSize=14;
-lineWidth=1.8;
+lineWidth=1.4;
+limLineWidth = 1.8;
 
 set(0,'defaulttextinterpreter','latex')
 set(0,'defaulttextfontname', 'Times')
@@ -21,6 +25,9 @@ set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = time(end);
+spc = 60;
+markerIdx = 20:spc:(length(time)-1);
+markerSize = 8;
 
 %% Mobile Platform Trajectory
 figure()
@@ -29,15 +36,33 @@ q1=q(1,:);
 q2=q(2,:);
 q3=q(3,:);
 
-%In the reference frame
-trajH=plot(q1,q2,'LineWidth',lineWidth); hold on; grid on
-set(get(get(trajH(1),'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+%Plot trajectory
+trajH=plot(q1,q2,'--','LineWidth',lineWidth); hold on; grid on
+%set(get(get(trajH(1),'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+
+%Plot triangles
+for i = 1:150:length(time)
+    tri = genTrianglePoints(q1(i), q2(i), q3(i), 0.25);
+    triStartH = plot(tri(1,:), tri(2,:),'LineWidth',lineWidth,'Color', blue);
+    set(get(get(triStartH(1),'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+end
+
+%Final triangle
+tri = genTrianglePoints(q1(end), q2(end), q3(end), 0.25);
+triEndH = plot(tri(1,:), tri(2,:),'LineWidth',lineWidth,'Color', blue);
+set(get(get(triEndH(1),'Annotation'),'LegendInformation'),'IconDisplayStyle','off');    
 
 %Start and Final Positions
-plot(q(1,1),q(2,1),'s', 'MarkerEdgeColor','k', 'MarkerFaceColor', red, 'MarkerSize',10);
-plot(q(1,end),q(2,end),'o', 'MarkerEdgeColor','k','MarkerFaceColor',[.49 1 .63], 'MarkerSize',10);
+plot(q(1,1),q(2,1),'o', 'MarkerEdgeColor','k', 'MarkerFaceColor', green, 'MarkerSize',8);
+plot(q(1,end),q(2,end),'s', 'MarkerEdgeColor','k','MarkerFaceColor', red, 'MarkerSize',8);
 
-legend('Start Pos','Final Pos', ...       
+xlim([-2 2])
+ylim([-2 2])
+
+% set(gca,'xtick',-2.5:0.5:2.5)
+% set(gca,'ytick',-2.5:0.5:2.5)
+
+legend('Traj','Start','End', ...       
        'interpreter','latex','FontSize',10)
 %title('Mobile Platform Trajectory')
 xlabel('$x(m)$','interpreter','latex','FontSize',labelFontSize);
@@ -46,91 +71,87 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Manipulability plots
 figure()
-plot(time,MM_man_measure,'b','LineWidth',lineWidth); hold on;
-plot(time,ur5_man_measure,'r','LineWidth',lineWidth);
-plot(time,W_measure,'g','LineWidth',1.5); hold off
+MM_man_measure = MM_man_measure / max(MM_man_measure);
+ur5_man_measure = ur5_man_measure / max(ur5_man_measure);
+plot(time,MM_man_measure,'b','LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on;
+plot(time,ur5_man_measure,'r','LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
+
+legend('$\Omega_{p+a}$','$\Omega_{a}$','interpreter','latex','FontSize',labelFontSize);
 xlim([0 plots_end_time])
-legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
-%legend('\Omega_{p+a}','\Omega_{a}','\Omega_{MM}')
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-set(gcf, 'Position',  [200, 500, 490, 310])
-%title('Manipulability measure')
 grid on
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Position and orientation error
 figure()
-h1=plot(time,xi_pos_error(1,:),'LineWidth',lineWidth); hold on
-h2=plot(time,xi_pos_error(2,:),'LineWidth',lineWidth); hold on
-h3=plot(time,xi_pos_error(3,:),'LineWidth',lineWidth);
-xlim([0 plots_end_time])
-%ylim([-0.002 0.002])
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
+markerIdxError = 20:20:(length(time)-1);
+h1=plot(time,xi_pos_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold on
+h2=plot(time,xi_pos_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdxError,'MarkerSize',markerSize);
+h3=plot(time,xi_pos_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
+xlim([0 plots_end_time])
+ylim([-0.0015 0.0015])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
 figure()
-h1=plot(time,xi_orient_error(1,:),'LineWidth',lineWidth); hold on
-h2=plot(time,xi_orient_error(2,:),'LineWidth',lineWidth); hold on
-h3=plot(time,xi_orient_error(3,:),'LineWidth',lineWidth);
-xlim([0 plots_end_time])
-%ylim([-0.002 0.002])
-xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
+h1=plot(time,xi_orient_error(1,:),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold on
+h2=plot(time,xi_orient_error(2,:),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdxError,'MarkerSize',markerSize); 
+h3=plot(time,xi_orient_error(3,:),'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdxError,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
+xlim([0 plots_end_time])
+ylim([-0.001 0.001])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Mobile platform velocities
 figure()
-plot(time,mp_vel(1,:),'LineWidth',lineWidth,'Color',blue); hold on
-yline(-dq_limit(1),'--','LineWidth',lineWidth,'Color',blue); 
-yline(dq_limit(1),'-.','LineWidth',lineWidth,'Color',blue);
+plot(time,mp_vel(1,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(-dq_limit(1),'-','LineWidth',limLineWidth,'Color',blue); 
+yline(dq_limit(1),'--','LineWidth',limLineWidth,'Color',blue);
 
-plot(time,mp_vel(2,:),'LineWidth',lineWidth,'Color',red);
-yline(-dq_limit(2),'--','LineWidth',lineWidth,'Color',red);
-yline(dq_limit(2),'-.','LineWidth',lineWidth,'Color',red);
+plot(time,mp_vel(2,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(-dq_limit(2),':','LineWidth',limLineWidth,'Color',red);
+yline(dq_limit(2),'-.','LineWidth',limLineWidth,'Color',red);
 
 xlim([0 plots_end_time])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-%legend('$v(m/s)$','$v^-$','$v^+$','$\omega(rad/s)$','$\omega^-$','$\omega^+$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$v(m/s)$   ,  $\omega$(rad/s)','Interpreter','latex')
 legend('$v$','$v^-$','$v^+$', ...
        '$\omega$','$\omega^-$','$\omega^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 grid on
-   %legend('dv(m/s)','dv_{max}','dv_{min}''w(rad/s)')
 set(gcf, 'Position',  [200, 500, 490, 310])
-%title('Mobile platform velocity commands')
-
 
 %% Prismatic joint
 figure()
-plot(time,q(4,:),'LineWidth',lineWidth,'Color',yellow); hold on
-yline(q_limit(3,1),'--','LineWidth',lineWidth,'Color',yellow); 
-yline(q_limit(3,2),'-.','LineWidth',lineWidth,'Color',yellow); 
+plot(time,q(4,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(q_limit(3,1),'-','LineWidth',limLineWidth,'Color',blue); 
+yline(q_limit(3,2),'--','LineWidth',limLineWidth,'Color',blue); 
 
-plot(time,dq(4,:),'LineWidth',lineWidth,'Color',cyan); 
-yline(-dq_limit(3),'--','LineWidth',lineWidth,'Color',cyan); 
-yline(dq_limit(3),'-.','LineWidth',lineWidth,'Color',cyan);
+plot(time,dq(4,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); 
+yline(-dq_limit(3),':','LineWidth',limLineWidth,'Color',red); 
+yline(dq_limit(3),'-.','LineWidth',limLineWidth,'Color',red);
 
 xlim([0 plots_end_time])
-ylim([-0.2 0.3])
+ylim([-0.1 0.3])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$z$(m)   ,   $\dot{z}$(m/s)', 'interpreter','latex')
 legend('$z$','$z^-$','$z^+$', ...
        '$\dot{z}$','$\dot{z}^-$','$\dot{z}^+$', ...
        'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
-
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
@@ -138,13 +159,13 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 % Joint 1 and 2
 figure()
-plot(time,q(5,:),'LineWidth',lineWidth,'Color',blue); hold on
-yline(q_limit(4,1),'--','LineWidth',lineWidth,'Color',blue); 
-yline(q_limit(4,2),'-.','LineWidth',lineWidth,'Color',blue); 
+plot(time,q(5,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(q_limit(4,1),'-','LineWidth',limLineWidth,'Color',blue); 
+yline(q_limit(4,2),'--','LineWidth',limLineWidth,'Color',blue); 
 
-plot(time,q(6,:),'LineWidth',lineWidth,'Color',red); 
-yline(q_limit(5,1),'--','LineWidth',lineWidth,'Color',red); 
-yline(q_limit(5,2),'-.','LineWidth',lineWidth,'Color',red);
+plot(time,q(6,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); 
+yline(q_limit(5,1),':','LineWidth',limLineWidth,'Color',red); 
+yline(q_limit(5,2),'-.','LineWidth',limLineWidth,'Color',red);
 
 xlim([0 plots_end_time])
 
@@ -158,15 +179,16 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 % Joint 3 and 4
 figure()
-plot(time,q(7,:),'LineWidth',lineWidth,'Color',yellow); hold on
-yline(q_limit(6,1),'--','LineWidth',lineWidth,'Color',yellow); 
-yline(q_limit(6,2),'-.','LineWidth',lineWidth,'Color',yellow); 
+plot(time,q(7,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(q_limit(6,1),'-','LineWidth',limLineWidth,'Color',blue); 
+yline(q_limit(6,2),'--','LineWidth',limLineWidth,'Color',blue); 
 
-plot(time,q(8,:),'LineWidth',lineWidth,'Color',purple); 
-yline(q_limit(7,1),'--','LineWidth',lineWidth,'Color',purple); 
-yline(q_limit(7,2),'-.','LineWidth',lineWidth,'Color',purple);
+plot(time,q(8,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); 
+yline(q_limit(7,1),':','LineWidth',limLineWidth,'Color',red); 
+yline(q_limit(7,2),'-.','LineWidth',limLineWidth,'Color',red);
 
 xlim([0 plots_end_time])
+ylim([-6.5 6.5])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
@@ -178,15 +200,16 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 % Joint 5 and 6
 figure()
-plot(time,q(9,:),'LineWidth',lineWidth,'Color',green); hold on
-yline(q_limit(8,1),'--','LineWidth',lineWidth,'Color',green); 
-yline(q_limit(8,2),'-.','LineWidth',lineWidth,'Color',green); 
+plot(time,q(9,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+yline(q_limit(8,1),'-','LineWidth',limLineWidth,'Color',blue); 
+yline(q_limit(8,2),'--','LineWidth',limLineWidth,'Color',blue); 
 
-plot(time,q(10,:),'LineWidth',lineWidth,'Color',cyan); 
-yline(q_limit(9,1),'--','LineWidth',lineWidth,'Color',cyan); 
-yline(q_limit(9,2),'-.','LineWidth',lineWidth,'Color',cyan);
+plot(time,q(10,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize); 
+yline(q_limit(9,1),':','LineWidth',limLineWidth,'Color',red);
+yline(q_limit(9,2),'-.','LineWidth',limLineWidth,'Color',red);
 
 xlim([0 plots_end_time])
+ylim([-6.5 6.5])
 
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
@@ -200,12 +223,12 @@ set(gcf, 'Position',  [200, 500, 490, 310])
  
 %%Same plot for all the joints
 figure()
-h1=plot(time,dq(5,:),'LineWidth',lineWidth,'Color',blue); hold on
-h2=plot(time,dq(6,:),'LineWidth',lineWidth,'Color',red);  hold on
-h3=plot(time,dq(7,:),'LineWidth',lineWidth,'Color',yellow); hold on
-h4=plot(time,dq(8,:),'LineWidth',lineWidth,'Color',purple); hold on
-h5=plot(time,dq(9,:),'LineWidth',lineWidth,'Color',green); hold on
-h6=plot(time,dq(10,:),'LineWidth',lineWidth,'Color',cyan); hold off
+h1=plot(time,dq(5,:),'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time,dq(6,:),'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);  hold on
+h3=plot(time,dq(7,:),'LineWidth',lineWidth,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h4=plot(time,dq(8,:),'LineWidth',lineWidth,'Color',black,'Marker','p','MarkerIndices',markerIdx); hold on
+h5=plot(time,dq(9,:),'LineWidth',lineWidth,'Color',pink,'Marker','v','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h6=plot(time,dq(10,:),'LineWidth',lineWidth,'Color',yellow,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
 uistack(h6,'top')
 uistack(h5,'top')
 uistack(h4,'top')
@@ -217,20 +240,16 @@ legend([h1 h2 h3 h4 h5 h6],'$\dot{q}_{a1}$','$\dot{q}_{a2}$','$\dot{q}_{a3}$', .
     'interpreter','latex','NumColumns',2,'FontSize',labelFontSize)
 
 xlim([0 plots_end_time])
+%ylim([-1 1])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(rad/s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
-
+ 
 %% Elbow and wrist collision distance
 figure()
-plot(time,dist_elbow,'LineWidth',lineWidth); hold on
-%yline(0.0,'--','LineWidth',lineWidth,'Color',blue); 
-
-plot(time,dist_wrist,'LineWidth',lineWidth);
-%yline(0.0,'--','LineWidth',lineWidth,'Color',red); 
-
-%plot(time,height_wrist,'LineWidth',lineWidth);
+plot(time,dist_elbow,'LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+plot(time,dist_wrist,'LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
 
 xlim([0 plots_end_time])
 
@@ -241,3 +260,15 @@ xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
+
+% %% End effector motion
+% disp('Creating 3D plot')
+% %Show the end effector motion in 3D
+% figure()
+% Rd=zeros(4,4,length(time));
+% %Form the T6Traj matrix
+% for i=1:length(xi)
+%    Rd(:,4,i)=[xi(1,i);xi(2,i);xi(3,i);1];
+%    Rd(1:3,1:3,i)=quatToRotMat(xi(4:7,i));
+% end
+% plotEndEffectorMotion2(Rd,0.02, 25)

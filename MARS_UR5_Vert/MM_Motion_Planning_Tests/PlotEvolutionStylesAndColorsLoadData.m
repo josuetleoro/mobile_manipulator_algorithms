@@ -1,4 +1,10 @@
 close all
+clear all
+
+addpath '3DPlots'
+
+%Open a dialog box to load the motion data
+uiopen();
 
 %Plots properties
 colors = distinguishableColors(6);
@@ -22,9 +28,11 @@ set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = time(end);
+N = length(time);
 spc = floor(N/15);
 markerIdx = 8:spc:(N-1);
 markerSize = 8;
+
 %% Mobile Platform Trajectory
 figure()
 clear PosNF
@@ -102,7 +110,7 @@ uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Px}$','$e_{Py}$','$e_{Pz}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
-ylim([-2e-3 2e-3])
+ylim([-0.0005 0.0005])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
@@ -117,9 +125,8 @@ uistack(h2,'top')
 uistack(h1,'top')
 legend([h1 h2 h3],'$e_{Ox}$','$e_{Oy}$','$e_{Oz}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
-ylim([-2e-3 2e-3])
+ylim([-0.0005 0.0005])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
-% ylabel('$(rad)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
@@ -269,7 +276,7 @@ ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
-% %% End effector motion
+%% End effector motion
 % disp('Creating 3D plot')
 % %Show the end effector motion in 3D
 % figure()
@@ -279,4 +286,5 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 %    Rd(:,4,i)=[xi(1,i);xi(2,i);xi(3,i);1];
 %    Rd(1:3,1:3,i)=quatToRotMat(xi(4:7,i));
 % end
-% plotEndEffectorMotion2(Rd,0.02, 50)
+% plotEndEffectorMotion2(Rd,0.4,600,8)
+% set(gcf, 'Position',  [200, 500, 490, 310])

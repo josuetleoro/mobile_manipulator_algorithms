@@ -14,8 +14,8 @@ MARS=MARS_UR5();
 testN='_Lissajous';
 
 %Initial joints values
-tx=-0.1092;
-ty=0.5191;
+tx=-0.1;
+ty=-0.13;
 phi_mp=-pi/2;
 tz=0.2;
 qa=[0;-80;110;-120;-90;0]*pi/180;
@@ -25,8 +25,8 @@ qa=[0;-80;110;-120;-90;0]*pi/180;
 %influence on the motion.
 
 %With Fs=20Hz
-ts=1/20;
-tf=58;
+ts=1/50;
+tf=64;
 alpha=3;
 Kp_pos=20;
 Kp_or=20;

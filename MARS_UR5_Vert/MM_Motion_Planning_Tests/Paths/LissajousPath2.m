@@ -1,9 +1,9 @@
 function MotPlan=LissajousPath2(T0,tf,ts,tb)
 pos0=T0(1:3,4);
 
-A = 1.2;
-B = 1.2;
-C = 0.25;
+A = 1.3;
+B = 1.3;
+C = 0.27;
 deltax = 0;
 deltay = pi/2;
 wa = 1;

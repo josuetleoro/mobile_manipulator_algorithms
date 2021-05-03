@@ -11,7 +11,7 @@ q_limit=[-Inf, Inf;
 
 dq_limit=[0.3;
           pi/4;
-          0.02;
+          0.025;
           pi;
           pi;
           pi;
