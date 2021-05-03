@@ -43,12 +43,12 @@ classdef UR5Robot
         m7
         
         %Vectors of new subproblem to find theta1
-        p56
-        da
-        p
-        b_new
-        b_2
-        c
+        Pw0
+        omega3
+        y
+        y_norm
+        b_new_qeq
+        b_2_qeq        
         params={}
         
         %Dual Quaternion rotation operator for each joint
@@ -90,17 +90,18 @@ classdef UR5Robot
             obj.m6 = cross(obj.p6, obj.d6);
             obj.m7 = cross(obj.p7, obj.d7);
             %Vectors of new subproblem to find theta1
-            obj.p56 = obj.p6 - obj.d6*obj.l_end;  
-            obj.da = cross(obj.d1, obj.d2);
-            obj.p = obj.p56 - obj.p1;
-            obj.b_new = 2 * dot(obj.p, obj.da);
-            obj.b_2 = obj.b_new * obj.b_new;
-            obj.c = dot(obj.p, obj.p);
-            obj.params{1}=obj.da;
-            obj.params{2}=obj.p;
-            obj.params{3}=obj.b_new;
-            obj.params{4}=obj.b_2;
-            obj.params{5}=obj.c;
+            obj.Pw0 = obj.p6 - obj.d6*obj.l_end;  
+            obj.omega3 = cross(obj.d1, obj.d2);
+            % Here we assume that p1 only has component on the z direction
+            obj.y = obj.Pw0 - obj.p1;
+            obj.b_new_qeq = dot(obj.y, obj.omega3);
+            obj.b_2_qeq = obj.b_new_qeq * obj.b_new_qeq;
+            obj.y_norm = dot(obj.y, obj.y);
+            obj.params{1}=obj.omega3;
+            obj.params{2}=obj.y;
+            obj.params{3}=obj.b_new_qeq;
+            obj.params{4}=obj.b_2_qeq;
+            obj.params{5}=obj.y_norm;
         end
         
         function T0e=forwardKin(this,q)
@@ -158,11 +159,11 @@ classdef UR5Robot
             th1 = zeros(2,1);
             % Calculate the position of the wrist      
             Pwd = Ped - this.l_end * Ad;
-            qV = dot((Pwd - this.p56),this.d1)*this.d1;
+            qV = dot((Pwd - this.Pw0),this.d1)*this.d1;
             q = Pwd - qV - this.p1;
-            s = sqrt(this.b_2 - 4 * (this.c-dot(q,q))); 
-            r(:,1) = this.p - 0.5*(this.b_new + s)*this.da;
-            r(:,2) = this.p - 0.5*(this.b_new - s)*this.da;
+            s = sqrt(this.b_2 - (this.c_qeq-dot(q,q))); 
+            r(:,1) = this.p - (this.b_new_qeq + s)*this.omega3;
+            r(:,2) = this.p - (this.b_new_qeq - s)*this.omega3;
             p1qV(:,1) = r(:,1) + this.p1 + qV;
             p1qV(:,2) = r(:,2) + this.p1 + qV;
             % Use subproblem 1
@@ -257,7 +258,7 @@ classdef UR5Robot
                     Pwd_123 = rotPointDualQuat(Pwd, Q);
                     
                     % Calculate theta 4 with subproblem 1 
-                    th4 = subproblem1(this.d4, this.p56, Pwd_123, this.p4);
+                    th4 = subproblem1(this.d4, this.Pw0, Pwd_123, this.p4);
                     theta(i, 4) = th4;
                     
                     % Add th4 and th5 to the transformation operator
@@ -308,7 +309,7 @@ classdef UR5Robot
             %Calculate the Position of the wrist
             Pwd=Ped-this.l_end*Ad;
             %Use the new sub problem to find theta 1 and p1qV
-            [th1(1),th1(2),p1qV,sol]=subproblem3_new(this.d1,this.p56,Pwd,this.p1,this.params);
+            [th1(1),th1(2),c,sol]=subproblem3_new(this.d1,this.Pw0,Pwd,this.p1,this.params);
             % TODO: Check the solutions th1 are valid
             %Copy the solutions to the solution matrix
             theta(1:4,1)=th1(1);
@@ -337,8 +338,8 @@ classdef UR5Robot
                     z5_1(:,2*i-1)=rotVectorQuat(Od,Q1(i));
                     z5_1(:,2*i)=-1*z5_1(:,2*i-1);
         
-                    P5_1(:,2*i-1)=p1qV(:,i)-z5_1(:,2*i-1)*this.l5; %Sign is negative becase z5 in original position points down
-                    P5_1(:,2*i)=p1qV(:,i)-z5_1(:,2*i)*this.l5;
+                    P5_1(:,2*i-1)=c(:,i)-z5_1(:,2*i-1)*this.l5; %Sign is negative becase z5 in original position points down
+                    P5_1(:,2*i)=c(:,i)-z5_1(:,2*i)*this.l5;
                 else
                     %Normalize z5
                     z5_aux=z5_aux/norm(z5_aux);
@@ -346,8 +347,8 @@ classdef UR5Robot
                     %Get the position of p5 for wrist up and wrist down
                     z5_1(:,2*i-1)=z5_aux;
                     z5_1(:,2*i)=-z5_aux;        
-                    P5_1(:,2*i-1)=p1qV(:,i)-z5_1(:,2*i-1)*this.l5; %Sign is negative becase z5 in original position points down
-                    P5_1(:,2*i)=p1qV(:,i)-z5_1(:,2*i)*this.l5;
+                    P5_1(:,2*i-1)=c(:,i)-z5_1(:,2*i-1)*this.l5; %Sign is negative becase z5 in original position points down
+                    P5_1(:,2*i)=c(:,i)-z5_1(:,2*i)*this.l5;
         
                     %Caculate th5 using subproblem1
                     th5(1)=subproblem1(z5_1(:,2*i-1), this.d6, Ad_1);

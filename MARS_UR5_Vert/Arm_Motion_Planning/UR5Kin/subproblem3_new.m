@@ -1,23 +1,25 @@
-function [th1_1,th1_2,p1qV,sol]=subproblem3_new(d,p,q,r,params)
-    %params (da,R,b,b_2,c)
-    da=params{1};
-    R=params{2};
-    b=params{3};
-    b_2=params{4};
-    c=params{5};
-    
+function [th1_1,th1_2,c,sol]=subproblem3_new(d,p,q,r,params)
+    % This version projects q and c on the plane where p is located.
+    % This is a more efficient version because it requires less
+    % calculations
+
+    omega3=params{1};   % omega3
+    y=params{2};    % (Pw0-p1) or y
+    b=params{3};    % (Pw0-p1)'*omega3 or 2y'omega3
+    b_2=params{4};  % b^2
+    y_norm=params{5};    % (Pw0-p1)'(Pw0-p1) or y'y
+   
     qV=((q - p)'*d)*d;
-    Q=q-qV-r;
-    s=b_2-4*(c-Q'*Q);
-    s=sqrt(s); %Still need to check if valid
-    P(:,1)=R-0.5*(b+s)*da;
-    P(:,2)=R-0.5*(b-s)*da;
+    Q=q-qV-r;                % q projected onto the plane of pw0
+    s=sqrt(b_2-(y_norm-Q'*Q));
+    C(:,1)=y+(-b-s)*omega3;  % c when projected onto the plane of pw0
+    C(:,2)=y+(-b+s)*omega3;  % c when projected onto the plane of pw0
     
-    p1qV(:,1)=r+qV+P(:,1);
-    p1qV(:,2)=r+qV+P(:,2);
+    c(:,1)=C(:,1)+qV+r;  % Point c in new supbroblem
+    c(:,2)=C(:,2)+qV+r;  % Point c in new supbroblem
     
     %Use subproblem 1
-    th1_1=subproblem1(d,P(:,1),Q);
-    th1_2=subproblem1(d,P(:,2),Q);
+    th1_1=subproblem1(d,C(:,1),Q); % C and Q projected onto the plane on p0
+    th1_2=subproblem1(d,C(:,2),Q); % C and Q projected onto the plane on p0
     sol=2;
 end
