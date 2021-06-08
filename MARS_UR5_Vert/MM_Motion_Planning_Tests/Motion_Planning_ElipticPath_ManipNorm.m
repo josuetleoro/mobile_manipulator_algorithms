@@ -21,7 +21,7 @@ JointConstraintsPaper
 %influence on the motion.
 
 ts=1/50;    %Sampling time
-alpha=2;
+alpha=3;
 
 Kp_pos=10;
 Kp_or=20;

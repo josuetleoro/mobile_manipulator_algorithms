@@ -28,7 +28,7 @@ qa=[0;-80;110;-120;-90;0]*pi/180;
 ts=1/50;
 tf=64;
 alpha=3;
-Kp_pos=20;
+Kp_pos=10;
 Kp_or=20;
 
 % % %With Fs=100Hz
