@@ -38,17 +38,20 @@ figure()
 markerIdxError = 20:20:(length(time)-1);
 h1=plot(time,MM_man_measure,'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
 h2=plot(time,ur5_man_measure,'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
-h3=plot(time,W_measure,'LineWidth',1.0,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
+h3=plot(time,W_measure,'LineWidth',1.0,'Color',green,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
-legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{obj}$','interpreter','latex','FontSize',labelFontSize)
+
+% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
+% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{p+a}$','interpreter','latex','FontSize',labelFontSize)
+% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=0.5\Omega_{p+a}+0.5\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
+legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylim([0 1])
-ylabel('$(m)$','interpreter','latex','FontSize',labelFontSize)
 grid on
 set(gcf, 'Position',  [200, 500, 490, 310])
 
-title('Manipulability measure')
+% title('Manipulability measure')
 

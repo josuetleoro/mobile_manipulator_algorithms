@@ -152,17 +152,17 @@ while(k<=N)
     MM_man_measure(k)=MM_manip;
     ur5_man_measure(k)=ur5_manip;
     
-    dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     % Combined Mobile manipulator and robot arm
-    W_measure(k)=MM_manip*ur5_manip; 
-     
 %     dP=ur5_dP;                                                              % Manipulability of the arm alone
 %     W_measure(k)=ur5_manip;
-     
+
 %     dP=MM_dP;                                                               % Manipulability of the entire system
 %     W_measure(k)=MM_manip;
-     
+
 %     dP=05*MM_dP+0.5*ur5_dP;                                                 % Linear combination of the manipulabilities
 %     W_measure(k)=0.5*ur5_manip+0.5*MM_manip;
+
+    dP=ur5_manip*MM_dP+MM_manip*ur5_dP;                                     % Combined Mobile manipulator and robot arm
+    W_measure(k)=MM_manip*ur5_manip;
 
     dP=S'*dP;
     
