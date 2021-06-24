@@ -22,7 +22,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=180*pi/180;
         yaw=0*pi/180;       
-        tf=7;
+        tf=14;
         
     case 2 
         % %Initial joints values
@@ -38,7 +38,7 @@ switch(testN)
         roll=0*pi/180;
         pitch=90*pi/180;
         yaw=0*pi/180;        
-        tf=9;        
+        tf=15;        
         
     case 3 
         %Initial joints values
@@ -54,7 +54,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=16;        
+        tf=22;        
         
     case 4 % Problem with initial configuration: qa=[0.0;-80*pi/180;135*pi/180;-90*pi/180;-pi/2;0.0];
         % %Initial joints values
@@ -105,7 +105,7 @@ switch(testN)
         roll=90*pi/180;
         pitch=0*pi/180;
         yaw=180*pi/180;
-        tf=12;      
+        tf=23;      
         
     case 7 
         %Initial joints values
@@ -153,7 +153,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=90*pi/180; %-90*pi/180 cannot be executed with high lambda
         yaw=-90*pi/180;
-        tf=18;     
+        tf=20;     
         
      case 10
         % %Initial joints values
@@ -190,7 +190,7 @@ switch(testN)
         roll=180*pi/180;
         pitch=30*pi/180;
         yaw=30*pi/180;
-        tf=10;         
+        tf=14;         
         
     case 12 
         %Initial joints values
@@ -227,7 +227,7 @@ switch(testN)
         roll=-180*pi/180;
         pitch=0*pi/180;
         yaw=-180*pi/180;
-        tf=18;     
+        tf=20;     
         
     case 14 
         %Initial joints values
