@@ -67,24 +67,19 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Manipulability plots
 figure()
-% MM_man_max = 2.6141267;
-% ur5_man_max = 0.1192;
-% W_measure_max = 0.2626694;
-% MM_man_measure = MM_man_measure / MM_man_max;
-% ur5_man_measure = ur5_man_measure / ur5_man_max;
-% W_measure = W_measure / W_measure_max;
-% plot(time,MM_man_measure,'b','LineWidth',lineWidth,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on;
-% plot(time,ur5_man_measure,'r','LineWidth',lineWidth,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
-% plot(time,W_measure,'g','LineWidth',lineWidth,'Color',green,'Marker','square','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
-% legend('$\Omega_{p+a}$','$\Omega_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize);
 
-MM_man_max = max(MM_man_measure);
-ur5_man_max = max(ur5_man_measure);
-MM_man_measure = MM_man_measure / MM_man_max;
-ur5_man_measure = ur5_man_measure / ur5_man_max;
-plot(time,MM_man_measure,'LineWidth',lineWidth,'Color',blue,'LineStyle','-'); hold on;
-plot(time,ur5_man_measure,'LineWidth',lineWidth,'Color',red,'LineStyle','--');
-legend('$\Omega_{p+a}$','$\Omega_{a}$','interpreter','latex','FontSize',labelFontSize);
+h1=plot(time(1:N),MM_man_measure(1:N),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time(1:N),ur5_man_measure(1:N),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
+h3=plot(time(1:N),W_measure(1:N),'LineWidth',1.0,'Color',green,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
+xlim([0 plots_end_time])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylim([0 1])
+grid on
+set(gcf, 'Position',  [200, 500, 490, 310])
 
 xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)

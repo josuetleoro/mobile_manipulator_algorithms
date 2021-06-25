@@ -35,7 +35,7 @@ time = time_raw;
 % Manipulabilities
 MM_man_measure = manip_raw(1,:);
 ur5_man_measure = manip_raw(2,:);
-% W_measure = manip_raw(3,:);
+W_measure = manip_raw(3,:);
 
 % Position and orientation errors
 xi_pos_error = pose_error_raw(1:3,:);

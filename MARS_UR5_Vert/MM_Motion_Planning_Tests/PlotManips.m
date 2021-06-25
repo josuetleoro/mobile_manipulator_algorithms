@@ -22,6 +22,7 @@ set(0,'defaultaxesfontsize',16)
 set(0,'defaultaxesfontname', 'Times')
 
 plots_end_time = tf;
+N = k; %Added for the case when the trajectory is not completed
 spc = floor(N/15);
 markerIdx = 8:spc:(N-1);
 markerSize = 8;
@@ -36,17 +37,17 @@ figure()
 % W_measure = W_measure / W_measure_max;
 
 markerIdxError = 20:20:(length(time)-1);
-h1=plot(time,MM_man_measure,'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
-h2=plot(time,ur5_man_measure,'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
-h3=plot(time,W_measure,'LineWidth',1.0,'Color',green,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
+h1=plot(time(1:N),MM_man_measure(1:N),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time(1:N),ur5_man_measure(1:N),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
+h3=plot(time(1:N),W_measure(1:N),'LineWidth',1.0,'Color',green,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
 uistack(h3,'top')
 uistack(h2,'top')
 uistack(h1,'top')
 
-% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
-% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{p+a}$','interpreter','latex','FontSize',labelFontSize)
-% legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=0.5\Omega_{p+a}+0.5\Omega_{a}$','interpreter','latex','FontSize',labelFontSize)
-legend([h1 h2 h3],'$\Omega_{p+a}$','$\Omega_{a}$','$F(q)=\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
+legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$F(q)=\hat{\Omega}_{a}$','interpreter','latex','FontSize',labelFontSize)
+% legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$F(q)=\hat{\Omega}_{p+a}$','interpreter','latex','FontSize',labelFontSize)
+% legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$F(q)=0.5\hat{\Omega}_{p+a}+0.5\hat{\Omega}_{a}$','interpreter','latex','FontSize',labelFontSize)
+% legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$F(q)=\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
 xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 ylim([0 1])

@@ -292,4 +292,5 @@ ur5_man_measure(end)=ur5_man_measure(end-1);
 mp_vel=eta(1:3,:);
 
 %Plot all the variables
-PlotEvolutionPretty
+% PlotEvolutionPretty
+PlotEvolutionStylesAndColors

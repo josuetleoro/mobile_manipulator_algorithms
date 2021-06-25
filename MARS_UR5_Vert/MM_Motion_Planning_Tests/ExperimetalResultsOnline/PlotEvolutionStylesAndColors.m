@@ -70,12 +70,20 @@ set(gcf, 'Position',  [200, 500, 490, 310])
 
 %% Manipulability plots
 figure()
-MM_man_measure = MM_man_measure / max(MM_man_measure);
-ur5_man_measure = ur5_man_measure / max(ur5_man_measure);
-plot(time,MM_man_measure,'LineWidth',lineWidth,'Color',blue,'LineStyle','-'); hold on;
-plot(time,ur5_man_measure,'LineWidth',lineWidth,'Color',red,'LineStyle','--');
 
-legend('$\Omega_{p+a}$','$\Omega_{a}$','interpreter','latex','FontSize',labelFontSize);
+h1=plot(time(1:N),MM_man_measure(1:N),'LineWidth',1.0,'Color',blue,'Marker','o','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold on
+h2=plot(time(1:N),ur5_man_measure(1:N),'LineWidth',1.0,'Color',red,'Marker','d','MarkerIndices',markerIdx,'MarkerSize',markerSize);
+h3=plot(time(1:N),W_measure(1:N),'LineWidth',1.0,'Color',green,'Marker','x','MarkerIndices',markerIdx,'MarkerSize',markerSize); hold off
+uistack(h3,'top')
+uistack(h2,'top')
+uistack(h1,'top')
+legend([h1 h2 h3],'$\hat{\Omega}_{p+a}$','$\hat{\Omega}_{a}$','$\Omega_{MM}$','interpreter','latex','FontSize',labelFontSize)
+xlim([0 plots_end_time])
+xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
+ylim([0 1])
+grid on
+set(gcf, 'Position',  [200, 500, 490, 310])
+
 xlim([0 plots_end_time])
 xlabel('$t(s)$','interpreter','latex','FontSize',labelFontSize)
 grid on
