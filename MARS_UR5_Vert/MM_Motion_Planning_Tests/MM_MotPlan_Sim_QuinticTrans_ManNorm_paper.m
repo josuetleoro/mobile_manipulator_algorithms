@@ -11,7 +11,7 @@ addpath 3DPlots
 MARS=MARS_UR5();
 
 %Load the test point
-testN=16;
+testN=15;
 TestPointsMaxLinVel
 
 %Joints' angles with maximum manipulability for UR5
@@ -25,7 +25,7 @@ JointConstraintsPaper
 %influence on the motion.
 
 ts=1/50;    %Sampling time
-alpha=8.0;    % For cubic + linear + quintic manip trans
+alpha=3.0;    % For cubic + linear + quintic manip trans
 
 Kp_pos=10;
 Kp_or=20;
@@ -176,7 +176,8 @@ while(k<=N)
     %% Collision avoidance weighting matrices
     [Wcol_elbow, dist_elbow(k)]=elbowColMat(q(:,k),0.001,50,1);
     [Wcol_wrist, dist_wrist(k), wrist_pos(:,k)]=wristColMat(q(:,k),0.001,50,1);
-    Wcol=Wcol_elbow*Wcol_wrist;
+    Wcol=min(Wcol_elbow,Wcol_wrist);
+%     Wcol=Wcol_elbow*Wcol_wrist;
     %Wcol=eye(9,9);   
     
     %% Inverse differential kinematics         
