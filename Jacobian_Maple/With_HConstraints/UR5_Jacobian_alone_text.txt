@@ -1,0 +1,115 @@
+
+> restart;
+> with(LinearAlgebra);
+> 
+> NULL;
+> q := Vector([[q1], [q2], [q3], [q4], [q5], [q6]]);
+> 
+> NULL;
+> l0 := 0.89159e-1;
+> l2 := .425;
+> l4 := .39225;
+> l5 := .10915;
+> l6 := 0.9465e-1;
+> l7 := 0.823e-1;
+> 
+> NULL;
+> a[1] := 0;
+> alpha[1] := (1/2)*Pi;
+> d[1] := l0;
+> theta[1] := q1+Pi;
+> a[2] := -l2;
+> alpha[2] := 0;
+> d[2] := 0;
+> theta[2] := q2;
+> a[3] := -l4;
+> alpha[3] := 0;
+> d[3] := 0;
+> theta[3] := q3;
+> a[4] := 0;
+> alpha[4] := (1/2)*Pi;
+> d[4] := l5;
+> theta[4] := q4;
+> a[5] := 0;
+> alpha[5] := -(1/2)*Pi;
+> d[5] := l6;
+> theta[5] := q5;
+> a[6] := 0;
+> alpha[6] := 0;
+> d[6] := l7;
+> theta[6] := q6;
+> 
+> Rx := proc (theta) options operator, arrow; Matrix([[1, 0, 0, 0], [0, cos(theta), -sin(theta), 0], [0, sin(theta), cos(theta), 0], [0, 0, 0, 1]]) end proc; Ry := proc (theta) options operator, arrow; Matrix([[cos(theta), 0, sin(theta), 0], [0, 1, 0, 0], [-sin(theta), 0, cos(theta), 0], [0, 0, 0, 1]]) end proc; Rz := proc (theta) options operator, arrow; Matrix([[cos(theta), -sin(theta), 0, 0], [sin(theta), cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) end proc;
+> NULL;
+> An := proc (a, alpha, d, theta) options operator, arrow; Matrix([[cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha), a*cos(theta)], [sin(theta), cos(theta)*cos(alpha), -cos(theta)*sin(alpha), a*sin(theta)], [0, sin(alpha), cos(alpha), d], [0, 0, 0, 1]]) end proc;
+> 
+> A1 := An(a[1], alpha[1], d[1], theta[1]);
+> A2 := An(a[2], alpha[2], d[2], theta[2]);
+> A3 := An(a[3], alpha[3], d[3], theta[3]);
+> A4 := An(a[4], alpha[4], d[4], theta[4]);
+> A5 := An(a[5], alpha[5], d[5], theta[5]);
+> A6 := An(a[6], alpha[6], d[6], theta[6]);
+> 
+> T01 := A1;
+> T02 := MatrixMatrixMultiply(T01, A2);
+> T03 := MatrixMatrixMultiply(T02, A3);
+> T04 := MatrixMatrixMultiply(T03, A4);
+> T05 := MatrixMatrixMultiply(T04, A5);
+> T06 := MatrixMatrixMultiply(T05, A6);
+> 
+> TestForward5 := eval(T06, {q1 = 1.06, q2 = -2.60, q3 = 1.04, q4 = 1.87, q5 = .35, q6 = -0.4e-1});
+             TestForward5:=Matrix(%id = 4572668306)
+> SubMatrix(TestForward5, [1 .. 4], [2 .. 3]);
+                    Matrix(%id = 4572668866)
+> NULL;
+> Zvector := proc (M) options operator, arrow; Vector([M[1, 3], M[2, 3], M[3, 3]]) end proc;
+> Rvector := proc (M) options operator, arrow; Vector([M[1, 4], M[2, 4], M[3, 4]]) end proc;
+> NULL;
+> z[0] := Vector[column]([0, 0, 1]);
+> r[0] := Vector[column]([0, 0, 0]);
+> z[1] := Zvector(T01);
+> r[1] := Rvector(T01);
+> z[2] := Zvector(T02);
+> r[2] := Rvector(T02);
+> z[3] := Zvector(T03);
+> r[3] := Rvector(T03);
+> z[4] := Zvector(T04);
+> r[4] := Rvector(T04);
+> z[5] := Zvector(T05);
+> r[5] := Rvector(T05);
+> r[ee] := Rvector(T06);
+> 
+> 
+> Jp := (z) options operator, arrow; <z, <0, 0, 0>>:
+> Jr := (z, ree, r) options operator, arrow; <CrossProduct(z, ree-r), z>:
+> 
+> J1 := Jr(z[0], r[ee], r[0]);
+> J2 := Jr(z[1], r[ee], r[1]);
+> J3 := Jr(z[2], r[ee], r[2]);
+> J4 := Jr(z[3], r[ee], r[3]);
+> J5 := Jr(z[4], r[ee], r[4]);
+> J6 := Jr(z[5], r[ee], r[5]);
+> 
+> J := combine(<J1, J2, J3, J4, J5, J6>, trig);
+> TestJ1 := eval(J, {q1 = 0, q2 = 0, q3 = 0, q4 = 0, q5 = 0, q6 = 0});
+> 
+> 
+> dJdq1 := combine(`~`[diff](J, q(1)), trig);
+> dJdq2 := combine(`~`[diff](J, q(1)), trig);
+> dJdq3 := combine(`~`[diff](J, q(3)), trig);
+> dJdq4 := combine(`~`[diff](J, q(4)), trig);
+> dJdq5 := combine(`~`[diff](J, q(5)), trig);
+> dJdq6 := combine(`~`[diff](J, q(6)), trig);
+> 
+> NULL;
+> with(CodeGeneration);
+> currentdir();
+> writeto("UR5_Jacobian.m");
+> Matlab(J, resultname = "J");
+> Matlab(dJdq1, resultname = "dJdq1");
+> Matlab(dJdq2, resultname = "dJdq2");
+> Matlab(dJdq3, resultname = "dJdq3");
+> Matlab(dJdq4, resultname = "dJdq4");
+> Matlab(dJdq5, resultname = "dJdq5");
+> Matlab(dJdq6, resultname = "dJdq6");
+> writeto(terminal);

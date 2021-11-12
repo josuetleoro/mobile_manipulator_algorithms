@@ -1,0 +1,161 @@
+
+> restart;
+> with(LinearAlgebra);
+> 
+> q := Vector([[x], [y], [phi], [zmp], [q1], [q2], [q3], [q4], [q5], [q6]]);
+> 
+> l0 := 0.89159e-1;
+> l2 := .425;
+> l4 := .39225;
+> l5 := .10915;
+> l6 := 0.9465e-1;
+> l7 := 0.823e-1;
+> a[0] := 0;
+> alpha[0] := 0;
+> d[0] := 0;
+> theta[0] := phi;
+> a[1] := 0.11e-1;
+> alpha[1] := 0;
+> NULL;
+> d[1] := zmp+0.762e-1+.48296;
+> theta[1] := 0;
+> a[2] := 0;
+> alpha[2] := (1/2)*Pi;
+> d[2] := l0;
+> theta[2] := q1+Pi;
+> a[3] := -l2;
+> alpha[3] := 0;
+> d[3] := 0;
+> theta[3] := q2;
+> a[4] := -l4;
+> alpha[4] := 0;
+> d[4] := 0;
+> theta[4] := q3;
+> a[5] := 0;
+> alpha[5] := (1/2)*Pi;
+> d[5] := l5;
+> theta[5] := q4;
+> a[6] := 0;
+> alpha[6] := -(1/2)*Pi;
+> d[6] := l6;
+> theta[6] := q5;
+> a[7] := 0;
+> alpha[7] := 0;
+> d[7] := l7;
+> theta[7] := q6;
+> 
+> Rx :=(theta) options operator, arrow; Matrix([[1, 0, 0, 0], [0, cos(theta), -sin(theta), 0], [0, sin(theta), cos(theta), 0], [0, 0, 0, 1]]) end proc; 
+> Ry := (theta) options operator, arrow; Matrix([[cos(theta), 0, sin(theta), 0], [0, 1, 0, 0], [-sin(theta), 0, cos(theta), 0], [0, 0, 0, 1]]) end proc;
+> Rz := proc (theta) options operator, arrow; Matrix([[cos(theta), -sin(theta), 0, 0], [sin(theta), cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) end proc;
+
+> An := (a, alpha, d, theta) options operator, arrow; Matrix([[cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha), a*cos(theta)], [sin(theta), cos(theta)*cos(alpha), -cos(theta)*sin(alpha), a*sin(theta)], [0, sin(alpha), cos(alpha), d], [0, 0, 0, 1]]) end proc;
+> 
+> 
+> A0 := An(a[0], alpha[0], d[0], theta[0]);
+> A1 := An(a[1], alpha[1], d[1], theta[1]);
+> A2 := An(a[2], alpha[2], d[2], theta[2]);
+> A3 := An(a[3], alpha[3], d[3], theta[3]);
+> A4 := An(a[4], alpha[4], d[4], theta[4]);
+> A5 := An(a[5], alpha[5], d[5], theta[5]);
+> A6 := An(a[6], alpha[6], d[6], theta[6]);
+> A7 := An(a[7], alpha[7], d[7], theta[7]);
+> 
+> T00 := A0;
+> T01 := MatrixMatrixMultiply(T00, A1);
+> T02 := MatrixMatrixMultiply(T01, A2);
+> T03 := MatrixMatrixMultiply(T02, A3);
+> T04 := MatrixMatrixMultiply(T03, A4);
+> T05 := MatrixMatrixMultiply(T04, A5);
+> T06 := MatrixMatrixMultiply(T05, A6);
+> T07 := MatrixMatrixMultiply(T06, A7);
+> TestForward5 := eval(T07, {phi = -2.0, q1 = 1.06, q2 = -2.60, q3 = 1.04, q4 = 1.87, q5 = .35, q6 = -0.4e-1, zmp = .2});
+             TestForward5:=Matrix(%id = 4572668306)
+> SubMatrix(TestForward5, [1 .. 4], [2 .. 3]);
+                    Matrix(%id = 4572668866)
+
+
+> Zvector := proc (M) options operator, arrow; Vector([M[1, 3], M[2, 3], M[3, 3]]) end proc;
+> Rvector := proc (M) options operator, arrow; Vector([M[1, 4], M[2, 4], M[3, 4]]) end proc;
+> NULL;
+> z[0] := Vector[column]([0, 0, 1]);
+> r[0] := Vector[column]([0, 0, 0]);
+> z[1] := Zvector(T00);
+> r[1] := Rvector(T00);
+> z[2] := Zvector(T01);
+> r[2] := Rvector(T01);
+> z[3] := Zvector(T02);
+> r[3] := Rvector(T02);
+> z[4] := Zvector(T03);
+> r[4] := Rvector(T03);
+> z[5] := Zvector(T04);
+> r[5] := Rvector(T04);
+> z[6] := Zvector(T05);
+> r[6] := Rvector(T05);
+> z[7] := Zvector(T06);
+> r[7] := Rvector(T06);
+> r[ee] := Rvector(T07);
+> 
+> NULL;
+> NULL;
+> Jp := proc (z) options operator, arrow; `<,>`(z, `<,>`(0, 0, 0)) end proc;
+> NULL;
+> Jr := proc (z, ree, r) options operator, arrow; `<,>`(CrossProduct(z, ree-r), z) end proc;
+> 
+> NULL;
+> Jx := Jp(<1, 0, 0>);
+> Jy := Jp(<0, 1, 0>);
+> J1 := Jr(z[0], r[ee], r[0]);
+> J2 := Jp(z[1]);
+> J3 := Jr(z[2], r[ee], r[2]);
+> J4 := Jr(z[3], r[ee], r[3]);
+> J5 := Jr(z[4], r[ee], r[4]);
+> J6 := Jr(z[5], r[ee], r[5]);
+> J7 := Jr(z[6], r[ee], r[6]);
+> J8 := Jr(z[7], r[ee], r[7]);
+> NULL;
+> J := combine(<Jx, Jy, J1, J2, J3, J4, J5, J6, J7, J8>, trig);
+> 
+> NULL;
+> Scon := proc (theta) options operator, arrow; Matrix([[cos(theta), 0], [sin(theta), 0], [0, 1]]) end proc;
+> Sp := Scon(theta[0]);
+> 
+> NULL;
+> S := Matrix(10, 9, storage = sparse);
+> 
+> S[1 .. 3, 1 .. 2] := Sp;
+> S[4 .. 10, 3 .. 9] := IdentityMatrix(7);
+> 
+> JBar := combine(MatrixMatrixMultiply(J, S), trig);
+> 
+> NULL;
+> dJdq1 := `~`[diff](JBar, q(1));
+> dJdq2 := combine(`~`[diff](JBar, q(3)), trig);
+> dJdq3 := combine(`~`[diff](JBar, q(4)), trig);
+> dJdq4 := combine(`~`[diff](JBar, q(5)), trig);
+> dJdq5 := combine(`~`[diff](JBar, q(6)), trig);
+> dJdq6 := combine(`~`[diff](JBar, q(7)), trig);
+> dJdq7 := combine(`~`[diff](JBar, q(8)), trig);
+> dJdq8 := combine(`~`[diff](JBar, q(9)), trig);
+> dJdq9 := combine(`~`[diff](JBar, q(10)), trig);
+> 
+> NULL;
+> with(CodeGeneration);
+> currentdir();
+> writeto("MARS_Jacobian_withS.cpp");
+> C(J, resultname = "J");
+> C(JBar, resultname = "JBar");
+> C(dJdq1, resultname = "dJdq1");
+> C(dJdq2, resultname = "dJdq2");
+> C(dJdq3, resultname = "dJdq3");
+> C(dJdq4, resultname = "dJdq4");
+> C(dJdq5, resultname = "dJdq5");
+> C(dJdq6, resultname = "dJdq6");
+> C(dJdq7, resultname = "dJdq7");
+> C(dJdq8, resultname = "dJdq8");
+> C(dJdq9, resultname = "dJdq9");
+> writeto(terminal);
+> 
+> 
+> 
+> 
+> 
