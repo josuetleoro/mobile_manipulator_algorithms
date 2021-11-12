@@ -214,7 +214,6 @@ while(k<=N)
     %Orientation error
     quat_d=xi_des(4:7,k);    
     eO=errorFromQuats(quat_d,quat_e);
-    %eO=errorFromQuatsR(quat2rotm(quat_d'),quat2rotm(quat_e'));
     xi_orient_error(1:3,k)=eO;
         
     errorRate(1:3,1)=eP;
